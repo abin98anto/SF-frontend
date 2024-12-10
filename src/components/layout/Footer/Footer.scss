@@ -1,0 +1,102 @@
+.footer {
+  background-color: #1a1a1a;
+  color: #ffffff;
+  font-family: "Montserrat", sans-serif;
+  padding: 2rem 0;
+
+  .footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    @media (min-width: 768px) {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    /* Footer Logo and Contact Section */
+    > div:first-child {
+      flex: 1;
+      text-align: left;
+
+      .footer-logo {
+        font-size: 1.5rem;
+        font-weight: bold;
+        cursor: pointer;
+        margin-bottom: 1rem;
+
+        p {
+          font-size: 0.675rem; /* Reduce font size for <p> tags */
+          color: #bbbbbb; /* Dimmer color */
+          margin: 0.2rem 0;
+        }
+
+        .footer-social {
+          margin-top: 1rem; /* Add space between the text and icons */
+          display: flex;
+          gap: 1rem;
+
+          a {
+            color: #ffffff;
+            font-size: 1.25rem;
+            text-decoration: none;
+            transition: color 0.3s;
+
+            &:hover {
+              color: #f97316; /* Accent color on hover */
+            }
+          }
+        }
+      }
+    }
+
+    /* Footer Links Section */
+    .footer-links {
+      flex: 1; /* Take up the right half of the footer */
+      text-align: left;
+      display: flex;
+      gap: 2rem; /* Space between columns */
+
+      .footer-column {
+        h4 {
+          font-size: 1rem;
+          margin-bottom: 0.5rem;
+          color: #ffffff;
+        }
+
+        ul {
+          list-style: none;
+          padding: 0;
+
+          li {
+            margin: 0.5rem 0;
+
+            a {
+              font-size: 0.875rem; /* Smaller font size */
+              color: #bbbbbb; /* Dimmer color */
+              text-decoration: none;
+              transition: color 0.3s;
+
+              &:hover {
+                color: #f97316; /* Accent color on hover */
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  /* Footer Copyright */
+  .footer-copyright {
+    text-align: center;
+    font-size: 0.75rem; /* Smaller font size */
+    color: #bbbbbb;
+    margin-top: 2rem;
+  }
+}

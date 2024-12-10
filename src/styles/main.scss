@@ -1,0 +1,18 @@
+@import url("https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&display=swap");
+
+body {
+  font-family: "Montserrat", sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.logo {
+  font-family: "Kalam", cursive;
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-decoration: none;
+
+  &:hover {
+    color: #ff6a3d;
+  }
+}
