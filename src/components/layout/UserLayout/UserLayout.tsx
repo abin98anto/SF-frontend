@@ -4,9 +4,12 @@ import Footer from "../Footer/Footer";
 
 const UserLayout = () => {
   return (
-    <div className="user-layout">
+    <div
+      className="user-layout"
+      style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
+    >
       <Header />
-      <main className="content">
+      <main className="content" style={{ flex: "1" }}>
         <Outlet />
       </main>
       <Footer />

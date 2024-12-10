@@ -35,17 +35,17 @@ const Header = () => {
             <nav className="mobile-nav">
               <ul>
                 <li>
-                  <Link to="/" onClick={toggleMenu}>
+                  <Link to="/courses" onClick={toggleMenu}>
                     Courses
                   </Link>
                 </li>
                 <li>
-                  <Link to="/" onClick={toggleMenu}>
+                  <Link to="/about" onClick={toggleMenu}>
                     About
                   </Link>
                 </li>
                 <li>
-                  <Link to="/" onClick={toggleMenu}>
+                  <Link to="/subscriptions" onClick={toggleMenu}>
                     Subscriptions
                   </Link>
                 </li>
@@ -66,13 +66,13 @@ const Header = () => {
         <nav className="nav">
           <ul>
             <li>
-              <Link to="/">Courses</Link>
+              <Link to="/courses">Courses</Link>
             </li>
             <li>
-              <Link to="/">About</Link>
+              <Link to="/about">About</Link>
             </li>
             <li>
-              <Link to="/">Subscriptions</Link>
+              <Link to="/subscriptions">Subscriptions</Link>
             </li>
           </ul>
         </nav>
