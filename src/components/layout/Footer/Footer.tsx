@@ -13,7 +13,6 @@ const Footer = () => {
             <p>Brocamp, Ernakulam</p>
             <p>+91 8848746391</p>
 
-            {/* Social Links */}
             <div className="footer-social">
               <a
                 href="https://www.linkedin.com"

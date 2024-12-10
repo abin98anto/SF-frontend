@@ -1,7 +1,6 @@
 .footer {
   background-color: #1a1a1a;
   color: #ffffff;
-  font-family: "Montserrat", sans-serif;
   padding: 2rem 0;
 
   .footer-container {
@@ -31,13 +30,13 @@
         margin-bottom: 1rem;
 
         p {
-          font-size: 0.675rem; /* Reduce font size for <p> tags */
-          color: #bbbbbb; /* Dimmer color */
+          font-size: 0.675rem;
+          color: #bbbbbb;
           margin: 0.2rem 0;
         }
 
         .footer-social {
-          margin-top: 1rem; /* Add space between the text and icons */
+          margin-top: 1rem;
           display: flex;
           gap: 1rem;
 
@@ -48,19 +47,18 @@
             transition: color 0.3s;
 
             &:hover {
-              color: #f97316; /* Accent color on hover */
+              color: #f97316;
             }
           }
         }
       }
     }
 
-    /* Footer Links Section */
     .footer-links {
-      flex: 1; /* Take up the right half of the footer */
+      flex: 1;
       text-align: left;
       display: flex;
-      gap: 2rem; /* Space between columns */
+      gap: 2rem;
 
       .footer-column {
         h4 {
@@ -77,13 +75,13 @@
             margin: 0.5rem 0;
 
             a {
-              font-size: 0.875rem; /* Smaller font size */
-              color: #bbbbbb; /* Dimmer color */
+              font-size: 0.875rem;
+              color: #bbbbbb;
               text-decoration: none;
               transition: color 0.3s;
 
               &:hover {
-                color: #f97316; /* Accent color on hover */
+                color: #f97316;
               }
             }
           }
@@ -92,10 +90,9 @@
     }
   }
 
-  /* Footer Copyright */
   .footer-copyright {
     text-align: center;
-    font-size: 0.75rem; /* Smaller font size */
+    font-size: 0.75rem;
     color: #bbbbbb;
     margin-top: 2rem;
   }
