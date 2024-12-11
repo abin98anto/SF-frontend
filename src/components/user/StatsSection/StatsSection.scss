@@ -1,0 +1,69 @@
+.stats-section {
+  background-color: #f9f9f9;
+  padding: 2rem;
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 boxes in a row */
+    gap: 2rem; /* Space between the boxes */
+    justify-items: center; /* Center the content inside each box */
+    align-items: center;
+
+    .stat-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 75%; /* Making the boxes 75% wider */
+      height: auto;
+      aspect-ratio: 1; /* Keeps the boxes square */
+      background-color: #ffffff;
+      border: 1px solid #eaeaea;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      transition: transform 0.3s, box-shadow 0.3s;
+
+      &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      .stat-value {
+        font-size: 3rem; /* Large size for the value */
+        font-weight: bold;
+        color: #ff6a3d; /* Orange color */
+        margin-bottom: 0.5rem;
+      }
+
+      .stat-text {
+        font-size: 1rem;
+        color: #555555; /* Subtle color for text */
+        margin: 0; /* Center the text */
+      }
+    }
+  }
+
+  /* Responsive design for smaller screens */
+  @media (max-width: 768px) {
+    .stats-grid {
+      grid-template-columns: repeat(2, 1fr); /* 2 boxes per row on mobile */
+      gap: 1.5rem; /* Slightly reduce spacing */
+    }
+
+    .stat-box {
+      width: 90%; /* Increase width for mobile */
+    }
+  }
+
+  @media (max-width: 480px) {
+    .stats-grid {
+      grid-template-columns: 1fr; /* 1 box per row on very small screens */
+      gap: 1rem;
+    }
+
+    .stat-box {
+      width: 100%; /* Full width on very small screens */
+    }
+  }
+}
