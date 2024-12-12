@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&display=swap");
 
 :root {
-  --orange-color: #f97316;
+  --orange-color: #ff6636;
 }
 
 body {
@@ -17,6 +17,6 @@ body {
   text-decoration: none;
 
   &:hover {
-    color: #ff6a3d;
+    color: var(--orange-color);
   }
 }
