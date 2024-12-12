@@ -1,4 +1,3 @@
-import React from "react";
 import "./StatsSection.scss";
 
 const StatsSection = () => {

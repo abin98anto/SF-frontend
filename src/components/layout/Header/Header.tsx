@@ -52,10 +52,10 @@ const Header = () => {
               </ul>
             </nav>
             <div className="mobile-auth">
-              <Link to="/" className="login" onClick={toggleMenu}>
+              <Link to="/login" className="login" onClick={toggleMenu}>
                 Login
               </Link>
-              <Link to="/" className="signup" onClick={toggleMenu}>
+              <Link to="/signup" className="signup" onClick={toggleMenu}>
                 Signup
               </Link>
             </div>
@@ -78,10 +78,10 @@ const Header = () => {
         </nav>
 
         <div className="auth">
-          <Link to="/" className="login">
+          <Link to="/login" className="login">
             Login →
           </Link>
-          <Link to="/" className="signup">
+          <Link to="/signup" className="signup">
             Signup
           </Link>
         </div>
