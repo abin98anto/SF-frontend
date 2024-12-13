@@ -1,28 +1,31 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { SignUpFormValues } from "../../entities/SignUpFormValues";
 
 interface UserState {
-  userDetails: Record<string, any> | null;
+  userInfo: SignUpFormValues | null;
   loading: boolean;
   error: string | null;
 }
 
 const initialState: UserState = {
-  userDetails: null,
   loading: false,
   error: null,
+  userInfo: null,
 };
 
 // Async thunk to handle sign-up
 export const signUpUser = createAsyncThunk(
   "/signUp",
-  async (userData: Record<string, any>, { rejectWithValue }) => {
+  async (userData: SignUpFormValues, { rejectWithValue }) => {
     try {
+      console.log("first");
       const response = await axios.post(
         "http://localhost:3000/send-otp",
         userData
       );
+      console.log("second", response.data);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || "Something went wrong");
@@ -42,7 +45,7 @@ const userSlice = createSlice({
       })
       .addCase(signUpUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.userDetails = action.payload;
+        state.userInfo = action.payload;
       })
       .addCase(signUpUser.rejected, (state, action) => {
         state.loading = false;

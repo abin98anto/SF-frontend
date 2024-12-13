@@ -4,12 +4,17 @@ import { imageLinks } from "../../../utils/constants";
 import { handleFileUpload, validateImageFile } from "../../../utils/fileUpload";
 import { SignUpFormValues } from "../../../entities/SignUpFormValues";
 import { SignUpDummy } from "../../../entities/SignUpDummy";
+import { useAppDispatch, useAppSelector } from "../../../hooks/hooks"; // Import typed hooks
+import { signUpUser } from "../../../redux/features/userSlice"; // Import the async thunk
 
 import React, { useRef, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 const SignupPage: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const { loading, error } = useAppSelector((state) => state.user);
+
   const {
     register,
     handleSubmit,
@@ -56,6 +61,9 @@ const SignupPage: React.FC = () => {
 
   const onSubmit: SubmitHandler<SignUpFormValues> = async (data) => {
     console.log("Form submitted:", data);
+
+    // Dispatch the signUpUser thunk
+    dispatch(signUpUser(data));
   };
 
   const triggerFileInput = () => {
@@ -154,10 +162,13 @@ const SignupPage: React.FC = () => {
               <p className="error-message">{errors.profilePicture.message}</p>
             )}
 
+            {/* Submit Button */}
             <button type="submit" className="form-btn" disabled={isUploading}>
-              {isUploading ? "Uploading..." : "Sign up"}
+              {isUploading || loading ? "Processing..." : "Sign up"}
             </button>
           </form>
+
+          {error && <p className="error-message">{error}</p>}
 
           <p className="sign-up-label">
             Already have an account?
