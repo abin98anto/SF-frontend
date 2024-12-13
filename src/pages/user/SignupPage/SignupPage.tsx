@@ -3,6 +3,7 @@ import { signUpSchema } from "../../../schemas/signUpSchema";
 import { imageLinks } from "../../../utils/constants";
 import { handleFileUpload, validateImageFile } from "../../../utils/fileUpload";
 import { SignUpFormValues } from "../../../entities/SignUpFormValues";
+import { SignUpDummy } from "../../../entities/SignUpDummy";
 
 import React, { useRef, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -13,12 +14,12 @@ const SignupPage: React.FC = () => {
     register,
     handleSubmit,
     setValue,
+    getValues,
     formState: { errors },
   } = useForm<SignUpFormValues>({
     resolver: yupResolver(signUpSchema),
   });
 
-  const [fileName, setFileName] = useState<string>("");
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -35,11 +36,22 @@ const SignupPage: React.FC = () => {
 
       if (result.success && result.url) {
         setValue("profilePicture", result.url);
-        setFileName(file.name);
       } else {
         alert(result.error || "Upload failed");
       }
     }
+  };
+
+  const handleAutofill = () => {
+    const autofillData = SignUpDummy();
+    (Object.keys(autofillData) as Array<keyof SignUpFormValues>).forEach(
+      (key) => {
+        const currentValue = getValues(key);
+        if (!currentValue) {
+          setValue(key, autofillData[key]);
+        }
+      }
+    );
   };
 
   const onSubmit: SubmitHandler<SignUpFormValues> = async (data) => {
@@ -66,7 +78,7 @@ const SignupPage: React.FC = () => {
               <p className="error-message">{errors.username.message}</p>
             )}
 
-            {/* email */}
+            {/* Email */}
             <input
               {...register("email")}
               type="email"
@@ -135,7 +147,7 @@ const SignupPage: React.FC = () => {
                 </svg>
               </svg>
               <div className="txt-upload">
-                {isUploading ? "Uploading..." : fileName ? fileName : "Upload"}
+                {isUploading ? "Uploading..." : "Upload"}
               </div>
             </button>
             {errors.profilePicture && (
@@ -174,6 +186,15 @@ const SignupPage: React.FC = () => {
               </svg>
               <span>Log in with Google</span>
             </div>
+
+            {/* Autofill Button */}
+            <button
+              type="button"
+              onClick={handleAutofill}
+              className="autofill-btn"
+            >
+              Autofill
+            </button>
           </div>
         </div>
       </div>

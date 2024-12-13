@@ -345,3 +345,25 @@
   stroke: #08ca08;
   stroke-dasharray: 100 0;
 }
+
+.buttons-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  .autofill-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: #e0e0e0;
+    }
+  }
+}
