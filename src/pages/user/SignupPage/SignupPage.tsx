@@ -4,15 +4,28 @@ import { imageLinks } from "../../../utils/constants";
 import { handleFileUpload, validateImageFile } from "../../../utils/fileUpload";
 import { SignUpFormValues } from "../../../entities/SignUpFormValues";
 import { SignUpDummy } from "../../../entities/SignUpDummy";
-import { useAppDispatch, useAppSelector } from "../../../hooks/hooks"; // Import typed hooks
-import { signUpUser } from "../../../redux/features/userSlice"; // Import the async thunk
+import { useAppDispatch, useAppSelector } from "../../../hooks/hooks";
+import { signUpUser, verifyOTP } from "../../../redux/features/userSlice";
 
 import React, { useRef, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useNavigate } from "react-router-dom";
+
+// Material-UI Imports
+import {
+  Modal,
+  Box,
+  Typography,
+  Button,
+  TextField,
+  Snackbar,
+  Alert,
+} from "@mui/material";
 
 const SignupPage: React.FC = () => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const { loading, error } = useAppSelector((state) => state.user);
 
   const {
@@ -26,6 +39,10 @@ const SignupPage: React.FC = () => {
   });
 
   const [isUploading, setIsUploading] = useState<boolean>(false);
+  const [openOTPModal, setOpenOTPModal] = useState<boolean>(false);
+  const [openErrorToast, setOpenErrorToast] = useState<boolean>(false);
+  const [otpValue, setOtpValue] = useState<string>("");
+  const [submittedEmail, setSubmittedEmail] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = async (
@@ -61,13 +78,63 @@ const SignupPage: React.FC = () => {
 
   const onSubmit: SubmitHandler<SignUpFormValues> = async (data) => {
     console.log("Form submitted:", data);
+    setSubmittedEmail(data.email);
 
     // Dispatch the signUpUser thunk
-    dispatch(signUpUser(data));
+    const result = await dispatch(signUpUser(data));
+
+    if (signUpUser.fulfilled.match(result)) {
+      // If signup is successful, open OTP modal
+      setOpenOTPModal(true);
+    } else {
+      // If signup fails, show error toast
+      setOpenErrorToast(true);
+    }
+  };
+
+  const handleOTPSubmit = async () => {
+    try {
+      const result = await dispatch(
+        verifyOTP({
+          email: submittedEmail,
+          otp: otpValue,
+        })
+      );
+
+      if (verifyOTP.fulfilled.match(result)) {
+        // OTP verified successfully, redirect to login or dashboard
+        navigate("/login");
+      } else {
+        // OTP verification failed
+        setOpenErrorToast(true);
+        setOpenOTPModal(false);
+      }
+    } catch (err) {
+      console.log("SignupPage.tsx", err);
+      setOpenErrorToast(true);
+      setOpenOTPModal(false);
+    }
+  };
+
+  const handleCloseErrorToast = () => {
+    setOpenErrorToast(false);
   };
 
   const triggerFileInput = () => {
     fileInputRef.current?.click();
+  };
+
+  const otpModalStyle = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 400,
+    bgcolor: "background.paper",
+    boxShadow: 24,
+    p: 4,
+    borderRadius: 2,
+    textAlign: "center",
   };
 
   return (
@@ -172,7 +239,9 @@ const SignupPage: React.FC = () => {
 
           <p className="sign-up-label">
             Already have an account?
-            <span className="sign-up-link">Login</span>
+            <span className="sign-up-link" onClick={() => navigate("/login")}>
+              Login
+            </span>
           </p>
 
           <div className="buttons-container">
@@ -212,6 +281,55 @@ const SignupPage: React.FC = () => {
       <div className="signup-image">
         <img src={imageLinks.ROCKET_SIGNUP} alt="Signup Illustration" />
       </div>
+
+      {/* OTP Modal */}
+      <Modal
+        open={openOTPModal}
+        onClose={() => setOpenOTPModal(false)}
+        aria-labelledby="otp-modal-title"
+        aria-describedby="otp-modal-description"
+      >
+        <Box sx={otpModalStyle}>
+          <Typography id="otp-modal-title" variant="h6" component="h2">
+            Enter OTP
+          </Typography>
+          <Typography id="otp-modal-description" sx={{ mt: 2 }}>
+            Please check your email and enter the OTP sent to {submittedEmail}
+          </Typography>
+          <TextField
+            fullWidth
+            label="OTP"
+            variant="outlined"
+            margin="normal"
+            value={otpValue}
+            onChange={(e) => setOtpValue(e.target.value)}
+          />
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleOTPSubmit}
+            sx={{ mt: 2 }}
+          >
+            Verify OTP
+          </Button>
+        </Box>
+      </Modal>
+
+      {/* Error Snackbar */}
+      <Snackbar
+        open={openErrorToast}
+        autoHideDuration={6000}
+        onClose={handleCloseErrorToast}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        <Alert
+          onClose={handleCloseErrorToast}
+          severity="error"
+          sx={{ width: "100%" }}
+        >
+          {error || "An error occurred. Please try again."}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };
