@@ -1,14 +1,13 @@
 .signup-page {
   display: flex;
   justify-content: center;
-  align-items: center;
-  padding: 20px;
-  height: 100vh; // Ensure full viewport height
+  padding: 150px;
+  height: 100vh;
 
   .signup-form {
     .form-container {
       width: 350px;
-      height: 600px;
+      height: auto;
       background-color: #fff;
       box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
       border-radius: 10px;
@@ -34,6 +33,31 @@
       border-radius: 20px;
       border: 1px solid #c0c0c0;
       padding: 12px 15px;
+
+      &.error {
+        border-color: #ff0000;
+        box-shadow: 0 0 5px rgba(255, 0, 0, 0.3);
+      }
+    }
+
+    .error-message {
+      color: #ff0000;
+      font-size: 12px;
+      margin-top: -10px;
+      margin-bottom: 10px;
+      padding-left: 15px;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .page-link {
