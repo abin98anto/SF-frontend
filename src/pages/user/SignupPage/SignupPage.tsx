@@ -1,49 +1,12 @@
-import { imageLinks } from "../../../utils/constants";
 import "./SignupPage.scss";
+import { signUpSchema } from "../../../schemas/signUpSchema";
+import { imageLinks } from "../../../utils/constants";
+import { uploadToCloudinary } from "../../../utils/cloudinary";
+import { SignUpFormValues } from "../../../entities/SignUpFormValues";
 
 import React, { useRef, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
-import { uploadToCloudinary } from "../../../utils/cloudinary"; // Adjust import path as needed
-
-// Define an interface for form values
-interface SignUpFormValues {
-  username: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-  profilePicture: string; // Changed to string to store Cloudinary URL
-}
-
-const signUpSchema = yup.object().shape({
-  username: yup
-    .string()
-    .required("Username is required")
-    .min(3, "Username must be at least 3 characters")
-    .max(20, "Username must be at most 20 characters"),
-
-  email: yup
-    .string()
-    .required("Email is required")
-    .email("Invalid email format"),
-
-  password: yup
-    .string()
-    .required("Password is required")
-    .min(8, "Password must be at least 8 characters")
-    .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
-      "Password must include uppercase, lowercase, number, and special character"
-    ),
-
-  confirmPassword: yup
-    .string()
-    .required("Confirm password is required")
-    .oneOf([yup.ref("password")], "Passwords must match"),
-
-  profilePicture: yup.string().required("Profile picture is required"),
-});
 
 const SignupPage: React.FC = () => {
   const {
@@ -64,27 +27,15 @@ const SignupPage: React.FC = () => {
   ) => {
     const file = event.target.files?.[0];
     if (file) {
-      // Additional check for file preview and size
       const reader = new FileReader();
       reader.onload = async (e) => {
         const img = new Image();
         img.onload = async () => {
-          // Optional: Check image dimensions if needed
-          if (img.width > 1000 || img.height > 1000) {
-            // Handle oversized image
-            alert("Image dimensions should be less than 1000x1000 pixels");
-            return;
-          }
-
           // Start upload process
           try {
             setIsUploading(true);
             const cloudinaryUrl = await uploadToCloudinary(file);
-
-            // Set the Cloudinary URL in the form
             setValue("profilePicture", cloudinaryUrl);
-
-            // Update file name
             setFileName(file.name);
           } catch (error) {
             console.error("Upload failed", error);
@@ -101,8 +52,6 @@ const SignupPage: React.FC = () => {
 
   const onSubmit: SubmitHandler<SignUpFormValues> = async (data) => {
     console.log("Form submitted:", data);
-    // Here you would typically send the data to your backend
-    // The profilePicture will now be a Cloudinary URL
   };
 
   const triggerFileInput = () => {

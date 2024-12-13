@@ -1,39 +1,25 @@
 import axios from "axios";
+import { cloudinaryLinks } from "./constants";
 
 export const uploadToCloudinary = async (file: File): Promise<string> => {
-  // Create a FormData object
-  console.log("first");
-  const formData = new FormData();
-
-  // Add file to FormData
-  formData.append("file", file);
-
-  // Add upload preset and cloud name
-  // Note: These should be set in your environment variables
-  formData.append(
-    "upload_preset",
-    import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || ""
-  );
-  formData.append(
-    "cloud_name",
-    import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || ""
-  );
-
   try {
-    // Make the upload request to Cloudinary
-    const response = await axios.post(
-      `https://api.cloudinary.com/v1_1/${
-        import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
-      }/image/upload`,
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append(
+      "upload_preset",
+      import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET
+    );
+    formData.append(
+      "cloud_name",
+      import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET
     );
 
-    // Return the secure URL of the uploaded image
+    const response = await axios.post(cloudinaryLinks.CLOUDI_UPLOAD, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
     console.log("image uploaded!");
     return response.data.secure_url;
   } catch (error) {

@@ -21,3 +21,9 @@ export const imageLinks = {
   LOGIN_IMG:
     "https://res.cloudinary.com/dqjjysikb/image/upload/v1733894418/beard-chair_c2pxa2.png",
 };
+
+export const cloudinaryLinks = {
+  CLOUDI_UPLOAD: `https://api.cloudinary.com/v1_1/${
+    import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
+  }/image/upload`,
+};
