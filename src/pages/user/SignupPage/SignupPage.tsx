@@ -1,7 +1,7 @@
 import "./SignupPage.scss";
 import { signUpSchema } from "../../../schemas/signUpSchema";
 import { imageLinks } from "../../../utils/constants";
-import { uploadToCloudinary } from "../../../utils/cloudinary";
+import { handleFileUpload, validateImageFile } from "../../../utils/fileUpload";
 import { SignUpFormValues } from "../../../entities/SignUpFormValues";
 
 import React, { useRef, useState } from "react";
@@ -27,26 +27,18 @@ const SignupPage: React.FC = () => {
   ) => {
     const file = event.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = async (e) => {
-        const img = new Image();
-        img.onload = async () => {
-          // Start upload process
-          try {
-            setIsUploading(true);
-            const cloudinaryUrl = await uploadToCloudinary(file);
-            setValue("profilePicture", cloudinaryUrl);
-            setFileName(file.name);
-          } catch (error) {
-            console.error("Upload failed", error);
-            alert("Failed to upload image");
-          } finally {
-            setIsUploading(false);
-          }
-        };
-        img.src = e.target?.result as string;
-      };
-      reader.readAsDataURL(file);
+      const result = await handleFileUpload(file, {
+        onUploadStart: () => setIsUploading(true),
+        onUploadEnd: () => setIsUploading(false),
+        validateFile: validateImageFile,
+      });
+
+      if (result.success && result.url) {
+        setValue("profilePicture", result.url);
+        setFileName(file.name);
+      } else {
+        alert(result.error || "Upload failed");
+      }
     }
   };
 
