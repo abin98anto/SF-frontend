@@ -1,0 +1,148 @@
+.button {
+  position: relative;
+  width: 100%;
+  height: 44px;
+  cursor: pointer;
+  border: 1px solid #c0c0c0;
+  border-radius: 20px;
+  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 15px;
+  box-sizing: border-box;
+
+  svg {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+  }
+
+  .border {
+    width: 100%;
+    height: 100%;
+    stroke: black;
+    stroke-width: 2px;
+    fill: #0000;
+    stroke-dasharray: 25;
+    transition: fill 0.25s;
+    animation: 4s linear infinite stroke-animation;
+  }
+
+  &:hover .border {
+    fill: #0001;
+  }
+
+  &:focus .border {
+    transition: fill 0.25s 7.75s;
+    fill: #0000;
+  }
+
+  .txt-upload {
+    position: static;
+    flex-grow: 1;
+    text-align: center;
+  }
+
+  .txt-upload::after {
+    content: "";
+  }
+
+  &:focus .rect {
+    stroke-dasharray: 50;
+  }
+
+  &:focus .border {
+    stroke: #0000;
+  }
+
+  &:focus .txt-upload {
+    opacity: 0;
+    transition: opacity 0.25s 8s;
+  }
+
+  &:focus .txt-upload::after {
+    animation: 0.66666s anim step-end forwards,
+      1.33333s 0.6666s anim2 linear infinite alternate;
+  }
+
+  .loading {
+    width: 100%;
+    height: 100%;
+    stroke: #0055d4;
+    stroke-width: 2px;
+    fill: none;
+    stroke-dasharray: 0 100;
+  }
+
+  &:focus .loading {
+    transition: stroke 0.5s 7.5s, stroke-dasharray 8s 0.5s ease-out;
+    stroke: #08ca08;
+    stroke-dasharray: 100 0;
+  }
+
+  .done {
+    fill: none;
+    stroke: #000;
+    stroke-dasharray: 0 100;
+  }
+
+  &:focus .done-cloud {
+    transition: stroke-dasharray 0.75s 8.5s ease-out;
+    stroke-dasharray: 100 0;
+  }
+
+  &:focus .done-check {
+    transition: stroke-dasharray 0.5s 9.2s ease-out;
+    stroke: #08ca08;
+    stroke-dasharray: 100 0;
+  }
+}
+
+@keyframes stroke-animation {
+  0% {
+    stroke-dashoffset: 100;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes anim {
+  0% {
+    content: "i";
+  }
+  50% {
+    content: "in";
+  }
+  to {
+    content: "ing";
+  }
+}
+
+@keyframes anim2 {
+  0% {
+    content: "ing";
+  }
+  33% {
+    content: "ing.";
+  }
+  66% {
+    content: "ing..";
+  }
+  to {
+    content: "ing...";
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.95);
+  }
+  100% {
+    transform: scale(1);
+  }
+}

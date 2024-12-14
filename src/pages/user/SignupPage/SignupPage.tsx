@@ -20,6 +20,7 @@ import {
   Snackbar,
   Alert,
 } from "@mui/material";
+import GoogleButton from "../../../components/google-btn/GoogleButton";
 
 const SignupPage: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -47,6 +48,7 @@ const SignupPage: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Image input function.
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -66,6 +68,7 @@ const SignupPage: React.FC = () => {
     }
   };
 
+  // Autofill function.
   const handleAutofill = () => {
     const autofillData = SignUpDummy();
     (Object.keys(autofillData) as Array<keyof SignUpFormValues>).forEach(
@@ -78,6 +81,7 @@ const SignupPage: React.FC = () => {
     );
   };
 
+  // Form submission.
   const onSubmit: SubmitHandler<SignUpFormValues> = async (data) => {
     setUserDetails(data);
     setSubmittedEmail(data.email);
@@ -100,6 +104,7 @@ const SignupPage: React.FC = () => {
     }
   };
 
+  // OTP submission.
   const handleOTPSubmit = async () => {
     if (timer <= 0) {
       setErrorMessage(signupMessages.OTP_EXPIRED);
@@ -135,6 +140,7 @@ const SignupPage: React.FC = () => {
     }
   };
 
+  // Resend OTP.
   const handleResendOTP = async () => {
     if (!userDetails) {
       setErrorMessage(signupMessages.USER_NOT_FOUND);
@@ -164,6 +170,7 @@ const SignupPage: React.FC = () => {
     }
   };
 
+  // Open OTP modal.
   const handleOTPModalOpen = () => {
     setOpenOTPModal(true);
     setTimer(90);
@@ -181,6 +188,7 @@ const SignupPage: React.FC = () => {
     }, 1000);
   };
 
+  // Close OTP modal.
   const handleOTPModalClose = () => {
     setOpenOTPModal(false);
     setOtpValue("");
@@ -192,6 +200,7 @@ const SignupPage: React.FC = () => {
     }
   };
 
+  // Close Error Toast.
   const handleCloseErrorToast = () => {
     setOpenErrorToast(false);
   };
@@ -318,29 +327,8 @@ const SignupPage: React.FC = () => {
             </span>
           </p>
 
+          <GoogleButton />
           <div className="buttons-container">
-            <div className="google-login-button">
-              <svg
-                stroke="currentColor"
-                fill="currentColor"
-                strokeWidth={0}
-                version="1.1"
-                x="0px"
-                y="0px"
-                className="google-icon"
-                viewBox="0 0 48 48"
-                height="1em"
-                width="1em"
-                xmlns={imageLinks.GOOGLE_SVG}
-              >
-                <path fill="#FFC107" d={imageLinks.GOOGLE_SIGN1} />
-                <path fill="#FF3D00" d={imageLinks.GOOGLE_SIGN2} />
-                <path fill="#4CAF50" d={imageLinks.GOOGLE_SIGN3} />
-                <path fill="#1976D2" d={imageLinks.GOOGLE_SIGN4} />
-              </svg>
-              <span>Log in with Google</span>
-            </div>
-
             {/* Autofill Button */}
             <button
               type="button"
