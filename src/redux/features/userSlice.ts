@@ -1,15 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { SignUpFormValues } from "../../entities/SignUpFormValues";
 
-interface UserState {
-  userInfo: SignUpFormValues | null;
-  loading: boolean;
-  error: string | null;
-  isVerified?: boolean;
-  user?: OTPVerificationResponse | null;
-}
+import {
+  OTPVerificationPayload,
+  OTPVerificationResponse,
+  SignUpFormValues,
+  UserState,
+} from "../../entities/SignUpFormValues";
+import { signupMessages } from "../../utils/constants";
 
 const initialState: UserState = {
   loading: false,
@@ -17,20 +16,9 @@ const initialState: UserState = {
   userInfo: null,
 };
 
-interface OTPVerificationPayload {
-  email: string;
-  otp: string;
-}
-
-// Define the type for the API response
-interface OTPVerificationResponse {
-  success: boolean;
-  message: string;
-}
-
 // Async thunk to handle sign-up
 export const signUpUser = createAsyncThunk(
-  "/signUp",
+  "user/sendOTP",
   async (userData: SignUpFormValues, { rejectWithValue }) => {
     try {
       console.log("first");
@@ -38,9 +26,19 @@ export const signUpUser = createAsyncThunk(
         "http://localhost:3000/send-otp",
         userData
       );
-      console.log("second", response.data);
+
+      if (response.data.message === signupMessages.EMAIL_EXISTS) {
+        return rejectWithValue(signupMessages.EMAIL_EXISTS);
+      }
       return response.data;
     } catch (error: any) {
+      if (
+        axios.isAxiosError(error) &&
+        error.response?.data?.message === signupMessages.EMAIL_EXISTS
+      ) {
+        return rejectWithValue(signupMessages.EMAIL_EXISTS);
+      }
+
       return rejectWithValue(error.response?.data || "Something went wrong");
     }
   }
@@ -63,16 +61,17 @@ export const verifyOTP = createAsyncThunk<
     );
 
     if (response.data.success) {
-      // OTP verified successfully
       return response.data;
     } else {
-      // OTP verification failed
-      return thunkAPI.rejectWithValue(
-        response.data.message || "OTP verification failed"
-      );
+      if (response.data.message === "Invalid OTP") {
+        return thunkAPI.rejectWithValue(signupMessages.WRONG_OTP);
+      } else if (response.data.message === "OTP expired") {
+        return thunkAPI.rejectWithValue(signupMessages.OTP_EXPIRED);
+      } else {
+        return thunkAPI.rejectWithValue("OTP verification failed");
+      }
     }
   } catch (error) {
-    // Handle network errors or other exceptions
     if (axios.isAxiosError(error)) {
       const errorMessage =
         error.response?.data?.message ||
@@ -111,8 +110,7 @@ const userSlice = createSlice({
       .addCase(verifyOTP.fulfilled, (state, action) => {
         state.loading = false;
         state.isVerified = true;
-        state.user = action.payload; // Assuming you want to store user info
-        // You might want to navigate to login or dashboard here
+        state.user = action.payload;
       })
       .addCase(verifyOTP.rejected, (state, action) => {
         state.loading = false;

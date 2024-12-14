@@ -27,3 +27,11 @@ export const cloudinaryLinks = {
     import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
   }/image/upload`,
 };
+
+export const signupMessages = {
+  EMAIL_EXISTS: "Email already in use",
+  OTP_EXPIRED: "The OTP has expired. Please request a new one.",
+  USER_VERFIED: "OTP verification successful. User is now active.",
+  USER_NOT_FOUND: "User not found! Try signing up again.",
+  WRONG_OTP: "The OTP you entered is incorrect.",
+};

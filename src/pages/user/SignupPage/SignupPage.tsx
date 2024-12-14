@@ -1,6 +1,6 @@
 import "./SignupPage.scss";
 import { signUpSchema } from "../../../schemas/signUpSchema";
-import { imageLinks } from "../../../utils/constants";
+import { imageLinks, signupMessages } from "../../../utils/constants";
 import { handleFileUpload, validateImageFile } from "../../../utils/fileUpload";
 import { SignUpFormValues } from "../../../entities/SignUpFormValues";
 import { SignUpDummy } from "../../../entities/SignUpDummy";
@@ -11,8 +11,6 @@ import React, { useRef, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate } from "react-router-dom";
-
-// Material-UI Imports
 import {
   Modal,
   Box,
@@ -38,6 +36,7 @@ const SignupPage: React.FC = () => {
     resolver: yupResolver(signUpSchema),
   });
 
+  const [errorMessage, setErrorMessage] = useState<string>("");
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [openOTPModal, setOpenOTPModal] = useState<boolean>(false);
   const [openErrorToast, setOpenErrorToast] = useState<boolean>(false);
@@ -80,15 +79,22 @@ const SignupPage: React.FC = () => {
     console.log("Form submitted:", data);
     setSubmittedEmail(data.email);
 
-    // Dispatch the signUpUser thunk
     const result = await dispatch(signUpUser(data));
 
     if (signUpUser.fulfilled.match(result)) {
-      // If signup is successful, open OTP modal
+      console.log("result", result);
       setOpenOTPModal(true);
     } else {
-      // If signup fails, show error toast
-      setOpenErrorToast(true);
+      if (result.payload === signupMessages.EMAIL_EXISTS) {
+        setErrorMessage("Email already in use");
+        setOpenErrorToast(true);
+      } else if (result.payload === signupMessages.WRONG_OTP) {
+        setErrorMessage(signupMessages.WRONG_OTP);
+      } else if (result.payload === signupMessages.OTP_EXPIRED) {
+        setErrorMessage(signupMessages.OTP_EXPIRED);
+      } else {
+        setErrorMessage("An error occurred. Please try again.");
+      }
     }
   };
 
@@ -100,12 +106,17 @@ const SignupPage: React.FC = () => {
           otp: otpValue,
         })
       );
-
       if (verifyOTP.fulfilled.match(result)) {
-        // OTP verified successfully, redirect to login or dashboard
         navigate("/login");
       } else {
-        // OTP verification failed
+        if (result.payload === signupMessages.WRONG_OTP) {
+          setErrorMessage(signupMessages.WRONG_OTP);
+        } else if (result.payload === signupMessages.OTP_EXPIRED) {
+          setErrorMessage(signupMessages.OTP_EXPIRED);
+        } else {
+          setErrorMessage("An error occurred during OTP verification");
+        }
+
         setOpenErrorToast(true);
         setOpenOTPModal(false);
       }
@@ -113,6 +124,8 @@ const SignupPage: React.FC = () => {
       console.log("SignupPage.tsx", err);
       setOpenErrorToast(true);
       setOpenOTPModal(false);
+    } finally {
+      setOtpValue("");
     }
   };
 
@@ -235,8 +248,6 @@ const SignupPage: React.FC = () => {
             </button>
           </form>
 
-          {error && <p className="error-message">{error}</p>}
-
           <p className="sign-up-label">
             Already have an account?
             <span className="sign-up-link" onClick={() => navigate("/login")}>
@@ -327,7 +338,7 @@ const SignupPage: React.FC = () => {
           severity="error"
           sx={{ width: "100%" }}
         >
-          {error || "An error occurred. Please try again."}
+          {errorMessage || error || "An error occurred. Please try again."}
         </Alert>
       </Snackbar>
     </div>
