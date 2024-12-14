@@ -43,7 +43,7 @@ const SignupPage: React.FC = () => {
   const [openErrorToast, setOpenErrorToast] = useState<boolean>(false);
   const [otpValue, setOtpValue] = useState<string>("");
   const [submittedEmail, setSubmittedEmail] = useState<string>("");
-  const [timer, setTimer] = useState<number>(60); // Timer state in seconds
+  const [timer, setTimer] = useState<number>(60);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -88,21 +88,21 @@ const SignupPage: React.FC = () => {
       handleOTPModalOpen();
     } else {
       if (result.payload === signupMessages.EMAIL_EXISTS) {
-        setErrorMessage("Email already in use");
+        setErrorMessage(signupMessages.EMAIL_EXISTS);
         setOpenErrorToast(true);
       } else if (result.payload === signupMessages.WRONG_OTP) {
         setErrorMessage(signupMessages.WRONG_OTP);
       } else if (result.payload === signupMessages.OTP_EXPIRED) {
         setErrorMessage(signupMessages.OTP_EXPIRED);
       } else {
-        setErrorMessage("An error occurred. Please try again.");
+        setErrorMessage(signupMessages.UNKOWN_ERROR);
       }
     }
   };
 
   const handleOTPSubmit = async () => {
     if (timer <= 0) {
-      setErrorMessage("OTP has expired. Please request a new one.");
+      setErrorMessage(signupMessages.OTP_EXPIRED);
       setOpenErrorToast(true);
       return;
     }
@@ -122,74 +122,72 @@ const SignupPage: React.FC = () => {
         } else if (result.payload === signupMessages.OTP_EXPIRED) {
           setErrorMessage(signupMessages.OTP_EXPIRED);
         } else {
-          setErrorMessage("An error occurred during OTP verification");
+          setErrorMessage(signupMessages.UNKOWN_ERROR);
         }
         setOpenErrorToast(true);
       }
     } catch (err) {
-      console.error("Error during OTP verification:", err);
-      setErrorMessage("An unexpected error occurred");
+      console.error(signupMessages.UNKOWN_ERROR, err);
+      setErrorMessage(signupMessages.UNKOWN_ERROR);
       setOpenErrorToast(true);
     } finally {
-      setOtpValue(""); // Clear OTP input field for retry
+      setOtpValue("");
     }
   };
 
   const handleResendOTP = async () => {
     if (!userDetails) {
-      setErrorMessage("No user details found. Please try again.");
+      setErrorMessage(signupMessages.USER_NOT_FOUND);
       setOpenErrorToast(true);
       return;
     }
 
     try {
-      await dispatch(signUpUser(userDetails)); // Reuse signUpUser thunk for resend OTP
-
-      // Reset the timer
-      setTimer(90); // Reset timer to 60 seconds
+      await dispatch(signUpUser(userDetails));
+      setTimer(90);
       if (timerRef.current) {
-        clearInterval(timerRef.current); // Clear the previous timer interval
+        clearInterval(timerRef.current);
       }
       timerRef.current = setInterval(() => {
         setTimer((prev) => {
           if (prev <= 1 && timerRef.current) {
-            clearInterval(timerRef.current); // Stop the timer at 0
+            clearInterval(timerRef.current);
             timerRef.current = null;
           }
           return prev - 1;
         });
-      }, 1000); // Update every second
+      }, 1000);
     } catch (err) {
-      console.error("Error resending OTP:", err);
-      setErrorMessage("Failed to resend OTP. Please try again.");
+      console.error(signupMessages.UNKOWN_ERROR, err);
+      setErrorMessage(signupMessages.RESEND_OTP_FAIL);
       setOpenErrorToast(true);
     }
   };
 
   const handleOTPModalOpen = () => {
     setOpenOTPModal(true);
-    setTimer(90); // Reset timer to 1 minute
+    setTimer(90);
     if (timerRef.current) {
-      clearInterval(timerRef.current); // Clear any existing timer
+      clearInterval(timerRef.current);
     }
     timerRef.current = setInterval(() => {
       setTimer((prev) => {
         if (prev <= 1 && timerRef.current) {
-          clearInterval(timerRef.current); // Stop the timer at 0
+          clearInterval(timerRef.current);
           timerRef.current = null;
         }
         return prev - 1;
       });
-    }, 1000); // Update every second
+    }, 1000);
   };
 
   const handleOTPModalClose = () => {
     setOpenOTPModal(false);
-    setOtpValue(""); // Clear OTP input field
-    setErrorMessage(""); // Clear any error messages
-    setTimer(90); // Reset the timer to its initial value
+    setOtpValue("");
+    setErrorMessage("");
+    setTimer(90);
     if (timerRef.current) {
-      clearInterval(timerRef.current); // Clear the timer interval
+      clearInterval(timerRef.current);
       timerRef.current = null;
     }
   };
@@ -376,7 +374,7 @@ const SignupPage: React.FC = () => {
           <Typography variant="body2" color="error" sx={{ mt: 1 }}>
             {timer > 0
               ? `OTP expires in ${timer} seconds`
-              : "OTP expired. Request a new one."}
+              : signupMessages.OTP_EXPIRED}
           </Typography>
           <Button
             variant="contained"

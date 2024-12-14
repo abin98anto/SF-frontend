@@ -21,7 +21,6 @@ export const signUpUser = createAsyncThunk(
   "user/sendOTP",
   async (userData: SignUpFormValues, { rejectWithValue }) => {
     try {
-      // console.log("first");
       const response = await axios.post(
         "http://localhost:3000/send-otp",
         userData
@@ -39,7 +38,9 @@ export const signUpUser = createAsyncThunk(
         return rejectWithValue(signupMessages.EMAIL_EXISTS);
       }
 
-      return rejectWithValue(error.response?.data || "Something went wrong");
+      return rejectWithValue(
+        error.response?.data || signupMessages.UNKOWN_ERROR
+      );
     }
   }
 );
@@ -50,14 +51,10 @@ export const verifyOTP = createAsyncThunk<
   { rejectValue: string }
 >("user/verifyOTP", async (payload, thunkAPI) => {
   try {
-    // console.log("payload", payload);
-
     const response = await axios.post(
       "http://localhost:3000/verify-otp",
       payload
     );
-
-    // console.log("verOTP", response);
 
     if (response.data.success) {
       return response.data;
@@ -67,18 +64,16 @@ export const verifyOTP = createAsyncThunk<
       } else if (response.data.message === "OTP expired") {
         return thunkAPI.rejectWithValue(signupMessages.OTP_EXPIRED);
       } else {
-        return thunkAPI.rejectWithValue("OTP verification failed");
+        return thunkAPI.rejectWithValue(signupMessages.OTP_VERIFICATION_FAIL);
       }
     }
   } catch (error) {
-    // console.log("errrororor", error);
     if (axios.isAxiosError(error)) {
       const errorMessage = error.response?.data?.error || error.message;
-
       return thunkAPI.rejectWithValue(errorMessage);
     }
 
-    return thunkAPI.rejectWithValue("An unexpected error occurred");
+    return thunkAPI.rejectWithValue(signupMessages.UNKOWN_ERROR);
   }
 });
 
@@ -87,7 +82,7 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     setUserInfo: (state, action) => {
-      state.userInfo = action.payload; // Action to set user details
+      state.userInfo = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -115,7 +110,7 @@ const userSlice = createSlice({
       })
       .addCase(verifyOTP.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || "OTP verification failed";
+        state.error = action.payload || signupMessages.OTP_VERIFICATION_FAIL;
         state.isVerified = false;
       });
   },

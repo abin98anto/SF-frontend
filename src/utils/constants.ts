@@ -34,4 +34,7 @@ export const signupMessages = {
   USER_VERFIED: "OTP verification successful. User is now active.",
   USER_NOT_FOUND: "User not found! Try signing up again.",
   WRONG_OTP: "The OTP you entered is incorrect.",
+  UNKOWN_ERROR: "An error occurred. Please try again.",
+  RESEND_OTP_FAIL: "Failed to resend OTP. Please try again.",
+  OTP_VERIFICATION_FAIL: "OTP verification failed",
 };
