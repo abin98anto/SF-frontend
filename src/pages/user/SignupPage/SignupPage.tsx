@@ -24,7 +24,7 @@ import {
 const SignupPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { loading, error } = useAppSelector((state) => state.user);
+  const { loading } = useAppSelector((state) => state.user);
 
   const {
     register,
@@ -36,13 +36,16 @@ const SignupPage: React.FC = () => {
     resolver: yupResolver(signUpSchema),
   });
 
+  const [userDetails, setUserDetails] = useState<SignUpFormValues | null>(null);
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [openOTPModal, setOpenOTPModal] = useState<boolean>(false);
   const [openErrorToast, setOpenErrorToast] = useState<boolean>(false);
   const [otpValue, setOtpValue] = useState<string>("");
   const [submittedEmail, setSubmittedEmail] = useState<string>("");
+  const [timer, setTimer] = useState<number>(60); // Timer state in seconds
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>
@@ -76,14 +79,13 @@ const SignupPage: React.FC = () => {
   };
 
   const onSubmit: SubmitHandler<SignUpFormValues> = async (data) => {
-    console.log("Form submitted:", data);
+    setUserDetails(data);
     setSubmittedEmail(data.email);
 
     const result = await dispatch(signUpUser(data));
 
     if (signUpUser.fulfilled.match(result)) {
-      console.log("result", result);
-      setOpenOTPModal(true);
+      handleOTPModalOpen();
     } else {
       if (result.payload === signupMessages.EMAIL_EXISTS) {
         setErrorMessage("Email already in use");
@@ -99,6 +101,12 @@ const SignupPage: React.FC = () => {
   };
 
   const handleOTPSubmit = async () => {
+    if (timer <= 0) {
+      setErrorMessage("OTP has expired. Please request a new one.");
+      setOpenErrorToast(true);
+      return;
+    }
+
     try {
       const result = await dispatch(
         verifyOTP({
@@ -116,16 +124,73 @@ const SignupPage: React.FC = () => {
         } else {
           setErrorMessage("An error occurred during OTP verification");
         }
-
         setOpenErrorToast(true);
-        setOpenOTPModal(false);
       }
     } catch (err) {
-      console.log("SignupPage.tsx", err);
+      console.error("Error during OTP verification:", err);
+      setErrorMessage("An unexpected error occurred");
       setOpenErrorToast(true);
-      setOpenOTPModal(false);
     } finally {
-      setOtpValue("");
+      setOtpValue(""); // Clear OTP input field for retry
+    }
+  };
+
+  const handleResendOTP = async () => {
+    if (!userDetails) {
+      setErrorMessage("No user details found. Please try again.");
+      setOpenErrorToast(true);
+      return;
+    }
+
+    try {
+      await dispatch(signUpUser(userDetails)); // Reuse signUpUser thunk for resend OTP
+
+      // Reset the timer
+      setTimer(90); // Reset timer to 60 seconds
+      if (timerRef.current) {
+        clearInterval(timerRef.current); // Clear the previous timer interval
+      }
+      timerRef.current = setInterval(() => {
+        setTimer((prev) => {
+          if (prev <= 1 && timerRef.current) {
+            clearInterval(timerRef.current); // Stop the timer at 0
+            timerRef.current = null;
+          }
+          return prev - 1;
+        });
+      }, 1000); // Update every second
+    } catch (err) {
+      console.error("Error resending OTP:", err);
+      setErrorMessage("Failed to resend OTP. Please try again.");
+      setOpenErrorToast(true);
+    }
+  };
+
+  const handleOTPModalOpen = () => {
+    setOpenOTPModal(true);
+    setTimer(90); // Reset timer to 1 minute
+    if (timerRef.current) {
+      clearInterval(timerRef.current); // Clear any existing timer
+    }
+    timerRef.current = setInterval(() => {
+      setTimer((prev) => {
+        if (prev <= 1 && timerRef.current) {
+          clearInterval(timerRef.current); // Stop the timer at 0
+          timerRef.current = null;
+        }
+        return prev - 1;
+      });
+    }, 1000); // Update every second
+  };
+
+  const handleOTPModalClose = () => {
+    setOpenOTPModal(false);
+    setOtpValue(""); // Clear OTP input field
+    setErrorMessage(""); // Clear any error messages
+    setTimer(90); // Reset the timer to its initial value
+    if (timerRef.current) {
+      clearInterval(timerRef.current); // Clear the timer interval
+      timerRef.current = null;
     }
   };
 
@@ -290,55 +355,62 @@ const SignupPage: React.FC = () => {
         </div>
       </div>
       <div className="signup-image">
-        <img src={imageLinks.ROCKET_SIGNUP} alt="Signup Illustration" />
+        <img src={imageLinks.ROCKET_SIGNUP} alt="Signup" />
       </div>
-
       {/* OTP Modal */}
-      <Modal
-        open={openOTPModal}
-        onClose={() => setOpenOTPModal(false)}
-        aria-labelledby="otp-modal-title"
-        aria-describedby="otp-modal-description"
-      >
+      <Modal open={openOTPModal} onClose={handleOTPModalClose}>
         <Box sx={otpModalStyle}>
-          <Typography id="otp-modal-title" variant="h6" component="h2">
+          <Typography variant="h6" component="h2">
             Enter OTP
           </Typography>
-          <Typography id="otp-modal-description" sx={{ mt: 2 }}>
-            Please check your email and enter the OTP sent to {submittedEmail}
+          <Typography sx={{ mt: 2 }}>
+            A verification code has been sent to {submittedEmail}.
           </Typography>
           <TextField
             fullWidth
             label="OTP"
-            variant="outlined"
-            margin="normal"
             value={otpValue}
             onChange={(e) => setOtpValue(e.target.value)}
+            sx={{ mt: 2 }}
           />
+          <Typography variant="body2" color="error" sx={{ mt: 1 }}>
+            {timer > 0
+              ? `OTP expires in ${timer} seconds`
+              : "OTP expired. Request a new one."}
+          </Typography>
           <Button
             variant="contained"
             color="primary"
             onClick={handleOTPSubmit}
             sx={{ mt: 2 }}
+            disabled={timer <= 0}
           >
             Verify OTP
           </Button>
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={handleResendOTP}
+            disabled={timer > 0}
+            sx={{
+              mt: 2,
+              textTransform: "none",
+              ...(timer > 0 && { opacity: 0.7, pointerEvents: "none" }),
+            }}
+          >
+            Resend OTP
+          </Button>
         </Box>
       </Modal>
-
-      {/* Error Snackbar */}
+      ;{/* Error Snackbar */}
       <Snackbar
         open={openErrorToast}
         autoHideDuration={6000}
         onClose={handleCloseErrorToast}
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
       >
-        <Alert
-          onClose={handleCloseErrorToast}
-          severity="error"
-          sx={{ width: "100%" }}
-        >
-          {errorMessage || error || "An error occurred. Please try again."}
+        <Alert onClose={handleCloseErrorToast} severity="error">
+          {errorMessage}
         </Alert>
       </Snackbar>
     </div>

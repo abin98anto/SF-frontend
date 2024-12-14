@@ -21,7 +21,7 @@ export const signUpUser = createAsyncThunk(
   "user/sendOTP",
   async (userData: SignUpFormValues, { rejectWithValue }) => {
     try {
-      console.log("first");
+      // console.log("first");
       const response = await axios.post(
         "http://localhost:3000/send-otp",
         userData
@@ -50,15 +50,14 @@ export const verifyOTP = createAsyncThunk<
   { rejectValue: string }
 >("user/verifyOTP", async (payload, thunkAPI) => {
   try {
-    const response = await axios.post<OTPVerificationResponse>(
+    // console.log("payload", payload);
+
+    const response = await axios.post(
       "http://localhost:3000/verify-otp",
-      payload,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
+      payload
     );
+
+    // console.log("verOTP", response);
 
     if (response.data.success) {
       return response.data;
@@ -72,11 +71,9 @@ export const verifyOTP = createAsyncThunk<
       }
     }
   } catch (error) {
+    // console.log("errrororor", error);
     if (axios.isAxiosError(error)) {
-      const errorMessage =
-        error.response?.data?.message ||
-        error.message ||
-        "An error occurred during OTP verification";
+      const errorMessage = error.response?.data?.error || error.message;
 
       return thunkAPI.rejectWithValue(errorMessage);
     }
@@ -88,7 +85,11 @@ export const verifyOTP = createAsyncThunk<
 const userSlice = createSlice({
   name: "user",
   initialState,
-  reducers: {},
+  reducers: {
+    setUserInfo: (state, action) => {
+      state.userInfo = action.payload; // Action to set user details
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(signUpUser.pending, (state) => {
@@ -97,7 +98,7 @@ const userSlice = createSlice({
       })
       .addCase(signUpUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.userInfo = action.payload;
+        state.userInfo = action.meta.arg;
       })
       .addCase(signUpUser.rejected, (state, action) => {
         state.loading = false;
