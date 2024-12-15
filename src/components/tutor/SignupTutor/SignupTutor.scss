@@ -1,0 +1,138 @@
+.signup-form {
+  .form-container {
+    width: 350px;
+    height: auto;
+    background-color: #fff;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    border-radius: 10px;
+    padding: 20px 30px;
+    box-sizing: border-box;
+  }
+
+  .title {
+    text-align: center;
+    margin: 10px 0 30px;
+    font-size: 28px;
+    font-weight: 800;
+  }
+
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin-bottom: 15px;
+  }
+
+  .input {
+    border-radius: 20px;
+    border: 1px solid #c0c0c0;
+    padding: 12px 15px;
+
+    &.error {
+      border-color: #ff0000;
+      box-shadow: 0 0 5px rgba(255, 0, 0, 0.3);
+    }
+  }
+
+  .error-message {
+    color: #ff0000;
+    font-size: 12px;
+    margin-top: -10px;
+    margin-bottom: 10px;
+    padding-left: 15px;
+    animation: fadeIn 0.3s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .sign-up-label {
+    font-size: 10px;
+    color: #747474;
+  }
+
+  .sign-up-link {
+    color: #ff6636;
+    cursor: pointer;
+    font-weight: 800;
+    text-decoration: underline;
+  }
+
+  .form-btn {
+    padding: 10px 15px;
+    border-radius: 20px;
+    border: none;
+    background: #ff6636;
+    color: white;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+
+    &:hover {
+      background: #ff4500;
+      transform: scale(1.05);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+      &::before {
+        transform: skewX(-45deg) translateX(150%);
+      }
+    }
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        to right,
+        transparent 0%,
+        rgba(255, 255, 255, 0.3) 50%,
+        transparent 100%
+      );
+      transform: skewX(-45deg) translateX(-150%);
+      transition: transform 0.6s ease;
+    }
+
+    &:active {
+      transform: scale(0.95);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      background: #ff5722;
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+      animation: pulse 0.5s;
+    }
+  }
+
+  .buttons-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+
+    .autofill-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+      background-color: #f0f0f0;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+
+      &:hover {
+        background-color: #e0e0e0;
+      }
+    }
+  }
+}
