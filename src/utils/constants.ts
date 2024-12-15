@@ -50,3 +50,14 @@ export const loginMessages = {
   LOGOUT_FAILED: "Logout failed",
   NETWORK_ERROR: "Network error occurred",
 };
+
+export const tutorSignupMessages = {
+  EMAIL_EXISTS: "Email already registered",
+  WRONG_OTP: "Invalid OTP entered",
+  OTP_EXPIRED: "OTP has expired",
+  OTP_VERIFICATION_FAIL: "OTP verification failed",
+  UNKNOWN_ERROR: "An unexpected error occurred",
+  PASSWORD_WEAK: "Password is too weak",
+  INVALID_EMAIL: "Invalid email format",
+  SIGNUP_SUCCESS: "Tutor signup successful",
+};

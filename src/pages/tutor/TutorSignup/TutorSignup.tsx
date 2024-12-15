@@ -1,11 +1,14 @@
 import "./TutorSignup.scss";
-import { signUpSchema } from "../../../schemas/signUpSchema";
+import { tutorSignUpSchema } from "../../../schemas/tutorSignUpSchema";
 import { imageLinks, signupMessages } from "../../../utils/constants";
 import { handleFileUpload, validatePdfFile } from "../../../utils/fileUpload";
-import { SignUpFormValues } from "../../../entities/SignUpFormValues";
-import { SignUpDummy } from "../../../entities/SignUpDummy";
+import { TutorSignUpFormValues } from "../../../entities/tutor/TutorSignUpFormValues";
+import { TutorSignUpDummy } from "../../../entities/tutor/TutorSignUpDummy";
 import { useAppDispatch, useAppSelector } from "../../../hooks/hooks";
-import { signUpUser, verifyOTP } from "../../../redux/features/userSlice";
+import {
+  signUpTutor,
+  verifyTutorOTP,
+} from "../../../redux/features/tutor/tutorSlice";
 
 import React, { useRef, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -24,7 +27,7 @@ import {
 const SignupPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { loading } = useAppSelector((state) => state.user);
+  const { loading } = useAppSelector((state) => state.tutor);
 
   const {
     register,
@@ -32,11 +35,12 @@ const SignupPage: React.FC = () => {
     setValue,
     getValues,
     formState: { errors },
-  } = useForm<SignUpFormValues>({
-    resolver: yupResolver(signUpSchema),
+  } = useForm<TutorSignUpFormValues>({
+    resolver: yupResolver(tutorSignUpSchema),
   });
 
-  const [userDetails, setUserDetails] = useState<SignUpFormValues | null>(null);
+  const [tutorDetails, setTutorDetails] =
+    useState<TutorSignUpFormValues | null>(null);
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [openOTPModal, setOpenOTPModal] = useState<boolean>(false);
@@ -56,11 +60,11 @@ const SignupPage: React.FC = () => {
       const result = await handleFileUpload(file, {
         onUploadStart: () => setIsUploading(true),
         onUploadEnd: () => setIsUploading(false),
-        validateFile: validatePdfFile, // Changed from validateImageFile
+        validateFile: validatePdfFile,
       });
 
       if (result.success && result.url) {
-        setValue("profilePicture", result.url);
+        setValue("resume", result.url);
       } else {
         alert(result.error || "Upload failed");
       }
@@ -69,8 +73,8 @@ const SignupPage: React.FC = () => {
 
   // Autofill function.
   const handleAutofill = () => {
-    const autofillData = SignUpDummy();
-    (Object.keys(autofillData) as Array<keyof SignUpFormValues>).forEach(
+    const autofillData = TutorSignUpDummy();
+    (Object.keys(autofillData) as Array<keyof TutorSignUpFormValues>).forEach(
       (key) => {
         const currentValue = getValues(key);
         if (!currentValue) {
@@ -81,15 +85,18 @@ const SignupPage: React.FC = () => {
   };
 
   // Form submission.
-  const onSubmit: SubmitHandler<SignUpFormValues> = async (data) => {
-    setUserDetails(data);
+  const onSubmit: SubmitHandler<TutorSignUpFormValues> = async (data) => {
+    setTutorDetails(data);
     setSubmittedEmail(data.email);
 
-    const result = await dispatch(signUpUser(data));
+    const result = await dispatch(signUpTutor(data));
 
-    if (signUpUser.fulfilled.match(result)) {
+    if (signUpTutor.fulfilled.match(result)) {
       handleOTPModalOpen();
     } else {
+      //   setErrorMessage(result.payload || signupMessages.UNKOWN_ERROR);
+      //   setErrorMessage(signupMessages.UNKOWN_ERROR);
+      //   setOpenErrorToast(true);
       if (result.payload === signupMessages.EMAIL_EXISTS) {
         setErrorMessage(signupMessages.EMAIL_EXISTS);
         setOpenErrorToast(true);
@@ -113,14 +120,19 @@ const SignupPage: React.FC = () => {
 
     try {
       const result = await dispatch(
-        verifyOTP({
+        verifyTutorOTP({
           email: submittedEmail,
           otp: otpValue,
         })
       );
-      if (verifyOTP.fulfilled.match(result)) {
-        navigate("/login");
+
+      console.log("resullllt", result);
+      if (verifyTutorOTP.fulfilled.match(result)) {
+        navigate("/tutor/login");
       } else {
+        // setErrorMessage(result.payload || signupMessages.UNKNOWN_ERROR);
+        // setErrorMessage(result.payload || signupMessages.UNKOWN_ERROR);
+        // setOpenErrorToast(true);
         if (result.payload === signupMessages.WRONG_OTP) {
           setErrorMessage(signupMessages.WRONG_OTP);
         } else if (result.payload === signupMessages.OTP_EXPIRED) {
@@ -141,14 +153,14 @@ const SignupPage: React.FC = () => {
 
   // Resend OTP.
   const handleResendOTP = async () => {
-    if (!userDetails) {
-      setErrorMessage(signupMessages.USER_NOT_FOUND);
+    if (!tutorDetails) {
       setOpenErrorToast(true);
+      setErrorMessage(signupMessages.USER_NOT_FOUND);
       return;
     }
 
     try {
-      await dispatch(signUpUser(userDetails));
+      await dispatch(signUpTutor(tutorDetails));
       setTimer(90);
       if (timerRef.current) {
         clearInterval(timerRef.current);
@@ -164,8 +176,8 @@ const SignupPage: React.FC = () => {
       }, 1000);
     } catch (err) {
       console.error(signupMessages.UNKOWN_ERROR, err);
-      setErrorMessage(signupMessages.RESEND_OTP_FAIL);
       setOpenErrorToast(true);
+      setErrorMessage(signupMessages.RESEND_OTP_FAIL);
     }
   };
 
@@ -231,12 +243,12 @@ const SignupPage: React.FC = () => {
             <form className="form" onSubmit={handleSubmit(onSubmit)}>
               {/* Username */}
               <input
-                {...register("username")}
-                className={`input ${errors.username ? "error" : ""}`}
+                {...register("name")}
+                className={`input ${errors.name ? "error" : ""}`}
                 placeholder="Name"
               />
-              {errors.username && (
-                <p className="error-message">{errors.username.message}</p>
+              {errors.name && (
+                <p className="error-message">{errors.name.message}</p>
               )}
 
               {/* Email */}
@@ -277,7 +289,7 @@ const SignupPage: React.FC = () => {
               {/* Resume upload. */}
               <input
                 type="file"
-                {...register("profilePicture")}
+                {...register("resume")}
                 ref={fileInputRef}
                 onChange={handleFileChange}
                 style={{ display: "none" }}
@@ -313,8 +325,8 @@ const SignupPage: React.FC = () => {
                   {isUploading ? "Uploading..." : "Upload Resume (PDF)"}
                 </div>
               </button>
-              {errors.profilePicture && (
-                <p className="error-message">{errors.profilePicture.message}</p>
+              {errors.resume && (
+                <p className="error-message">{errors.resume.message}</p>
               )}
 
               {/* Submit Button */}
@@ -325,7 +337,10 @@ const SignupPage: React.FC = () => {
 
             <p className="sign-up-label">
               Already have an account?
-              <span className="sign-up-link" onClick={() => navigate("/login")}>
+              <span
+                className="sign-up-link"
+                onClick={() => navigate("/tutor/login")}
+              >
                 Login
               </span>
             </p>

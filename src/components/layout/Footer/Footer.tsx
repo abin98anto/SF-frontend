@@ -1,5 +1,6 @@
 import { FaLinkedin, FaFacebook, FaTwitter } from "react-icons/fa";
 import "./Footer.scss";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -48,7 +49,7 @@ const Footer = () => {
                 <a href="/about">About</a>
               </li>
               <li>
-                <a href="/contact">Become a Instructor →</a>
+                <Link to={"/tutor/signup"}>Become a Instructor →</Link>
               </li>
               <li>
                 <a href="/courses">Courses</a>
