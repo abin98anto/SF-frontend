@@ -1,26 +1,30 @@
 .login-page {
   display: flex;
   justify-content: center;
-  height: 100vh; // Ensure full viewport height
+  height: 100vh;
   width: 100%;
   padding: 0;
 
   .login-form {
-    width: 50%; // Take up half the screen
+    width: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 20px;
+
     .form-container {
       width: 350px;
       max-width: 90%;
-      height: 400px;
-      max-height: 90%;
       background-color: #fff;
       box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
       border-radius: 10px;
       padding: 20px 30px;
       box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
     }
 
     .title {
@@ -33,14 +37,28 @@
     .form {
       display: flex;
       flex-direction: column;
-      gap: 18px;
-      margin-bottom: 15px;
+      gap: 5px;
+      width: 100%;
     }
 
     .input {
       border-radius: 20px;
       border: 1px solid #c0c0c0;
       padding: 12px 15px;
+      box-sizing: border-box;
+      transition: border-color 0.3s ease;
+
+      &.error {
+        border-color: red;
+      }
+    }
+
+    .error-message {
+      color: red;
+      font-size: 12px;
+      margin-top: 4px;
+      margin-left: 0;
+      font-weight: 600;
     }
 
     .page-link {
@@ -68,7 +86,6 @@
       transition: transform 0.3s ease, box-shadow 0.3s ease,
         background 0.3s ease;
 
-      // Hover effect
       &:hover {
         background: #ff4500;
         transform: scale(1.05);
@@ -79,7 +96,6 @@
         }
       }
 
-      // Hover shine effect
       &::before {
         content: "";
         position: absolute;
@@ -97,14 +113,12 @@
         transition: transform 0.6s ease;
       }
 
-      // Active/Click effect
       &:active {
         transform: scale(0.95);
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         background: #ff5722;
         transition: transform 0.1s ease, box-shadow 0.1s ease;
 
-        // Pulse animation on click
         animation: pulse 0.5s;
       }
     }
@@ -122,38 +136,39 @@
     }
 
     .buttons-container {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-      margin-top: 20px;
+      margin-top: 10px;
+      width: 100%;
+    }
 
-      .apple-login-button,
-      .google-login-button {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 10px 15px;
-        border-radius: 20px;
-        gap: 5px;
-        cursor: pointer;
+    .google-button {
+      width: 100%;
+      padding: 10px 15px;
+      border: 2px solid #747474; /* Visible border */
+      border-radius: 20px;
+      background-color: white; /* Ensure button stands out */
+      color: #747474;
+      text-align: center;
+      font-weight: bold;
+      cursor: pointer;
+      transition: border-color 0.3s, background-color 0.3s;
 
-        &.apple-login-button {
-          background-color: #000;
-          color: #fff;
-        }
+      &:hover {
+        border-color: #ff6636; /* Highlight on hover */
+        background-color: #f9f9f9;
+      }
 
-        &.google-login-button {
-          border: 2px solid #747474;
-        }
+      &:active {
+        background-color: #eeeeee;
       }
     }
   }
 
   .login-image {
-    width: 40%; // Take up half the screen
+    width: 40%;
     display: flex;
     justify-content: center;
     align-items: center;
+
     img {
       max-width: 100%;
       max-height: 100%;
@@ -161,7 +176,6 @@
     }
   }
 
-  /* Hide the original file input */
   input[type="file"] {
     display: none;
   }
@@ -182,5 +196,32 @@
     &:hover {
       background-color: #ff4500;
     }
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.autofill-btn {
+  margin-top: 10px;
+  padding: 10px 15px;
+  font-size: 14px;
+  color: #fff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: #0056b3;
   }
 }

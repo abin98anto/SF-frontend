@@ -38,3 +38,11 @@ export const signupMessages = {
   RESEND_OTP_FAIL: "Failed to resend OTP. Please try again.",
   OTP_VERIFICATION_FAIL: "OTP verification failed",
 };
+
+export const loginMessages = {
+  LOGIN_FAILED: "Login failed",
+  INVALID_CREDENTIALS: "Invalid email or password",
+  TOKEN_REFRESH_FAILED: "Failed to refresh token",
+  LOGOUT_FAILED: "Logout failed",
+  NETWORK_ERROR: "Network error occurred",
+};
