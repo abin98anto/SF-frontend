@@ -15,6 +15,7 @@ import TutorSignup from "./pages/tutor/TutorSignup/TutorSignup";
 import TutorLogin from "./pages/tutor/TutorLogin/TutorLogin";
 import TutorDashboard from "./pages/tutor/TutorDashboard/TutorDashboard";
 import AdminLogin from "./pages/admin/AdminLogin/AdminLogin";
+import AdminDashboad from "./pages/admin/AdminDashboard/AdminDashboad";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -37,6 +38,7 @@ const router = createBrowserRouter(
 
       <Route path="/admin">
         <Route path="login" element={<AdminLogin />} />
+        <Route path="dashboard" element={<AdminDashboad />} />
       </Route>
     </>
   )

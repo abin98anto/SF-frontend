@@ -44,6 +44,7 @@ export const loginAdmin = createAsyncThunk<
         },
       }
     );
+    console.log("respoonse", response);
 
     return {
       message: response.data.message,

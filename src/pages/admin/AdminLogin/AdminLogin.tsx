@@ -11,6 +11,7 @@ import {
 } from "../../../redux/features/Admin/adminAuthSlice";
 import { useNavigate } from "react-router-dom";
 import { AdminSignUpDummy } from "../../../entities/admin/AdminSignUpDummy";
+import { useState } from "react";
 
 const backgroundImage = imageLinks.BG_IMG;
 
@@ -19,6 +20,8 @@ const AdminLogin = () => {
   const navigate = useNavigate();
 
   const { loading } = useSelector((state: RootState) => state.adminLogin);
+
+  const [loginError, setLoginError] = useState<string | null>(null);
 
   const {
     register,
@@ -54,12 +57,15 @@ const AdminLogin = () => {
             password: data.password,
           })
         );
-
+        console.log("the result in adminlogin", result);
         if (loginAdmin.fulfilled.match(result)) {
           navigate("/admin/dashboard");
+        } else {
+          setLoginError("Invalid email or password.");
         }
       } catch (err) {
         console.error("Login failed", err);
+        setLoginError("An error occurred. Please try again.");
       }
     }
   };
@@ -117,6 +123,10 @@ const AdminLogin = () => {
               {loading ? "Logging in..." : "Log in"}
             </button>
           </form>
+
+          {/* Show login error message if credentials are invalid */}
+          {loginError && <p className="error-message">{loginError}</p>}
+
           <div className="buttons-container">
             <button
               type="button"
