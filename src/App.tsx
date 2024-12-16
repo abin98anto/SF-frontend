@@ -15,7 +15,7 @@ import TutorSignup from "./pages/tutor/TutorSignup/TutorSignup";
 import TutorLogin from "./pages/tutor/TutorLogin/TutorLogin";
 import TutorDashboard from "./pages/tutor/TutorDashboard/TutorDashboard";
 import AdminLogin from "./pages/admin/AdminLogin/AdminLogin";
-import AdminDashboad from "./pages/admin/AdminDashboard/AdminDashboad";
+import AdminDashboard from "./pages/admin/AdminDashboard/AdminDashboard";
 import AdminLayout from "./components/layout/admin-layout/admin-layout";
 import CourseManagement from "./pages/admin/CourseManagement/CourseManagement";
 import UserManagement from "./pages/admin/UserManagement/UserManagement";
@@ -45,7 +45,7 @@ const router = createBrowserRouter(
       <Route path="/admin">
         <Route path="login" element={<AdminLogin />} />
         <Route element={<AdminLayout />}>
-          <Route path="dashboard" element={<AdminDashboad />} />
+          <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="course-management" element={<CourseManagement />} />
           <Route path="tutor-management" element={<TutorManagement />} />
           <Route path="user-management" element={<UserManagement />} />

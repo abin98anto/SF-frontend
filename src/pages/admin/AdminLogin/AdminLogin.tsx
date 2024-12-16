@@ -91,8 +91,8 @@ const AdminLogin = () => {
           : undefined,
       }}
     >
-      <h1 className="heading">SkillForge</h1>
       <div className="login-overlay">
+      <h1 className="admin-login-heading">SkillForge</h1>
         <div className="login-form-container">
           <h1>Admin Login</h1>
           <form onSubmit={handleSubmit(onSubmit)} className="login-form">

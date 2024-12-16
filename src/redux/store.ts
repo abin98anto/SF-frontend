@@ -4,11 +4,13 @@ import userAuthReducer from "./features/userAuthSlice";
 import tutorReducer from "./features/tutor/tutorSlice";
 import tutorAuthReducer from "./features/tutor/tutorAuthSlice";
 import adminAuthReducer from "./features/Admin/adminAuthSlice";
+import userListReducer from "./features/userListSlice";
 
 const store = configureStore({
   reducer: {
     user: userReducer,
     userLogin: userAuthReducer,
+    userList: userListReducer,
     tutor: tutorReducer,
     tutorLogin: tutorAuthReducer,
     adminLogin: adminAuthReducer,
