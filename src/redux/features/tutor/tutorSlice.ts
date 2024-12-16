@@ -24,11 +24,14 @@ export const signUpTutor = createAsyncThunk(
         tutorData
       );
 
+      // console.log("alien", response);
+
       if (response.data.message === tutorSignupMessages.EMAIL_EXISTS) {
         return rejectWithValue(tutorSignupMessages.EMAIL_EXISTS);
       }
       return response.data;
     } catch (error: any) {
+      // console.log("erroror", error);
       if (
         axios.isAxiosError(error) &&
         error.response?.data?.message === tutorSignupMessages.EMAIL_EXISTS
@@ -54,7 +57,7 @@ export const verifyTutorOTP = createAsyncThunk<
       payload
     );
 
-    console.log("resssponse", response);
+    // console.log("resssponsee", response);
     if (response.data.success) {
       return response.data;
     } else {
@@ -78,6 +81,42 @@ export const verifyTutorOTP = createAsyncThunk<
   }
 });
 
+// In your TutorSignUpFormValues.ts or a similar file
+export interface UpdateTutorProfilePayload {
+  name?: string;
+  email?: string;
+  profilePicture?: string;
+  resume?: string;
+}
+
+export const updateTutorProfile = createAsyncThunk<
+  any,
+  UpdateTutorProfilePayload,
+  { rejectValue: string }
+>("tutor/updateProfile", async (profileData, thunkAPI) => {
+  try {
+    const response = await axios.put(
+      "http://localhost:3000/tutor/update-profile",
+      profileData,
+      {
+        withCredentials: true, // Important for sending cookies
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      const errorMessage = error.response?.data?.message || error.message;
+      return thunkAPI.rejectWithValue(errorMessage);
+    }
+
+    return thunkAPI.rejectWithValue("Failed to update profile");
+  }
+});
+
 const tutorSlice = createSlice({
   name: "tutor",
   initialState,
@@ -88,7 +127,6 @@ const tutorSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // SignUp cases
       .addCase(signUpTutor.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -101,7 +139,6 @@ const tutorSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
-      // Verify OTP cases
       .addCase(verifyTutorOTP.pending, (state) => {
         state.loading = true;
         state.error = null;

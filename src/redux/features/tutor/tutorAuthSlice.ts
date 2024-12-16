@@ -1,42 +1,43 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 
-export interface UserDetails {
+export interface tutorDetails {
   id?: string;
   email: string;
   name?: string;
   role?: string;
+  resume?: string;
   profilePicture?: string;
 }
 
-export interface LoginFormValues {
+export interface TutorLoginFormValues {
   email: string;
   password: string;
 }
 
-export interface UserState {
+export interface TutorState {
   loading: boolean;
   error: string;
-  userInfo: UserDetails | null;
+  tutorInfo: tutorDetails | null;
   isAuthenticated: boolean;
 }
 
-const initialState: UserState = {
+const initialState: TutorState = {
   loading: false,
   error: "",
-  userInfo: null,
+  tutorInfo: null,
   isAuthenticated: false,
 };
 
 // Correct type definition for createAsyncThunk
 export const loginUser = createAsyncThunk<
-  { message: string; user: UserDetails }, // Return type
-  LoginFormValues, // First argument type
+  { message: string; user: tutorDetails }, // Return type
+  TutorLoginFormValues, // First argument type
   { rejectValue: string } // ThunkAPI config type
->("user/login", async (credentials, thunkAPI) => {
+>("tutor/login", async (credentials, thunkAPI) => {
   try {
     const response = await axios.post(
-      "http://localhost:3000/login",
+      "http://localhost:3000/tutor/login",
       credentials,
       {
         withCredentials: true,
@@ -65,10 +66,10 @@ export const logoutUser = createAsyncThunk<
   void, // Return type
   void, // First argument type (none in this case)
   { rejectValue: string } // ThunkAPI config type
->("user/logout", async (_, thunkAPI) => {
+>("tutor/logout", async (_, thunkAPI) => {
   try {
     const response = await axios.post(
-      "http://localhost:3000/logout",
+      "http://localhost:3000/tutor/logout",
       {},
       { withCredentials: true }
     );
@@ -85,8 +86,8 @@ export const logoutUser = createAsyncThunk<
   }
 });
 
-const userLoginSlice = createSlice({
-  name: "userLogin",
+const tutorLoginSlice = createSlice({
+  name: "tutorLogin",
   initialState,
   reducers: {
     resetLoginState: (state) => {
@@ -94,9 +95,9 @@ const userLoginSlice = createSlice({
       state.error = "";
       state.isAuthenticated = false;
     },
-    updateUserInfo: (state, action: PayloadAction<Partial<UserDetails>>) => {
-      state.userInfo = state.userInfo
-        ? { ...state.userInfo, ...action.payload }
+    updateUserInfo: (state, action: PayloadAction<Partial<tutorDetails>>) => {
+      state.tutorInfo = state.tutorInfo
+        ? { ...state.tutorInfo, ...action.payload }
         : null;
     },
   },
@@ -111,13 +112,13 @@ const userLoginSlice = createSlice({
         state.loading = false;
         state.isAuthenticated = true;
         state.error = "";
-        state.userInfo = action.payload.user;
+        state.tutorInfo = action.payload.user;
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Login failed";
         state.isAuthenticated = false;
-        state.userInfo = null;
+        state.tutorInfo = null;
       })
       .addCase(logoutUser.pending, (state) => {
         state.loading = true;
@@ -126,7 +127,7 @@ const userLoginSlice = createSlice({
       .addCase(logoutUser.fulfilled, (state) => {
         state.loading = false;
         state.isAuthenticated = false;
-        state.userInfo = null;
+        state.tutorInfo = null;
         state.error = "";
       })
       .addCase(logoutUser.rejected, (state, action) => {
@@ -136,5 +137,5 @@ const userLoginSlice = createSlice({
   },
 });
 
-export const { resetLoginState, updateUserInfo } = userLoginSlice.actions;
-export default userLoginSlice.reducer;
+export const { resetLoginState, updateUserInfo } = tutorLoginSlice.actions;
+export default tutorLoginSlice.reducer;

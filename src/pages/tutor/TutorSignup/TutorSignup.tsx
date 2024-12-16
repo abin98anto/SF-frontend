@@ -94,18 +94,14 @@ const SignupPage: React.FC = () => {
     if (signUpTutor.fulfilled.match(result)) {
       handleOTPModalOpen();
     } else {
-      //   setErrorMessage(result.payload || signupMessages.UNKOWN_ERROR);
-      //   setErrorMessage(signupMessages.UNKOWN_ERROR);
-      //   setOpenErrorToast(true);
-      if (result.payload === signupMessages.EMAIL_EXISTS) {
+      const errorPayload = result.payload as { message?: string };
+
+      if (errorPayload?.message === signupMessages.EMAIL_EXISTS) {
         setErrorMessage(signupMessages.EMAIL_EXISTS);
-        setOpenErrorToast(true);
-      } else if (result.payload === signupMessages.WRONG_OTP) {
-        setErrorMessage(signupMessages.WRONG_OTP);
-      } else if (result.payload === signupMessages.OTP_EXPIRED) {
-        setErrorMessage(signupMessages.OTP_EXPIRED);
+        setOpenErrorToast(true); // Ensure this is always set for Snackbar
       } else {
         setErrorMessage(signupMessages.UNKOWN_ERROR);
+        setOpenErrorToast(true); // Show generic error if no specific match
       }
     }
   };
