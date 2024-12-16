@@ -16,6 +16,12 @@ import TutorLogin from "./pages/tutor/TutorLogin/TutorLogin";
 import TutorDashboard from "./pages/tutor/TutorDashboard/TutorDashboard";
 import AdminLogin from "./pages/admin/AdminLogin/AdminLogin";
 import AdminDashboad from "./pages/admin/AdminDashboard/AdminDashboad";
+import AdminLayout from "./components/layout/admin-layout/admin-layout";
+import CourseManagement from "./pages/admin/CourseManagement/CourseManagement";
+import UserManagement from "./pages/admin/UserManagement/UserManagement";
+import BatchManagement from "./pages/admin/BatchManagement/BatchManagement";
+import Ledger from "./pages/admin/Ledger/Ledger";
+import TutorManagement from "./pages/admin/TutorManagement/TutorManagement";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -38,7 +44,14 @@ const router = createBrowserRouter(
 
       <Route path="/admin">
         <Route path="login" element={<AdminLogin />} />
-        <Route path="dashboard" element={<AdminDashboad />} />
+        <Route element={<AdminLayout />}>
+          <Route path="dashboard" element={<AdminDashboad />} />
+          <Route path="course-management" element={<CourseManagement />} />
+          <Route path="tutor-management" element={<TutorManagement />} />
+          <Route path="user-management" element={<UserManagement />} />
+          <Route path="batch-management" element={<BatchManagement />} />
+          <Route path="ledger" element={<Ledger />} />
+        </Route>
       </Route>
     </>
   )

@@ -57,7 +57,7 @@ const AdminLogin = () => {
             password: data.password,
           })
         );
-        console.log("the result in adminlogin", result);
+        // console.log("the result in adminlogin", result);
         if (loginAdmin.fulfilled.match(result)) {
           navigate("/admin/dashboard");
         } else {
