@@ -24,6 +24,8 @@ export const imageLinks = {
     "https://res.cloudinary.com/dqjjysikb/image/upload/v1734270190/tutor-login_j1w7hq.png",
   TUTOR_LOGIN:
     "https://res.cloudinary.com/dqjjysikb/image/upload/v1734270190/tutor-signup_xclymv.png",
+  BG_IMG:
+    "https://res.cloudinary.com/dqjjysikb/image/upload/v1734331882/AdminLogin-img_cav517.png",
 };
 
 export const cloudinaryLinks = {

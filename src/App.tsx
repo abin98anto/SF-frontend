@@ -14,6 +14,7 @@ import LoginPage from "./pages/user/LoginPage/LoginPage";
 import TutorSignup from "./pages/tutor/TutorSignup/TutorSignup";
 import TutorLogin from "./pages/tutor/TutorLogin/TutorLogin";
 import TutorDashboard from "./pages/tutor/TutorDashboard/TutorDashboard";
+import AdminLogin from "./pages/admin/AdminLogin/AdminLogin";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -32,6 +33,10 @@ const router = createBrowserRouter(
         <Route path="signup" element={<TutorSignup />} />
         <Route path="login" element={<TutorLogin />} />
         <Route path="dashboard" element={<TutorDashboard />} />
+      </Route>
+
+      <Route path="/admin">
+        <Route path="login" element={<AdminLogin />} />
       </Route>
     </>
   )

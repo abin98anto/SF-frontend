@@ -56,8 +56,7 @@ const TutorLogin = () => {
         );
 
         if (loginUser.fulfilled.match(result)) {
-          // console.log("Tutor details stored:", result.payload.user);
-          navigate("/tutor/dashboard"); // Adjust route as needed
+          navigate("/tutor/dashboard");
         }
       } catch (err) {
         console.error("Login failed", err);
