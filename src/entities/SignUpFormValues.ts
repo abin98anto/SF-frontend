@@ -4,6 +4,7 @@ export interface SignUpFormValues {
   password: string;
   confirmPassword: string;
   profilePicture: string;
+  isActive?: boolean;
 }
 
 export interface OTPVerificationResponse {
@@ -19,7 +20,7 @@ export interface OTPVerificationPayload {
 export interface UserState {
   userInfo: SignUpFormValues | null;
   loading: boolean;
-  error: string | null;
+  error: string | null | undefined;
   isVerified?: boolean;
   user?: OTPVerificationResponse | null;
 }

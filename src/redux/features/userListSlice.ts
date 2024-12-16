@@ -3,11 +3,12 @@ import { RootState } from "../store";
 import axios from "axios";
 
 interface User {
-  id: string;
+  _id: string;
   name: string;
   email: string;
   role: string;
   profilePicture: string;
+  isActive?: boolean;
 }
 
 interface UserState {
@@ -36,7 +37,18 @@ export const fetchUsers = createAsyncThunk(
 export const userListSlice = createSlice({
   name: "userList",
   initialState,
-  reducers: {},
+  reducers: {
+    updateUserStatusLocally: (
+      state,
+      action: PayloadAction<{ userId: string; isActive: boolean }>
+    ) => {
+      const { userId, isActive } = action.payload;
+      const user = state.users.find((u) => u._id === userId);
+      if (user) {
+        user.isActive = isActive; // Update the user's status in the state
+      }
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchUsers.pending, (state) => {
@@ -56,5 +68,6 @@ export const userListSlice = createSlice({
 export const selectUsers = (state: RootState) => state.userList.users;
 export const selectUsersStatus = (state: RootState) => state.userList.status;
 export const selectUsersError = (state: RootState) => state.userList.error;
+export const { updateUserStatusLocally } = userListSlice.actions;
 
 export default userListSlice.reducer;

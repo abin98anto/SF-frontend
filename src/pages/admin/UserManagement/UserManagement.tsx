@@ -1,17 +1,16 @@
 import React, { useEffect } from "react";
-import { Table, Button, ConfigProvider, theme } from "antd";
-import { DeleteOutlined } from "@ant-design/icons";
+import { Table, ConfigProvider, Switch, message } from "antd";
 import { useAppDispatch, useAppSelector } from "../../../hooks/hooks";
 import {
   fetchUsers,
   selectUsers,
   selectUsersStatus,
   selectUsersError,
+  updateUserStatusLocally,
 } from "../../../redux/features/userListSlice";
 import "./UserManagement.scss";
 import ErrorBoundary from "../../../components/ErrorBoundary/ErrorBoundary";
-
-const { useToken } = theme;
+import { toggleUserStatus } from "../../../redux/features/userSlice";
 
 const UserManagement: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -19,24 +18,32 @@ const UserManagement: React.FC = () => {
   const status = useAppSelector(selectUsersStatus);
   const error = useAppSelector(selectUsersError);
 
-  const toISOStringDate = (date: string): string => {
-    return new Date(date)
-      .toISOString()
-      .split("T")[0]
-      .split("-")
-      .reverse()
-      .join("-"); // Converts to YYYY-MM-DD
-  };
-
-  const { token } = useToken();
-
   useEffect(() => {
-    // Dispatch fetchUsers on component mount
     dispatch(fetchUsers());
   }, [dispatch]);
 
-  const handleDeleteUser = (name: string) => {
-    console.log(`Delete user: ${name}`);
+  const handleToggleStatus = async (userId: string, isActive: boolean) => {
+    try {
+      const resultAction = await dispatch(toggleUserStatus(userId));
+      if (toggleUserStatus.fulfilled.match(resultAction)) {
+        const newStatus = isActive; // Use the 'checked' value directly
+        message.success(
+          `User status updated to ${newStatus ? "Active" : "Inactive"}`
+        );
+
+        // Update the state locally
+        dispatch(
+          updateUserStatusLocally({
+            userId,
+            isActive: newStatus,
+          })
+        );
+      } else {
+        message.error(resultAction.payload || "Failed to update user status");
+      }
+    } catch {
+      message.error("Unexpected error occurred");
+    }
   };
 
   const columns = [
@@ -54,24 +61,24 @@ const UserManagement: React.FC = () => {
       title: "Joining Date",
       dataIndex: "dateJoined",
       key: "dateJoined",
-      render: (date: string) => toISOStringDate(date),
+      render: (date: string) =>
+        new Date(date)
+          .toISOString()
+          .split("T")[0]
+          .split("-")
+          .reverse()
+          .join("-"),
     },
     {
-      title: "Actions",
-      key: "actions",
-      render: (_: any, record: { name: string }) => (
-        <Button
-          type="primary"
-          danger
-          icon={<DeleteOutlined />}
-          onClick={() => handleDeleteUser(record.name)}
-          style={{
-            backgroundColor: token.colorError,
-            borderColor: token.colorError,
-          }}
-        >
-          Delete
-        </Button>
+      title: "Status",
+      key: "status",
+      render: (_: any, record: { _id: string; isActive: boolean }) => (
+        <Switch
+          checked={record.isActive}
+          onChange={(checked) => handleToggleStatus(record._id, checked)}
+          checkedChildren="Active"
+          unCheckedChildren="Inactive"
+        />
       ),
     },
   ];
@@ -93,7 +100,15 @@ const UserManagement: React.FC = () => {
           {status === "failed" && <p>Error: {error}</p>}
           {status === "succeeded" && (
             <Table
-              dataSource={Array.isArray(users) ? users : []}
+              dataSource={
+                Array.isArray(users)
+                  ? users.map((user) => ({
+                      ...user,
+                      key: user._id,
+                      isActive: user.isActive ?? false, // Ensure isActive is boolean
+                    }))
+                  : []
+              }
               columns={columns}
               rowKey="_id"
             />

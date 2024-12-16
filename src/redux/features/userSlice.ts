@@ -77,6 +77,27 @@ export const verifyOTP = createAsyncThunk<
   }
 });
 
+// Async thunk to toggle user status
+export const toggleUserStatus = createAsyncThunk<
+  boolean,
+  string,
+  { rejectValue: string }
+>("user/toggleUserStatus", async (userId, { rejectWithValue }) => {
+  try {
+    const response = await axios.patch(
+      `http://localhost:3000/admin/toggle-status?id=${userId}`
+    );
+    return response.data.isActive; // Backend should return the new status
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to toggle user status"
+      );
+    }
+    return rejectWithValue("Failed to toggle user status");
+  }
+});
+
 const userSlice = createSlice({
   name: "user",
   initialState,
@@ -112,6 +133,20 @@ const userSlice = createSlice({
         state.loading = false;
         state.error = action.payload || signupMessages.OTP_VERIFICATION_FAIL;
         state.isVerified = false;
+      })
+      .addCase(toggleUserStatus.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(toggleUserStatus.fulfilled, (state, action) => {
+        state.loading = false;
+        if (state.userInfo) {
+          state.userInfo.isActive = action.payload;
+        }
+      })
+      .addCase(toggleUserStatus.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
   },
 });
