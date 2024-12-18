@@ -2,7 +2,7 @@ import "./SignupPage.scss";
 import { signUpSchema } from "../../../schemas/signUpSchema";
 import { imageLinks, signupMessages } from "../../../utils/constants";
 import { SignUpFormValues } from "../../../entities/user/SignUpFormValues";
-import { SignUpDummy } from "../../../entities/SignUpDummy";
+import { SignUpDummy } from "../../../entities/dummy/StudentDummy";
 import { useAppDispatch } from "../../../hooks/hooks";
 import {
   signUpUser,

@@ -1,5 +1,5 @@
-import CombinedStudy from "../../../components/user/CombinedStudy/CombinedStudy";
-import TopCategories from "../../../components/user/TopCategories/TopCategories";
+import CombinedStudy from "../../../components/user-landing/CombinedStudy/CombinedStudy";
+import TopCategories from "../../../components/user-landing/TopCategories/TopCategories";
 
 const LandingPage = () => {
   return (

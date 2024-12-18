@@ -1,6 +1,6 @@
 import "./TutorSignup.scss";
 import { imageLinks, signupMessages } from "../../../utils/constants";
-import { TutorSignUpDummy } from "../../../entities/tutor/TutorSignUpDummy";
+import { TutorSignUpDummy } from "../../../entities/dummy/TutorDummy";
 import { useAppDispatch } from "../../../hooks/hooks";
 import {
   signUpUser,

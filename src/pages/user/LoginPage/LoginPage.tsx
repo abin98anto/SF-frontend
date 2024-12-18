@@ -6,7 +6,7 @@ import { ThunkDispatch } from "@reduxjs/toolkit";
 
 import "./LoginPage.scss";
 import { imageLinks } from "../../../utils/constants";
-import { SignUpDummy } from "../../../entities/SignUpDummy";
+import { SignUpDummy } from "../../../entities/dummy/StudentDummy";
 import { RootState } from "../../../redux/store";
 import { loginUser } from "../../../redux/services/UserAuthServices";
 import { LoginFormValues } from "../../../entities/user/LoginFormValues";
