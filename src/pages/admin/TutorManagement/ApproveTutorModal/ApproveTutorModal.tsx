@@ -14,12 +14,12 @@ import {
 import ConfirmationModal from "./ConfirmModal";
 import { useAppDispatch } from "../../../../hooks/hooks";
 import { toggleUserStatus } from "../../../../redux/features/userSlice";
-import { TutorSignUpFormValues } from "../../../../entities/tutor/TutorSignUpFormValues";
+import { UserDetails } from "../../../../entities/user/UserDetails";
 
 interface ApproveTutorsModalProps {
   open: boolean;
   onClose: () => void;
-  pendingTutors: TutorSignUpFormValues[];
+  pendingTutors: UserDetails[];
 }
 
 const ApproveTutorsModal: React.FC<ApproveTutorsModalProps> = ({
@@ -29,17 +29,18 @@ const ApproveTutorsModal: React.FC<ApproveTutorsModalProps> = ({
 }) => {
   const dispatch = useAppDispatch();
   const [confirmationOpen, setConfirmationOpen] = React.useState(false);
-  const [selectedTutor, setSelectedTutor] =
-    React.useState<TutorSignUpFormValues | null>(null);
+  const [selectedTutor, setSelectedTutor] = React.useState<UserDetails | null>(
+    null
+  );
 
-  const handleVerify = (tutor: TutorSignUpFormValues) => {
+  const handleVerify = (tutor: UserDetails) => {
     setSelectedTutor(tutor);
     setConfirmationOpen(true);
   };
 
   const handleConfirmVerify = () => {
-    if (selectedTutor) {
-      dispatch(toggleUserStatus(selectedTutor._id));
+    if (typeof selectedTutor?.id === "string") {
+      dispatch(toggleUserStatus(selectedTutor.id));
     }
     setConfirmationOpen(false);
   };
@@ -63,7 +64,7 @@ const ApproveTutorsModal: React.FC<ApproveTutorsModalProps> = ({
               </TableHead>
               <TableBody>
                 {pendingTutors.map((tutor) => (
-                  <TableRow key={tutor._id}>
+                  <TableRow key={tutor.id}>
                     <TableCell>{tutor.name}</TableCell>
                     <TableCell>{tutor.email}</TableCell>
                     <TableCell>
