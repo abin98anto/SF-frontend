@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useAppDispatch } from "../../../hooks/hooks";
 import { useNavigate } from "react-router-dom";
-import { logoutAdmin } from "../../../redux/features/admin/adminAuthSlice"; // Adjust the import path as needed
+import { logoutAdmin } from "../../../redux/features/admin/adminAuthSlice";
 import {
   Button,
   Dialog,
@@ -17,7 +17,7 @@ interface LogoutModalProps {
 }
 
 export const LogoutModal: React.FC<LogoutModalProps> = ({ className }) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -35,7 +35,6 @@ export const LogoutModal: React.FC<LogoutModalProps> = ({ className }) => {
       navigate("/admin/login");
     } catch (error) {
       console.error("Logout failed", error);
-      // Optionally handle logout error (show toast, etc.)
     } finally {
       setIsOpen(false);
     }

@@ -1,4 +1,4 @@
-import { imageLinks } from "../../utils/constants";
+import { imageLinks } from "../../../utils/constants";
 
 const GoogleButton = () => {
   return (

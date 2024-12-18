@@ -3,8 +3,8 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { SignUpFormValues } from "../../../entities/user/SignUpFormValues";
 import { signUpSchema } from "../../../entities/schemas/signUpSchema";
-import FileUploadButton from "../../FileUploadButton/FileUploadButton";
-import GoogleButton from "../../google-btn/GoogleButton";
+import FileUploadButton from "../../buttons/FileUploadButton/FileUploadButton";
+import GoogleButton from "../../buttons/google-btn/GoogleButton";
 
 interface SignupFormProps {
   onSubmit: SubmitHandler<SignUpFormValues>;
@@ -39,13 +39,11 @@ const SignupForm: React.FC<SignupFormProps> = ({
       <form className="form" onSubmit={handleSubmit(onSubmit)}>
         {/* Username Input */}
         <input
-          {...register("username")}
-          className={`input ${errors.username ? "error" : ""}`}
+          {...register("name")}
+          className={`input ${errors.name ? "error" : ""}`}
           placeholder="Name"
         />
-        {errors.username && (
-          <p className="error-message">{errors.username.message}</p>
-        )}
+        {errors.name && <p className="error-message">{errors.name.message}</p>}
 
         {/* Email Input */}
         <input

@@ -9,4 +9,5 @@ export interface SignUpFormValues {
   isActive?: boolean;
   role?: UserRole;
   resume?: string;
+  profilePicture?: string;
 }

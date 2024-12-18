@@ -10,6 +10,7 @@ import { RootState } from "../../../redux/store";
 import { loginUser } from "../../../redux/services/UserAuthServices";
 import { LoginFormValues } from "../../../entities/user/LoginFormValues";
 import { StudentDummy } from "../../../entities/dummys/StudentDummy";
+import { validateEmail } from "../../../utils/form-checks/validateEmail";
 
 const LoginPage = () => {
   const dispatch = useDispatch<ThunkDispatch<RootState, any, any>>();
@@ -25,11 +26,6 @@ const LoginPage = () => {
     formState: { errors },
     getValues,
   } = useForm<LoginFormValues>();
-
-  const validateEmail = (email: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
 
   const onSubmit = async (data: LoginFormValues) => {
     setCustomError(null);

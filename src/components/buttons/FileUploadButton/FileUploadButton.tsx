@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { imageLinks } from "../../utils/constants";
+import { imageLinks } from "../../../utils/constants";
 
 interface FileUploadButtonProps {
   handleFileChange: (

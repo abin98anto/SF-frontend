@@ -1,6 +1,6 @@
 import React from "react";
 import { Modal, Box, Typography, Button, TextField } from "@mui/material";
-import { signupMessages } from "../../utils/constants";
+import { someMessages } from "../../../utils/constants";
 
 interface OTPModalProps {
   open: boolean;
@@ -55,7 +55,7 @@ const OTPModal: React.FC<OTPModalProps> = ({
         <Typography variant="body2" color="error" sx={{ mt: 1 }}>
           {timer > 0
             ? `OTP expires in ${timer} seconds`
-            : signupMessages.OTP_EXPIRED}
+            : someMessages.OTP_EXPIRED}
         </Typography>
         <Button
           variant="contained"

@@ -11,15 +11,12 @@ import {
   DialogTitle,
   Button,
 } from "@mui/material";
-// import { Logout } from "../../../redux/features/userAuthSlice";
 import { logoutUser } from "../../../redux/services/UserAuthServices";
 import "./Header.scss";
 import { RootState, AppDispatch } from "../../../redux/store";
-// import { UserRole } from "../../../entities/user/SignUpFormValues";
 import { UserRole } from "../../../entities/user/UserRole";
 
 const Header = () => {
-  // const navigate = Navigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [openLogoutModal, setOpenLogoutModal] = useState(false);
@@ -41,20 +38,16 @@ const Header = () => {
     setAnchorEl(null);
   };
 
-  // Open the logout confirmation modal
   const handleLogoutModalOpen = () => {
     setOpenLogoutModal(true);
   };
 
-  // Close the logout confirmation modal
   const handleLogoutModalClose = () => {
     setOpenLogoutModal(false);
   };
 
-  // Handle logout action after confirmation
   const handleLogout = () => {
     dispatch(logoutUser(UserRole.USER));
-    // Logout(UserRole.USER);
     setOpenLogoutModal(false);
     handleProfileMenuClose();
   };
