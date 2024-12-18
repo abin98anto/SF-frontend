@@ -1,10 +1,10 @@
 import { useState } from "react";
-import "./LoginPage.scss";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { ThunkDispatch } from "@reduxjs/toolkit";
 
+import "./LoginPage.scss";
 import { imageLinks } from "../../../utils/constants";
 import { SignUpDummy } from "../../../entities/SignUpDummy";
 import { RootState } from "../../../redux/store";
@@ -14,7 +14,7 @@ import { LoginFormValues } from "../../../entities/LoginFormValues";
 const LoginPage = () => {
   const dispatch = useDispatch<ThunkDispatch<RootState, any, any>>();
   const navigate = useNavigate();
-  const [customError, setCustomError] = useState<string | null>(null); // State for custom errors
+  const [customError, setCustomError] = useState<string | null>(null);
 
   const { loading, error } = useSelector((state: RootState) => state.userLogin);
 

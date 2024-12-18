@@ -1,5 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import axiosInstance from "../../utils/axiosConfig";
 
 // import { LoginFormValues, UserDetails } from "../features/userAuthSlice";
 import { UserRole } from "../../entities/SignUpFormValues";
@@ -13,16 +14,7 @@ export const loginUser = createAsyncThunk<
   { rejectValue: string }
 >("user/login", async (credentials, thunkAPI) => {
   try {
-    const response = await axios.post(
-      "http://localhost:3000/login",
-      credentials,
-      {
-        withCredentials: true,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const response = await axiosInstance.post("/login", credentials);
 
     return {
       message: response.data.message,
@@ -45,11 +37,7 @@ export const logoutUser = createAsyncThunk<
   { rejectValue: string }
 >("user/logout", async (role, thunkAPI) => {
   try {
-    const response = await axios.post(
-      "http://localhost:3000/logout",
-      { role },
-      { withCredentials: true }
-    );
+    const response = await axiosInstance.post("/logout", { role });
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {

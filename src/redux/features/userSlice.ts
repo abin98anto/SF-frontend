@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import axiosInstance from "../../utils/axiosConfig";
 
 import {
   OTPVerificationPayload,
@@ -21,10 +22,12 @@ export const signUpUser = createAsyncThunk(
   "user/sendOTP",
   async (userData: SignUpFormValues, { rejectWithValue }) => {
     try {
-      const response = await axios.post(
-        "http://localhost:3000/send-otp",
-        userData
-      );
+      // const response = await axios.post(
+      //   "http://localhost:3000/send-otp",
+      //   userData
+      // );
+
+      const response = await axiosInstance.post("/send-otp", userData);
 
       if (response.data.message === signupMessages.EMAIL_EXISTS) {
         return rejectWithValue(signupMessages.EMAIL_EXISTS);

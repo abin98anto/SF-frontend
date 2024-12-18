@@ -107,13 +107,13 @@ const SignupPage: React.FC = () => {
         } else if (result.payload === signupMessages.EMAIL_EXISTS) {
           setErrorMessage(signupMessages.EMAIL_EXISTS);
         } else {
-          console.log("boom")
+          // console.log("boom")
           setErrorMessage(signupMessages.UNKOWN_ERROR);
         }
         setOpenErrorToast(true);
       }
     } catch (err) {
-      console.log("hhdhd")
+      // console.log("hhdhd")
       console.error(signupMessages.UNKOWN_ERROR, err);
       setErrorMessage(signupMessages.UNKOWN_ERROR);
       setOpenErrorToast(true);
