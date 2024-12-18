@@ -3,11 +3,11 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import axiosInstance from "../../utils/axiosConfig";
 import { SignUpFormValues } from "../../entities/user/SignUpFormValues";
-import { signupMessages } from "../../utils/constants";
 import {
   OTPVerificationPayload,
   OTPVerificationResponse,
 } from "../../entities/user/OTPValues";
+import { someMessages } from "../../utils/constants";
 
 // Async thunk to handle sign-up
 export const signUpUser = createAsyncThunk(
@@ -16,21 +16,19 @@ export const signUpUser = createAsyncThunk(
     try {
       const response = await axiosInstance.post("/send-otp", userData);
 
-      if (response.data.message === signupMessages.EMAIL_EXISTS) {
-        return rejectWithValue(signupMessages.EMAIL_EXISTS);
+      if (response.data.message === someMessages.EMAIL_EXISTS) {
+        return rejectWithValue(someMessages.EMAIL_EXISTS);
       }
       return response.data;
     } catch (error: any) {
       if (
         axios.isAxiosError(error) &&
-        error.response?.data?.message === signupMessages.EMAIL_EXISTS
+        error.response?.data?.message === someMessages.EMAIL_EXISTS
       ) {
-        return rejectWithValue(signupMessages.EMAIL_EXISTS);
+        return rejectWithValue(someMessages.EMAIL_EXISTS);
       }
 
-      return rejectWithValue(
-        error.response?.data || signupMessages.UNKOWN_ERROR
-      );
+      return rejectWithValue(error.response?.data || someMessages.UNKOWN_ERROR);
     }
   }
 );
@@ -47,11 +45,11 @@ export const verifyOTP = createAsyncThunk<
       return response.data;
     } else {
       if (response.data.message === "Invalid OTP") {
-        return thunkAPI.rejectWithValue(signupMessages.WRONG_OTP);
+        return thunkAPI.rejectWithValue(someMessages.WRONG_OTP);
       } else if (response.data.message === "OTP expired") {
-        return thunkAPI.rejectWithValue(signupMessages.OTP_EXPIRED);
+        return thunkAPI.rejectWithValue(someMessages.OTP_EXPIRED);
       } else {
-        return thunkAPI.rejectWithValue(signupMessages.OTP_VERIFICATION_FAIL);
+        return thunkAPI.rejectWithValue(someMessages.OTP_VERIFICATION_FAIL);
       }
     }
   } catch (error) {
@@ -60,6 +58,6 @@ export const verifyOTP = createAsyncThunk<
       return thunkAPI.rejectWithValue(errorMessage);
     }
 
-    return thunkAPI.rejectWithValue(signupMessages.UNKOWN_ERROR);
+    return thunkAPI.rejectWithValue(someMessages.UNKOWN_ERROR);
   }
 });

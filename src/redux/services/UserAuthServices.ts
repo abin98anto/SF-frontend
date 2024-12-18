@@ -1,12 +1,10 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import axiosInstance from "../../utils/axiosConfig";
-
-// import { LoginFormValues, UserDetails } from "../features/userAuthSlice";
-// import { UserRole } from "../../entities/user/SignUpFormValues";
 import { UserDetails } from "../../entities/user/UserDetails";
 import { LoginFormValues } from "../../entities/user/LoginFormValues";
 import { UserRole } from "../../entities/user/UserRole";
+import { someMessages } from "../../utils/constants";
 
 // User Login.
 export const loginUser = createAsyncThunk<
@@ -24,11 +22,11 @@ export const loginUser = createAsyncThunk<
   } catch (error) {
     if (axios.isAxiosError(error)) {
       return thunkAPI.rejectWithValue(
-        error.response?.data?.message || error.message || "Login failed"
+        error.response?.data?.message || error.message
       );
     }
 
-    return thunkAPI.rejectWithValue("Login failed");
+    return thunkAPI.rejectWithValue(someMessages.LOGIN_FAILED);
   }
 });
 
@@ -44,10 +42,10 @@ export const logoutUser = createAsyncThunk<
   } catch (error) {
     if (axios.isAxiosError(error)) {
       return thunkAPI.rejectWithValue(
-        error.response?.data?.message || error.message || "Logout failed"
+        error.response?.data?.message || error.message
       );
     }
-    return thunkAPI.rejectWithValue("Logout failed");
+    return thunkAPI.rejectWithValue(someMessages.LOGIN_FAILED);
   }
 });
 
@@ -67,10 +65,10 @@ export const loginTutor = createAsyncThunk<
   } catch (error) {
     if (axios.isAxiosError(error)) {
       return thunkAPI.rejectWithValue(
-        error.response?.data?.message || error.message || "Login failed"
+        error.response?.data?.message || error.message
       );
     }
 
-    return thunkAPI.rejectWithValue("Login failed");
+    return thunkAPI.rejectWithValue(someMessages.LOGIN_FAILED);
   }
 });
