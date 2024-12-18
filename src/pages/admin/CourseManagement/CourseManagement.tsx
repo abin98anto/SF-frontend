@@ -1,17 +1,7 @@
-"use client";
-
 import { useState } from "react";
 import { Plus, Trash2, Pencil } from "lucide-react";
 import "./CourseManagement.scss";
-
-interface Course {
-  id: number;
-  name: string;
-  description: string;
-  status: "Active" | "Inactive";
-  currentUsers: number;
-  completion: number;
-}
+import { Course } from "../../../entities/courses/Course";
 
 const initialCourses: Course[] = [
   {
