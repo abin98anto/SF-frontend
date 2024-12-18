@@ -1,6 +1,5 @@
 import "./TutorSignup.scss";
-import { imageLinks, signupMessages } from "../../../utils/constants";
-import { TutorSignUpDummy } from "../../../entities/dummys/TutorDummy";
+import { imageLinks, someMessages } from "../../../utils/constants";
 import { useAppDispatch } from "../../../hooks/hooks";
 import {
   signUpUser,
@@ -23,6 +22,7 @@ import {
 import { signUpSchema } from "../../../schemas/signUpSchema";
 import { SignUpFormValues } from "../../../entities/user/SignUpFormValues";
 import { UserRole } from "../../../entities/user/UserRole";
+import { TutorDummy } from "../../../entities/dummys/TutorDummy";
 
 const SignupPage: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -51,7 +51,7 @@ const SignupPage: React.FC = () => {
 
   // Autofill function.
   const handleAutofill = () => {
-    const autofillData = TutorSignUpDummy();
+    const autofillData = TutorDummy();
     (Object.keys(autofillData) as Array<keyof SignUpFormValues>).forEach(
       (key) => {
         const currentValue = getValues(key);
@@ -70,20 +70,20 @@ const SignupPage: React.FC = () => {
       setTutorDetails(formData);
       const result = await dispatch(signUpUser(formData)).unwrap();
 
-      if (result.message === signupMessages.OTP_SENT) {
+      if (result.message === someMessages.OTP_SENT) {
         handleOTPModalOpen();
-      } else if (result.message === signupMessages.EMAIL_EXISTS) {
-        setErrorMessage(signupMessages.EMAIL_EXISTS);
+      } else if (result.message === someMessages.EMAIL_EXISTS) {
+        setErrorMessage(someMessages.EMAIL_EXISTS);
         setOpenErrorToast(true);
       } else {
-        setErrorMessage(signupMessages.UNKOWN_ERROR);
+        setErrorMessage(someMessages.UNKOWN_ERROR);
         setOpenErrorToast(true);
       }
     } catch (err) {
-      console.error(signupMessages.UNKOWN_ERROR, err);
-      err === signupMessages.EMAIL_EXISTS
-        ? setErrorMessage(signupMessages.EMAIL_EXISTS)
-        : setErrorMessage(signupMessages.UNKOWN_ERROR);
+      console.error(someMessages.UNKOWN_ERROR, err);
+      err === someMessages.EMAIL_EXISTS
+        ? setErrorMessage(someMessages.EMAIL_EXISTS)
+        : setErrorMessage(someMessages.UNKOWN_ERROR);
 
       setOpenErrorToast(true);
     }
@@ -92,7 +92,7 @@ const SignupPage: React.FC = () => {
   // OTP submission.
   const handleOTPSubmit = async () => {
     if (timer <= 0) {
-      setErrorMessage(signupMessages.OTP_EXPIRED);
+      setErrorMessage(someMessages.OTP_EXPIRED);
       setOpenErrorToast(true);
       return;
     }
@@ -105,22 +105,21 @@ const SignupPage: React.FC = () => {
         })
       );
 
-      console.log("resullllt", result);
       if (verifyOTP.fulfilled.match(result)) {
         navigate("/tutor/login");
       } else {
-        if (result.payload === signupMessages.WRONG_OTP) {
-          setErrorMessage(signupMessages.WRONG_OTP);
-        } else if (result.payload === signupMessages.OTP_EXPIRED) {
-          setErrorMessage(signupMessages.OTP_EXPIRED);
+        if (result.payload === someMessages.WRONG_OTP) {
+          setErrorMessage(someMessages.WRONG_OTP);
+        } else if (result.payload === someMessages.OTP_EXPIRED) {
+          setErrorMessage(someMessages.OTP_EXPIRED);
         } else {
-          setErrorMessage(signupMessages.UNKOWN_ERROR);
+          setErrorMessage(someMessages.UNKOWN_ERROR);
         }
         setOpenErrorToast(true);
       }
     } catch (err) {
-      console.error(signupMessages.UNKOWN_ERROR, err);
-      setErrorMessage(signupMessages.UNKOWN_ERROR);
+      console.error(someMessages.UNKOWN_ERROR, err);
+      setErrorMessage(someMessages.UNKOWN_ERROR);
       setOpenErrorToast(true);
     } finally {
       setOtpValue("");
@@ -131,7 +130,7 @@ const SignupPage: React.FC = () => {
   const handleResendOTP = async () => {
     if (!tutorDetails) {
       setOpenErrorToast(true);
-      setErrorMessage(signupMessages.USER_NOT_FOUND);
+      setErrorMessage(someMessages.USER_NOT_FOUND);
       return;
     }
 
@@ -151,9 +150,9 @@ const SignupPage: React.FC = () => {
         });
       }, 1000);
     } catch (err) {
-      console.error(signupMessages.UNKOWN_ERROR, err);
+      console.error(someMessages.UNKOWN_ERROR, err);
       setOpenErrorToast(true);
-      setErrorMessage(signupMessages.RESEND_OTP_FAIL);
+      setErrorMessage(someMessages.RESEND_OTP_FAIL);
     }
   };
 
@@ -308,7 +307,7 @@ const SignupPage: React.FC = () => {
             <Typography variant="body2" color="error" sx={{ mt: 1 }}>
               {timer > 0
                 ? `OTP expires in ${timer} seconds`
-                : signupMessages.OTP_EXPIRED}
+                : someMessages.OTP_EXPIRED}
             </Typography>
             <Button
               variant="contained"
