@@ -7,7 +7,7 @@ import { signupMessages } from "../../utils/constants";
 import {
   OTPVerificationPayload,
   OTPVerificationResponse,
-} from "../../entities/user/OTP";
+} from "../../entities/user/OTPValues";
 
 // Async thunk to handle sign-up
 export const signUpUser = createAsyncThunk(

@@ -6,7 +6,7 @@ import axios from "axios";
 import { SignUpFormValues } from "../../entities/user/SignUpFormValues";
 import { signupMessages } from "../../utils/constants";
 import { signUpUser, verifyOTP } from "../services/UserSignupServices";
-import { OTPVerificationResponse } from "../../entities/user/OTP";
+import { OTPVerificationResponse } from "../../entities/user/OTPValues";
 
 export interface UserState {
   userInfo: SignUpFormValues | null;

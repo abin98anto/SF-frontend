@@ -4,7 +4,7 @@ import axios from "axios";
 import { tutorSignupMessages } from "../../../utils/constants";
 import { signUpUser, verifyOTP } from "../../services/UserSignupServices";
 import { SignUpFormValues } from "../../../entities/user/SignUpFormValues";
-import { OTPVerificationResponse } from "../../../entities/user/OTP";
+import { OTPVerificationResponse } from "../../../entities/user/OTPValues";
 
 export interface TutorState {
   tutorInfo: SignUpFormValues | null;
