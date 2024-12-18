@@ -30,10 +30,12 @@ import { UserRole } from "../../../entities/user/UserRole";
 
 const TutorDashboard = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const tutorInfo = useSelector(
-    (state: RootState) => state.tutorLogin.tutorInfo
-  );
+  const tutorInfo = useSelector((state: RootState) => {
+    console.log(state);
+    return state.userLogin.tutorInfo;
+  });
 
+  console.log("tutt details");
   // Modal state
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();

@@ -22,6 +22,9 @@ import UserManagement from "./pages/admin/UserManagement/UserManagement";
 import BatchManagement from "./pages/admin/BatchManagement/BatchManagement";
 import Ledger from "./pages/admin/Ledger/Ledger";
 import TutorManagement from "./pages/admin/TutorManagement/TutorManagement";
+import { PersistGate } from "redux-persist/integration/react";
+import store, { persistor } from "./redux/store";
+import { Provider } from "react-redux";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -58,7 +61,13 @@ const router = createBrowserRouter(
 );
 
 function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <RouterProvider router={router} />
+      </PersistGate>
+    </Provider>
+  );
 }
 
 export default App;

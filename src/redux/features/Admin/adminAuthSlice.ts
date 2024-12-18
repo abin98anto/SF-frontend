@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
+import { LoginFormValues } from "../../../entities/user/LoginFormValues";
 
 export interface adminDetails {
   id?: string;
@@ -8,10 +9,10 @@ export interface adminDetails {
   profilePicture?: string;
 }
 
-export interface AdminLoginFormValues {
-  email: string;
-  password: string;
-}
+// export interface AdminLoginFormValues {
+//   email: string;
+//   password: string;
+// }
 
 export interface AdminState {
   loading: boolean;
@@ -30,7 +31,7 @@ const initialState: AdminState = {
 // Correct type definition for createAsyncThunk
 export const loginAdmin = createAsyncThunk<
   { message: string; user: adminDetails },
-  AdminLoginFormValues,
+  LoginFormValues,
   { rejectValue: string }
 >("admin/login", async (credentials, thunkAPI) => {
   try {
@@ -63,7 +64,7 @@ export const loginAdmin = createAsyncThunk<
 export const logoutAdmin = createAsyncThunk<
   void,
   void,
-  { rejectValue: string } 
+  { rejectValue: string }
 >("tutor/logout", async (_, thunkAPI) => {
   try {
     const response = await axios.post(

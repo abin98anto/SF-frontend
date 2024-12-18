@@ -8,7 +8,7 @@ import "./TutorLogin.scss";
 import { imageLinks } from "../../../utils/constants";
 import { TutorSignUpDummy } from "../../../entities/tutor/TutorSignUpDummy";
 import { RootState } from "../../../redux/store";
-import { loginUser } from "../../../redux/services/UserAuthServices";
+import { loginTutor } from "../../../redux/services/UserAuthServices";
 import { LoginFormValues } from "../../../entities/user/LoginFormValues";
 
 const TutorLogin = () => {
@@ -16,9 +16,7 @@ const TutorLogin = () => {
   const navigate = useNavigate();
   const [customError, setCustomError] = useState<string | null>(null);
 
-  const { loading, error } = useSelector(
-    (state: RootState) => state.tutorLogin
-  );
+  const { loading, error } = useSelector((state: RootState) => state.userLogin);
 
   const {
     register,
@@ -51,7 +49,7 @@ const TutorLogin = () => {
     if (Object.keys(newErrors).length === 0) {
       try {
         const result = await dispatch(
-          loginUser({
+          loginTutor({
             email: data.email,
             password: data.password,
           })
@@ -59,7 +57,7 @@ const TutorLogin = () => {
 
         // console.log("after login, ", result);
 
-        if (loginUser.fulfilled.match(result)) {
+        if (loginTutor.fulfilled.match(result)) {
           const user = result.payload.user;
           if (user.role === "tutor") {
             navigate("/tutor/dashboard");

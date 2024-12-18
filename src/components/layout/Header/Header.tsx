@@ -103,7 +103,7 @@ const Header = () => {
             </nav>
 
             {/* Mobile Authentication Section */}
-            {!isAuthenticated ? (
+            {!isAuthenticated || !userInfo ? (
               <div className="mobile-auth">
                 <Link to="/login" className="login" onClick={toggleMenu}>
                   Login
@@ -139,7 +139,7 @@ const Header = () => {
         </nav>
 
         {/* Authentication/Profile Section */}
-        {!isAuthenticated ? (
+        {!isAuthenticated || !userInfo ? (
           <div className="auth">
             <Link to="/login" className="login">
               Login →

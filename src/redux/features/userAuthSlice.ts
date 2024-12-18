@@ -1,7 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 // import axios from "axios";
 // import { UserRole } from "../../entities/SignUpFormValues";
-import { loginUser, logoutUser } from "../services/UserAuthServices";
+import {
+  loginTutor,
+  loginUser,
+  logoutUser,
+} from "../services/UserAuthServices";
 import { UserDetails } from "../../entities/user/UserDetails";
 
 // export interface UserDetails {
@@ -21,6 +25,7 @@ export interface UserState {
   loading: boolean;
   error: string;
   userInfo: UserDetails | null;
+  tutorInfo: UserDetails | null;
   isAuthenticated: boolean;
 }
 
@@ -28,6 +33,7 @@ const initialState: UserState = {
   loading: false,
   error: "",
   userInfo: null,
+  tutorInfo: null,
   isAuthenticated: false,
 };
 
@@ -135,36 +141,57 @@ const userLoginSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // User Login
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
         state.error = "";
-        state.isAuthenticated = false;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
         state.isAuthenticated = true;
         state.error = "";
-        state.userInfo = action.payload.user;
+        state.userInfo = action.payload.user; // Update only userInfo
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || "Login failed";
-        state.isAuthenticated = false;
-        state.userInfo = null;
+        state.error = action.payload || "User login failed";
       })
-      .addCase(logoutUser.pending, (state) => {
+
+      // Tutor Login
+      .addCase(loginTutor.pending, (state) => {
         state.loading = true;
         state.error = "";
       })
+      .addCase(loginTutor.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isAuthenticated = true;
+        state.error = "";
+        state.tutorInfo = action.payload.user; // Update only tutorInfo
+      })
+      .addCase(loginTutor.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Tutor login failed";
+      })
+
+      // User Logout
+      .addCase(logoutUser.pending, (state) => {
+        state.loading = true;
+      })
       .addCase(logoutUser.fulfilled, (state) => {
         state.loading = false;
-        state.isAuthenticated = false;
-        state.userInfo = null;
         state.error = "";
+        state.userInfo = null; // Clear userInfo only
+        state.isAuthenticated = !!state.tutorInfo; // Preserve tutor auth state
       })
       .addCase(logoutUser.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || "Logout failed";
+        state.error = action.payload || "User logout failed";
+      })
+
+      // Handle Tutor Logout (optional: create a separate logout for tutors)
+      .addCase("tutor/logout", (state) => {
+        state.tutorInfo = null; // Clear tutorInfo
+        state.isAuthenticated = !!state.userInfo; // Preserve user auth state
       });
   },
 });
