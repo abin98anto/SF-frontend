@@ -58,4 +58,5 @@ export const someMessages = {
   UPLOAD_SUCESS: "Upload successfull!",
   UPLOAD_FAIL: "Failed to upload resume",
   TUTOR_ONLY: "Only tutors are allowed to log in.",
+  USER_ONLY: "Tutors and Admins are not allowed.",
 };

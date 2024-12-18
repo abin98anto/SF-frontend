@@ -5,11 +5,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { ThunkDispatch } from "@reduxjs/toolkit";
 
 import "./LoginPage.scss";
-import { imageLinks } from "../../../utils/constants";
-import { SignUpDummy } from "../../../entities/dummys/StudentDummy";
+import { imageLinks, someMessages } from "../../../utils/constants";
 import { RootState } from "../../../redux/store";
 import { loginUser } from "../../../redux/services/UserAuthServices";
 import { LoginFormValues } from "../../../entities/user/LoginFormValues";
+import { StudentDummy } from "../../../entities/dummys/StudentDummy";
 
 const LoginPage = () => {
   const dispatch = useDispatch<ThunkDispatch<RootState, any, any>>();
@@ -32,18 +32,18 @@ const LoginPage = () => {
   };
 
   const onSubmit = async (data: LoginFormValues) => {
-    setCustomError(null); // Reset custom error before submission
+    setCustomError(null);
 
     const newErrors: { email?: string; password?: string } = {};
 
     if (!data.email.trim()) {
-      newErrors.email = "Email is required.";
+      newErrors.email = someMessages.EMAIL_REQUIRED;
     } else if (!validateEmail(data.email)) {
-      newErrors.email = "Invalid email format.";
+      newErrors.email = someMessages.INVALID_EMAIL;
     }
 
     if (!data.password.trim()) {
-      newErrors.password = "Password is required.";
+      newErrors.password = someMessages.PASS_REQUIRED;
     }
 
     if (Object.keys(newErrors).length === 0) {
@@ -56,24 +56,24 @@ const LoginPage = () => {
         );
 
         if (loginUser.fulfilled.match(result)) {
-          const user = result.payload.user; // Extract user details
+          const user = result.payload.user;
           if (user.role === "user") {
-            navigate("/"); // Navigate to the home page
+            navigate("/");
           } else {
-            setCustomError("Tutors are not allowed."); // Set custom error
+            setCustomError(someMessages.USER_ONLY);
           }
         } else {
-          setCustomError(result.payload || "Login failed"); // Handle login failure
+          setCustomError(result.payload || someMessages.LOGIN_FAILED);
         }
       } catch (err) {
-        console.error("Login failed", err);
-        setCustomError("An unexpected error occurred. Please try again."); // Handle unexpected errors
+        console.error(someMessages.LOGIN_FAILED, err);
+        setCustomError(someMessages.UNKNOWN_ERROR);
       }
     }
   };
 
   const handleAutofill = () => {
-    const autofillData = SignUpDummy();
+    const autofillData = StudentDummy();
 
     if (!getValues("email")) {
       setValue("email", autofillData.email);
@@ -97,7 +97,7 @@ const LoginPage = () => {
 
           <form className="form" onSubmit={handleSubmit(onSubmit)}>
             <input
-              {...register("email", { required: "Email is required." })}
+              {...register("email", { required: someMessages.EMAIL_REQUIRED})}
               className={`input ${errors.email ? "error" : ""}`}
               placeholder="Email"
               disabled={loading}
@@ -107,7 +107,7 @@ const LoginPage = () => {
             )}
 
             <input
-              {...register("password", { required: "Password is required." })}
+              {...register("password", { required: someMessages.PASS_REQUIRED })}
               type="password"
               className={`input ${errors.password ? "error" : ""}`}
               placeholder="Password"
