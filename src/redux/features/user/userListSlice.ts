@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { RootState } from "../store";
+import { RootState } from "../../store";
 import axios from "axios";
+import axiosInstance from "../../../utils/axiosConfig";
 
 interface User {
   _id: string;
@@ -26,9 +27,7 @@ const initialState: UserState = {
 export const fetchUsers = createAsyncThunk(
   "users/fetchUsers",
   async (): Promise<User[]> => {
-    const response = await axios.get<User[]>(
-      "http://localhost:3000/admin/users"
-    );
+    const response = await axiosInstance.get<User[]>("/admin/users");
     return response.data;
   }
 );
