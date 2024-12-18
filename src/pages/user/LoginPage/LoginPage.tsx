@@ -1,3 +1,4 @@
+import { useState } from "react";
 import "./LoginPage.scss";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -7,18 +8,15 @@ import { ThunkDispatch } from "@reduxjs/toolkit";
 import { imageLinks } from "../../../utils/constants";
 import { SignUpDummy } from "../../../entities/SignUpDummy";
 import { RootState } from "../../../redux/store";
-import {
-  loginUser,
-  LoginFormValues,
-} from "../../../redux/features/userAuthSlice";
+import { loginUser } from "../../../redux/services/UserAuthServices";
+import { LoginFormValues } from "../../../entities/LoginFormValues";
 
 const LoginPage = () => {
   const dispatch = useDispatch<ThunkDispatch<RootState, any, any>>();
   const navigate = useNavigate();
+  const [customError, setCustomError] = useState<string | null>(null); // State for custom errors
 
-  const { loading, error } = useSelector(
-    (state: RootState) => state.userLogin
-  );
+  const { loading, error } = useSelector((state: RootState) => state.userLogin);
 
   const {
     register,
@@ -34,6 +32,8 @@ const LoginPage = () => {
   };
 
   const onSubmit = async (data: LoginFormValues) => {
+    setCustomError(null); // Reset custom error before submission
+
     const newErrors: { email?: string; password?: string } = {};
 
     if (!data.email.trim()) {
@@ -56,10 +56,18 @@ const LoginPage = () => {
         );
 
         if (loginUser.fulfilled.match(result)) {
-          navigate("/");
+          const user = result.payload.user; // Extract user details
+          if (user.role === "user") {
+            navigate("/"); // Navigate to the home page
+          } else {
+            setCustomError("Tutors are not allowed."); // Set custom error
+          }
+        } else {
+          setCustomError(result.payload || "Login failed"); // Handle login failure
         }
       } catch (err) {
         console.error("Login failed", err);
+        setCustomError("An unexpected error occurred. Please try again."); // Handle unexpected errors
       }
     }
   };
@@ -81,6 +89,9 @@ const LoginPage = () => {
       <div className="login-form">
         <div className="form-container">
           <p className="title">Welcome back</p>
+
+          {/* Display custom error if it exists */}
+          {customError && <p className="error-message">{customError}</p>}
 
           {error && <p className="error-message">{error}</p>}
 

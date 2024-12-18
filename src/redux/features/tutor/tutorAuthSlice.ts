@@ -1,24 +1,27 @@
-import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import axios from "axios";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+// import axios from "axios";
+import { UserDetails } from "../../../entities/UserDetails";
+// import { LoginFormValues } from "../../../entities/LoginFormValues";
+import { loginUser, logoutUser } from "../../services/UserAuthServices";
 
-export interface tutorDetails {
-  id?: string;
-  email: string;
-  name?: string;
-  role?: string;
-  resume?: string;
-  profilePicture?: string;
-}
+// export interface tutorDetails {
+//   id?: string;
+//   email: string;
+//   name?: string;
+//   role?: string;
+//   resume?: string;
+//   profilePicture?: string;
+// }
 
-export interface TutorLoginFormValues {
-  email: string;
-  password: string;
-}
+// export interface TutorLoginFormValues {
+//   email: string;
+//   password: string;
+// }
 
 export interface TutorState {
   loading: boolean;
   error: string;
-  tutorInfo: tutorDetails | null;
+  tutorInfo: UserDetails | null;
   isAuthenticated: boolean;
 }
 
@@ -30,61 +33,61 @@ const initialState: TutorState = {
 };
 
 // Correct type definition for createAsyncThunk
-export const loginUser = createAsyncThunk<
-  { message: string; user: tutorDetails }, // Return type
-  TutorLoginFormValues, // First argument type
-  { rejectValue: string } // ThunkAPI config type
->("tutor/login", async (credentials, thunkAPI) => {
-  try {
-    const response = await axios.post(
-      "http://localhost:3000/tutor/login",
-      credentials,
-      {
-        withCredentials: true,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+// export const loginUser = createAsyncThunk<
+//   { message: string; user: UserDetails }, // Return type
+//   LoginFormValues, // First argument type
+//   { rejectValue: string } // ThunkAPI config type
+// >("tutor/login", async (credentials, thunkAPI) => {
+//   try {
+//     const response = await axios.post(
+//       "http://localhost:3000/tutor/login",
+//       credentials,
+//       {
+//         withCredentials: true,
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//       }
+//     );
 
-    return {
-      message: response.data.message,
-      user: response.data.user,
-    };
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      return thunkAPI.rejectWithValue(
-        error.response?.data?.message || error.message || "Login failed"
-      );
-    }
+//     return {
+//       message: response.data.message,
+//       user: response.data.user,
+//     };
+//   } catch (error) {
+//     if (axios.isAxiosError(error)) {
+//       return thunkAPI.rejectWithValue(
+//         error.response?.data?.message || error.message || "Login failed"
+//       );
+//     }
 
-    return thunkAPI.rejectWithValue("Login failed");
-  }
-});
+//     return thunkAPI.rejectWithValue("Login failed");
+//   }
+// });
 
-export const logoutUser = createAsyncThunk<
-  void, // Return type
-  void, // First argument type (none in this case)
-  { rejectValue: string } // ThunkAPI config type
->("tutor/logout", async (_, thunkAPI) => {
-  try {
-    const response = await axios.post(
-      "http://localhost:3000/tutor/logout",
-      {},
-      { withCredentials: true }
-    );
+// export const logoutUser = createAsyncThunk<
+//   void, // Return type
+//   void, // First argument type (none in this case)
+//   { rejectValue: string } // ThunkAPI config type
+// >("tutor/logout", async (_, thunkAPI) => {
+//   try {
+//     const response = await axios.post(
+//       "http://localhost:3000/tutor/logout",
+//       {},
+//       { withCredentials: true }
+//     );
 
-    return response.data;
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      return thunkAPI.rejectWithValue(
-        error.response?.data?.message || error.message || "Logout failed"
-      );
-    }
+//     return response.data;
+//   } catch (error) {
+//     if (axios.isAxiosError(error)) {
+//       return thunkAPI.rejectWithValue(
+//         error.response?.data?.message || error.message || "Logout failed"
+//       );
+//     }
 
-    return thunkAPI.rejectWithValue("Logout failed");
-  }
-});
+//     return thunkAPI.rejectWithValue("Logout failed");
+//   }
+// });
 
 const tutorLoginSlice = createSlice({
   name: "tutorLogin",
@@ -95,7 +98,7 @@ const tutorLoginSlice = createSlice({
       state.error = "";
       state.isAuthenticated = false;
     },
-    updateUserInfo: (state, action: PayloadAction<Partial<tutorDetails>>) => {
+    updateUserInfo: (state, action: PayloadAction<Partial<UserDetails>>) => {
       state.tutorInfo = state.tutorInfo
         ? { ...state.tutorInfo, ...action.payload }
         : null;

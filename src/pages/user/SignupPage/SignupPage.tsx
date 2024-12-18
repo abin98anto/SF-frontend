@@ -1,7 +1,7 @@
 import "./SignupPage.scss";
 import { signUpSchema } from "../../../schemas/signUpSchema";
 import { imageLinks, signupMessages } from "../../../utils/constants";
-import { SignUpFormValues } from "../../../entities/SignUpFormValues";
+import { SignUpFormValues, UserRole } from "../../../entities/SignUpFormValues";
 import { SignUpDummy } from "../../../entities/SignUpDummy";
 import { useAppDispatch } from "../../../hooks/hooks";
 import { signUpUser, verifyOTP } from "../../../redux/features/userSlice";
@@ -59,24 +59,26 @@ const SignupPage: React.FC = () => {
 
   // Form submission.
   const onSubmit: SubmitHandler<SignUpFormValues> = async (data) => {
-    setUserDetails(data);
-    setSubmittedEmail(data.email);
+    try {
+      setUserDetails(data);
+      setSubmittedEmail(data.email);
 
-    const result = await dispatch(signUpUser(data));
+      const formData = { ...data, role: UserRole.USER };
+      const result = await dispatch(signUpUser(formData)).unwrap();
 
-    if (signUpUser.fulfilled.match(result)) {
-      handleOTPModalOpen();
-    } else {
-      if (result.payload === signupMessages.EMAIL_EXISTS) {
+      if (result.message === signupMessages.OTP_SENT) {
+        handleOTPModalOpen();
+      } else if (result.message === signupMessages.EMAIL_EXISTS) {
         setErrorMessage(signupMessages.EMAIL_EXISTS);
         setOpenErrorToast(true);
-      } else if (result.payload === signupMessages.WRONG_OTP) {
-        setErrorMessage(signupMessages.WRONG_OTP);
-      } else if (result.payload === signupMessages.OTP_EXPIRED) {
-        setErrorMessage(signupMessages.OTP_EXPIRED);
       } else {
         setErrorMessage(signupMessages.UNKOWN_ERROR);
+        setOpenErrorToast(true);
       }
+    } catch (err) {
+      console.error("Sign-up error:", err);
+      setErrorMessage(signupMessages.UNKOWN_ERROR);
+      setOpenErrorToast(true);
     }
   };
 
@@ -102,12 +104,16 @@ const SignupPage: React.FC = () => {
           setErrorMessage(signupMessages.WRONG_OTP);
         } else if (result.payload === signupMessages.OTP_EXPIRED) {
           setErrorMessage(signupMessages.OTP_EXPIRED);
+        } else if (result.payload === signupMessages.EMAIL_EXISTS) {
+          setErrorMessage(signupMessages.EMAIL_EXISTS);
         } else {
+          console.log("boom")
           setErrorMessage(signupMessages.UNKOWN_ERROR);
         }
         setOpenErrorToast(true);
       }
     } catch (err) {
+      console.log("hhdhd")
       console.error(signupMessages.UNKOWN_ERROR, err);
       setErrorMessage(signupMessages.UNKOWN_ERROR);
       setOpenErrorToast(true);
@@ -202,12 +208,12 @@ const SignupPage: React.FC = () => {
           <form className="form" onSubmit={handleSubmit(onSubmit)}>
             {/* Username */}
             <input
-              {...register("username")}
-              className={`input ${errors.username ? "error" : ""}`}
+              {...register("name")}
+              className={`input ${errors.name ? "error" : ""}`}
               placeholder="Name"
             />
-            {errors.username && (
-              <p className="error-message">{errors.username.message}</p>
+            {errors.name && (
+              <p className="error-message">{errors.name.message}</p>
             )}
 
             {/* Email */}

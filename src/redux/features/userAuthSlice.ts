@@ -1,18 +1,21 @@
-import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import axios from "axios";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+// import axios from "axios";
+// import { UserRole } from "../../entities/SignUpFormValues";
+import { loginUser, logoutUser } from "../services/UserAuthServices";
+import { UserDetails } from "../../entities/UserDetails";
 
-export interface UserDetails {
-  id?: string;
-  email: string;
-  name?: string;
-  role?: string;
-  profilePicture?: string;
-}
+// export interface UserDetails {
+//   id?: string;
+//   email: string;
+//   name?: string;
+//   role?: string;
+//   profilePicture?: string;
+// }
 
-export interface LoginFormValues {
-  email: string;
-  password: string;
-}
+// export interface LoginFormValues {
+//   email: string;
+//   password: string;
+// }
 
 export interface UserState {
   loading: boolean;
@@ -29,61 +32,91 @@ const initialState: UserState = {
 };
 
 // Correct type definition for createAsyncThunk
-export const loginUser = createAsyncThunk<
-  { message: string; user: UserDetails },
-  LoginFormValues,
-  { rejectValue: string } 
->("user/login", async (credentials, thunkAPI) => {
-  try {
-    const response = await axios.post(
-      "http://localhost:3000/login",
-      credentials,
-      {
-        withCredentials: true,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+// export const loginUser = createAsyncThunk<
+//   { message: string; user: UserDetails },
+//   LoginFormValues,
+//   { rejectValue: string }
+// >("user/login", async (credentials, thunkAPI) => {
+//   try {
+//     const response = await axios.post(
+//       "http://localhost:3000/login",
+//       credentials,
+//       {
+//         withCredentials: true,
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//       }
+//     );
 
-    return {
-      message: response.data.message,
-      user: response.data.user,
-    };
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      return thunkAPI.rejectWithValue(
-        error.response?.data?.message || error.message || "Login failed"
-      );
-    }
+//     return {
+//       message: response.data.message,
+//       user: response.data.user,
+//     };
+//   } catch (error) {
+//     if (axios.isAxiosError(error)) {
+//       return thunkAPI.rejectWithValue(
+//         error.response?.data?.message || error.message || "Login failed"
+//       );
+//     }
 
-    return thunkAPI.rejectWithValue("Login failed");
-  }
-});
+//     return thunkAPI.rejectWithValue("Login failed");
+//   }
+// });
 
-export const logoutUser = createAsyncThunk<
-  void,
-  void,
-  { rejectValue: string }
->("user/logout", async (_, thunkAPI) => {
-  try {
-    const response = await axios.post(
-      "http://localhost:3000/logout",
-      {},
-      { withCredentials: true }
-    );
+// export const logoutUser = createAsyncThunk<
+//   void,
+//   void,
+//   { rejectValue: string }
+// >("user/logout", async (_, thunkAPI) => {
+//   try {
+//     const response = await axios.post(
+//       "http://localhost:3000/logout",
+//       {},
+//       { withCredentials: true }
+//     );
 
-    return response.data;
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      return thunkAPI.rejectWithValue(
-        error.response?.data?.message || error.message || "Logout failed"
-      );
-    }
+//     return response.data;
+//   } catch (error) {
+//     if (axios.isAxiosError(error)) {
+//       return thunkAPI.rejectWithValue(
+//         error.response?.data?.message || error.message || "Logout failed"
+//       );
+//     }
 
-    return thunkAPI.rejectWithValue("Logout failed");
-  }
-});
+//     return thunkAPI.rejectWithValue("Logout failed");
+//   }
+// });
+
+// export const logout = async (role: UserRole) => {
+//   try {
+//     await fetch(`http://localhost:3000/logout?role=${role}`);
+//   } catch (error) {
+//     console.log("error loggin out", error);
+//   }
+// };
+
+// export const logoutUser = createAsyncThunk<
+//   void,
+//   UserRole,
+//   { rejectValue: string }
+// >("user/logout", async (role, thunkAPI) => {
+//   try {
+//     const response = await axios.post(
+//       "http://localhost:3000/logout",
+//       { role },
+//       { withCredentials: true }
+//     );
+//     return response.data;
+//   } catch (error) {
+//     if (axios.isAxiosError(error)) {
+//       return thunkAPI.rejectWithValue(
+//         error.response?.data?.message || error.message || "Logout failed"
+//       );
+//     }
+//     return thunkAPI.rejectWithValue("Logout failed");
+//   }
+// });
 
 const userLoginSlice = createSlice({
   name: "userLogin",

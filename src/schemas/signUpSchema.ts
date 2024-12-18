@@ -1,7 +1,7 @@
 import * as yup from "yup";
 
 export const signUpSchema = yup.object().shape({
-  username: yup
+  name: yup
     .string()
     .required("Username is required")
     .min(3, "Username must be at least 3 characters")
@@ -25,6 +25,4 @@ export const signUpSchema = yup.object().shape({
     .string()
     .required("Confirm password is required")
     .oneOf([yup.ref("password")], "Passwords must match"),
-
-  profilePicture: yup.string().required("Profile picture is required"),
 });

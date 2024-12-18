@@ -1,16 +1,8 @@
 import "./TutorSignup.scss";
-import { tutorSignUpSchema } from "../../../schemas/tutorSignUpSchema";
 import { imageLinks, signupMessages } from "../../../utils/constants";
-import {
-  TutorSignUpFormInput,
-  TutorSignUpFormValues,
-} from "../../../entities/tutor/TutorSignUpFormValues";
 import { TutorSignUpDummy } from "../../../entities/tutor/TutorSignUpDummy";
 import { useAppDispatch } from "../../../hooks/hooks";
-import {
-  signUpTutor,
-  verifyTutorOTP,
-} from "../../../redux/features/tutor/tutorSlice";
+import { signUpUser, verifyOTP } from "../../../redux/features/userSlice";
 
 import React, { useRef, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -25,6 +17,8 @@ import {
   Snackbar,
   Alert,
 } from "@mui/material";
+import { signUpSchema } from "../../../schemas/signUpSchema";
+import { SignUpFormValues, UserRole } from "../../../entities/SignUpFormValues";
 
 const SignupPage: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -36,12 +30,13 @@ const SignupPage: React.FC = () => {
     setValue,
     getValues,
     formState: { errors },
-  } = useForm<TutorSignUpFormInput>({
-    resolver: yupResolver(tutorSignUpSchema),
+  } = useForm<SignUpFormValues>({
+    resolver: yupResolver(signUpSchema),
   });
 
-  const [tutorDetails, setTutorDetails] =
-    useState<TutorSignUpFormValues | null>(null);
+  const [tutorDetails, setTutorDetails] = useState<SignUpFormValues | null>(
+    null
+  );
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [openOTPModal, setOpenOTPModal] = useState<boolean>(false);
   const [openErrorToast, setOpenErrorToast] = useState<boolean>(false);
@@ -53,7 +48,7 @@ const SignupPage: React.FC = () => {
   // Autofill function.
   const handleAutofill = () => {
     const autofillData = TutorSignUpDummy();
-    (Object.keys(autofillData) as Array<keyof TutorSignUpFormInput>).forEach(
+    (Object.keys(autofillData) as Array<keyof SignUpFormValues>).forEach(
       (key) => {
         const currentValue = getValues(key);
         if (!currentValue) {
@@ -64,24 +59,29 @@ const SignupPage: React.FC = () => {
   };
 
   // Form submission.
-  const onSubmit: SubmitHandler<TutorSignUpFormInput> = async (data) => {
-    setTutorDetails(data);
-    setSubmittedEmail(data.email);
+  const onSubmit: SubmitHandler<SignUpFormValues> = async (data) => {
+    try {
+      setSubmittedEmail(data.email);
+      const formData = { ...data, role: UserRole.TUTOR };
+      setTutorDetails(formData);
+      const result = await dispatch(signUpUser(formData)).unwrap();
 
-    const result = await dispatch(signUpTutor(data));
-
-    if (signUpTutor.fulfilled.match(result)) {
-      handleOTPModalOpen();
-    } else {
-      const errorPayload = result.payload as { message?: string };
-
-      if (errorPayload?.message === signupMessages.EMAIL_EXISTS) {
+      if (result.message === signupMessages.OTP_SENT) {
+        handleOTPModalOpen();
+      } else if (result.message === signupMessages.EMAIL_EXISTS) {
         setErrorMessage(signupMessages.EMAIL_EXISTS);
         setOpenErrorToast(true);
       } else {
         setErrorMessage(signupMessages.UNKOWN_ERROR);
         setOpenErrorToast(true);
       }
+    } catch (err) {
+      console.error(signupMessages.UNKOWN_ERROR, err);
+      err === signupMessages.EMAIL_EXISTS
+        ? setErrorMessage(signupMessages.EMAIL_EXISTS)
+        : setErrorMessage(signupMessages.UNKOWN_ERROR);
+
+      setOpenErrorToast(true);
     }
   };
 
@@ -95,14 +95,14 @@ const SignupPage: React.FC = () => {
 
     try {
       const result = await dispatch(
-        verifyTutorOTP({
+        verifyOTP({
           email: submittedEmail,
           otp: otpValue,
         })
       );
 
       console.log("resullllt", result);
-      if (verifyTutorOTP.fulfilled.match(result)) {
+      if (verifyOTP.fulfilled.match(result)) {
         navigate("/tutor/login");
       } else {
         if (result.payload === signupMessages.WRONG_OTP) {
@@ -132,7 +132,7 @@ const SignupPage: React.FC = () => {
     }
 
     try {
-      await dispatch(signUpTutor(tutorDetails));
+      await dispatch(signUpUser(tutorDetails));
       setTimer(90);
       if (timerRef.current) {
         clearInterval(timerRef.current);

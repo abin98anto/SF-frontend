@@ -43,6 +43,7 @@ export const signupMessages = {
   UNKOWN_ERROR: "An error occurred. Please try again.",
   RESEND_OTP_FAIL: "Failed to resend OTP. Please try again.",
   OTP_VERIFICATION_FAIL: "OTP verification failed",
+  OTP_SENT: `OTP send to the mail : `,
 };
 
 export const loginMessages = {

@@ -24,8 +24,9 @@ import {
 } from "../../../utils/fileUpload";
 import { toast } from "react-toastify";
 import "./TutorDashboard.scss";
-import { logoutUser } from "../../../redux/features/tutor/tutorAuthSlice";
+import { logoutUser } from "../../../redux/services/UserAuthServices";
 import { useNavigate } from "react-router-dom";
+import { UserRole } from "../../../entities/SignUpFormValues";
 
 const TutorDashboard = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -45,8 +46,8 @@ const TutorDashboard = () => {
   };
 
   const handleLogoutConfirm = () => {
-    dispatch(logoutUser())
-      .unwrap()
+    dispatch(logoutUser(UserRole.TUTOR))
+      // logout(UserRole.TUTOR)
       .then(() => {
         toast.success("Logged out successfully");
         setLogoutDialogOpen(false);

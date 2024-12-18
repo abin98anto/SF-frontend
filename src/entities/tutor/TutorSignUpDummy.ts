@@ -1,9 +1,8 @@
-import { UserRole } from "../SignUpFormValues";
+import { SignUpFormValues, UserRole } from "../SignUpFormValues";
 import { TutorSignUpFormValues } from "./TutorSignUpFormValues";
 
-export const TutorSignUpDummy = (): TutorSignUpFormValues => {
+export const TutorSignUpDummy = (): SignUpFormValues => {
   return {
-    _id: "ddd",
     name: "John Master",
     email: "johnmaster@example.com",
     password: "StrongP@ss123!",

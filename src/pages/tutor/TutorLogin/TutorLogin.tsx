@@ -1,20 +1,20 @@
-import "./TutorLogin.scss";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { ThunkDispatch } from "@reduxjs/toolkit";
 
+import "./TutorLogin.scss";
 import { imageLinks } from "../../../utils/constants";
 import { TutorSignUpDummy } from "../../../entities/tutor/TutorSignUpDummy";
 import { RootState } from "../../../redux/store";
-import {
-  loginUser,
-  TutorLoginFormValues,
-} from "../../../redux/features/tutor/tutorAuthSlice";
+import { loginUser } from "../../../redux/services/UserAuthServices";
+import { LoginFormValues } from "../../../entities/LoginFormValues";
 
 const TutorLogin = () => {
   const dispatch = useDispatch<ThunkDispatch<RootState, any, any>>();
   const navigate = useNavigate();
+  const [customError, setCustomError] = useState<string | null>(null);
 
   const { loading, error } = useSelector(
     (state: RootState) => state.tutorLogin
@@ -26,14 +26,16 @@ const TutorLogin = () => {
     setValue,
     formState: { errors },
     getValues,
-  } = useForm<TutorLoginFormValues>();
+  } = useForm<LoginFormValues>();
 
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
 
-  const onSubmit = async (data: TutorLoginFormValues) => {
+  const onSubmit = async (data: LoginFormValues) => {
+    setCustomError(null);
+
     const newErrors: { email?: string; password?: string } = {};
 
     if (!data.email.trim()) {
@@ -55,11 +57,21 @@ const TutorLogin = () => {
           })
         );
 
+        // console.log("after login, ", result);
+
         if (loginUser.fulfilled.match(result)) {
-          navigate("/tutor/dashboard");
+          const user = result.payload.user;
+          if (user.role === "tutor") {
+            navigate("/tutor/dashboard");
+          } else {
+            setCustomError("Only tutors are allowed to log in.");
+          }
+        } else {
+          setCustomError(result.payload || "Login failed");
         }
       } catch (err) {
         console.error("Login failed", err);
+        setCustomError("An unexpected error occurred. Please try again.");
       }
     }
   };
@@ -83,6 +95,9 @@ const TutorLogin = () => {
         <div className="login-form">
           <div className="form-container">
             <p className="title">Tutor Login</p>
+
+            {/* Display custom error if exists */}
+            {customError && <p className="error-message">{customError}</p>}
 
             {error && <p className="error-message">{error}</p>}
 
