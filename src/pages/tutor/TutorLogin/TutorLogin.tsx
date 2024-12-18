@@ -6,7 +6,7 @@ import { ThunkDispatch } from "@reduxjs/toolkit";
 
 import "./TutorLogin.scss";
 import { imageLinks } from "../../../utils/constants";
-import { TutorSignUpDummy } from "../../../entities/dummy/TutorDummy";
+import { TutorSignUpDummy } from "../../../entities/dummys/TutorDummy";
 import { RootState } from "../../../redux/store";
 import { loginTutor } from "../../../redux/services/UserAuthServices";
 import { LoginFormValues } from "../../../entities/user/LoginFormValues";

@@ -1,17 +1,16 @@
 import "./AdminLogin.scss";
-import { imageLinks } from "../../../utils/constants";
+import { imageLinks, someMessages } from "../../../utils/constants";
 
 import { useDispatch, useSelector } from "react-redux";
 import { ThunkDispatch } from "@reduxjs/toolkit";
 import { RootState } from "../../../redux/store";
 import { useForm } from "react-hook-form";
-import {
-  loginAdmin,
-  AdminLoginFormValues,
-} from "../../../redux/features/Admin/adminAuthSlice";
+import { loginAdmin } from "../../../redux/features/Admin/adminAuthSlice";
 import { useNavigate } from "react-router-dom";
-import { AdminSignUpDummy } from "../../../entities/admin/AdminSignUpDummy";
+import { AdminDummy } from "../../../entities/dummys/AdminDummy";
 import { useState } from "react";
+import { LoginFormValues } from "../../../entities/user/LoginFormValues";
+import { validateEmail } from "../../../utils/form-checks/validateEmail";
 
 const backgroundImage = imageLinks.BG_IMG;
 
@@ -20,7 +19,6 @@ const AdminLogin = () => {
   const navigate = useNavigate();
 
   const { loading } = useSelector((state: RootState) => state.adminLogin);
-
   const [loginError, setLoginError] = useState<string | null>(null);
 
   const {
@@ -29,24 +27,19 @@ const AdminLogin = () => {
     setValue,
     formState: { errors },
     getValues,
-  } = useForm<AdminLoginFormValues>();
+  } = useForm<LoginFormValues>();
 
-  const validateEmail = (email: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
-
-  const onSubmit = async (data: AdminLoginFormValues) => {
+  const onSubmit = async (data: LoginFormValues) => {
     const newErrors: { email?: string; password?: string } = {};
 
     if (!data.email.trim()) {
-      newErrors.email = "Email is required.";
+      newErrors.email = someMessages.EMAIL_REQUIRED;
     } else if (!validateEmail(data.email)) {
-      newErrors.email = "Invalid email format.";
+      newErrors.email = someMessages.INVALID_EMAIL;
     }
 
     if (!data.password.trim()) {
-      newErrors.password = "Password is required.";
+      newErrors.password = someMessages.PASS_REQUIRED;
     }
 
     if (Object.keys(newErrors).length === 0) {
@@ -60,22 +53,20 @@ const AdminLogin = () => {
         if (loginAdmin.fulfilled.match(result)) {
           navigate("/admin/dashboard");
         } else {
-          setLoginError("Invalid email or password.");
+          setLoginError(someMessages.INVALID_CREDENTIALS);
         }
       } catch (err) {
-        console.error("Login failed", err);
-        setLoginError("An error occurred. Please try again.");
+        console.error(someMessages.LOGIN_FAILED, err);
+        setLoginError(someMessages.UNKOWN_ERROR);
       }
     }
   };
 
   const handleAutofill = () => {
-    const autofillData = AdminSignUpDummy();
-
+    const autofillData = AdminDummy();
     if (!getValues("email")) {
       setValue("email", autofillData.email);
     }
-
     if (!getValues("password")) {
       setValue("password", autofillData.password);
     }
@@ -91,7 +82,7 @@ const AdminLogin = () => {
       }}
     >
       <div className="login-overlay">
-      <h1 className="admin-login-heading">SkillForge</h1>
+        <h1 className="admin-login-heading">SkillForge</h1>
         <div className="login-form-container">
           <h1>Admin Login</h1>
           <form onSubmit={handleSubmit(onSubmit)} className="login-form">

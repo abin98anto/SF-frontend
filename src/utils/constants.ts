@@ -34,7 +34,7 @@ export const cloudinaryLinks = {
   }/image/upload`,
 };
 
-export const signupMessages = {
+export const someMessages = {
   EMAIL_EXISTS: "Email already in use",
   OTP_EXPIRED: "The OTP has expired. Please request a new one.",
   USER_VERFIED: "OTP verification successful. User is now active.",
@@ -44,23 +44,15 @@ export const signupMessages = {
   RESEND_OTP_FAIL: "Failed to resend OTP. Please try again.",
   OTP_VERIFICATION_FAIL: "OTP verification failed",
   OTP_SENT: `OTP send to the mail : `,
-};
-
-export const loginMessages = {
   LOGIN_FAILED: "Login failed",
   INVALID_CREDENTIALS: "Invalid email or password",
   TOKEN_REFRESH_FAILED: "Failed to refresh token",
   LOGOUT_FAILED: "Logout failed",
   NETWORK_ERROR: "Network error occurred",
-};
-
-export const tutorSignupMessages = {
-  EMAIL_EXISTS: "Email already registered",
-  WRONG_OTP: "Invalid OTP entered",
-  OTP_EXPIRED: "OTP has expired",
-  OTP_VERIFICATION_FAIL: "OTP verification failed",
   UNKNOWN_ERROR: "An unexpected error occurred",
   PASSWORD_WEAK: "Password is too weak",
   INVALID_EMAIL: "Invalid email format",
   SIGNUP_SUCCESS: "Tutor signup successful",
+  EMAIL_REQUIRED: "Email required!",
+  PASS_REQUIRED: "Password is required.",
 };
