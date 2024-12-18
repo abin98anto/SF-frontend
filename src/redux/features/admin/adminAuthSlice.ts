@@ -1,23 +1,14 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import { LoginFormValues } from "../../../entities/user/LoginFormValues";
-
-export interface adminDetails {
-  id?: string;
-  email?: string;
-  name?: string;
-  profilePicture?: string;
-}
-
-// export interface AdminLoginFormValues {
-//   email: string;
-//   password: string;
-// }
+import { UserDetails } from "../../../entities/user/UserDetails";
+import axiosInstance from "../../../utils/axiosConfig";
+import { someMessages } from "../../../utils/constants";
 
 export interface AdminState {
   loading: boolean;
   error: string;
-  adminInfo: adminDetails | null;
+  adminInfo: UserDetails | null;
   isAuthenticated: boolean;
 }
 
@@ -30,21 +21,12 @@ const initialState: AdminState = {
 
 // Correct type definition for createAsyncThunk
 export const loginAdmin = createAsyncThunk<
-  { message: string; user: adminDetails },
+  { message: string; user: UserDetails },
   LoginFormValues,
   { rejectValue: string }
 >("admin/login", async (credentials, thunkAPI) => {
   try {
-    const response = await axios.post(
-      "http://localhost:3000/admin/login",
-      credentials,
-      {
-        withCredentials: true,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const response = await axiosInstance.post("/admin/login", credentials);
 
     return {
       message: response.data.message,
@@ -53,11 +35,11 @@ export const loginAdmin = createAsyncThunk<
   } catch (error) {
     if (axios.isAxiosError(error)) {
       return thunkAPI.rejectWithValue(
-        error.response?.data?.message || error.message || "Login failed"
+        error.response?.data?.message || error.message
       );
     }
 
-    return thunkAPI.rejectWithValue("Login failed");
+    return thunkAPI.rejectWithValue(someMessages.LOGIN_FAILED);
   }
 });
 
@@ -67,21 +49,17 @@ export const logoutAdmin = createAsyncThunk<
   { rejectValue: string }
 >("tutor/logout", async (_, thunkAPI) => {
   try {
-    const response = await axios.post(
-      "http://localhost:3000/admin/logout",
-      {},
-      { withCredentials: true }
-    );
+    const response = await axiosInstance.post("/admin/logout");
 
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
       return thunkAPI.rejectWithValue(
-        error.response?.data?.message || error.message || "Logout failed"
+        error.response?.data?.message || error.message
       );
     }
 
-    return thunkAPI.rejectWithValue("Logout failed");
+    return thunkAPI.rejectWithValue(someMessages.LOGIN_FAILED);
   }
 });
 
@@ -94,7 +72,7 @@ const adminLoginSlice = createSlice({
       state.error = "";
       state.isAuthenticated = false;
     },
-    updateAdminInfo: (state, action: PayloadAction<Partial<adminDetails>>) => {
+    updateAdminInfo: (state, action: PayloadAction<Partial<UserDetails>>) => {
       state.adminInfo = state.adminInfo
         ? { ...state.adminInfo, ...action.payload }
         : null;
@@ -115,7 +93,7 @@ const adminLoginSlice = createSlice({
       })
       .addCase(loginAdmin.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || "Login failed";
+        state.error = action.payload || someMessages.LOGIN_FAILED;
         state.isAuthenticated = false;
         state.adminInfo = null;
       })

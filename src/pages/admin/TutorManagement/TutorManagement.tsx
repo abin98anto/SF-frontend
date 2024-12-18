@@ -20,9 +20,10 @@ import {
   selectTutorsStatus,
   selectTutorsError,
 } from "../../../redux/features/tutor/tutorListSlice";
-import { toggleUserStatus } from "../../../redux/features/userSlice";
+import { toggleUserStatus } from "../../../redux/features/user/userSlice";
 import ApproveTutorsModal from "./ApproveTutorModal/ApproveTutorModal";
 import "./TutorManagement.scss";
+import { UserDetails } from "../../../entities/user/UserDetails";
 
 const TutorManagement: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -48,8 +49,12 @@ const TutorManagement: React.FC = () => {
     setApproveModalOpen(true);
   };
 
-  const activeTutors = tutors.filter((tutor) => tutor.isActive === true);
-  const pendingTutors = tutors.filter((tutor) => tutor.isActive !== true);
+  const activeTutors = tutors.filter(
+    (tutor: UserDetails) => tutor.isActive === true
+  );
+  const pendingTutors = tutors.filter(
+    (tutor: UserDetails) => tutor.isActive !== true
+  );
 
   return (
     <div className="tutor-management">
@@ -94,15 +99,19 @@ const TutorManagement: React.FC = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {activeTutors.map((tutor) => (
-                <TableRow key={tutor._id} className="active">
+              {activeTutors.map((tutor: UserDetails) => (
+                <TableRow key={tutor.id} className="active">
                   <TableCell>{tutor.name}</TableCell>
                   <TableCell>{tutor.email}</TableCell>
                   <TableCell>{tutor.role}</TableCell>
                   <TableCell>
-                    <Rating value={tutor.rating} readOnly precision={0.5} />
+                    <Rating
+                      value={tutor.ratings?.length}
+                      readOnly
+                      precision={0.5}
+                    />
                   </TableCell>
-                  <TableCell>{tutor.batchesHandling}</TableCell>
+                  <TableCell>{tutor.students}</TableCell>
                   <TableCell>{tutor.reviewsTaken}</TableCell>
                   <TableCell>{tutor.sessionsTaken}</TableCell>
                   <TableCell>
@@ -111,7 +120,7 @@ const TutorManagement: React.FC = () => {
                   <TableCell>
                     <Switch
                       checked={tutor.isActive === true}
-                      onChange={() => handleStatusToggle(tutor._id)}
+                      onChange={() => handleStatusToggle(tutor.id!)}
                       color="primary"
                     />
                   </TableCell>

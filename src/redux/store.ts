@@ -5,7 +5,7 @@ import userReducer from "./features/userSlice";
 import userAuthReducer from "./features/userAuthSlice";
 import tutorReducer from "./features/tutor/tutorSlice";
 // import tutorAuthReducer from "./features/tutor/tutorAuthSlice";
-import adminAuthReducer from "./features/Admin/adminAuthSlice";
+import adminAuthReducer from "./features/admin/adminAuthSlice";
 import userListReducer from "./features/userListSlice";
 import tutorListReducer from "./features/tutor/tutorListSlice";
 

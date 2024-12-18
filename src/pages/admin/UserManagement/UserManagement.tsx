@@ -7,10 +7,11 @@ import {
   selectUsersStatus,
   selectUsersError,
   updateUserStatusLocally,
-} from "../../../redux/features/userListSlice";
+} from "../../../redux/features/user/userListSlice";
 import "./UserManagement.scss";
 import ErrorBoundary from "../../../components/ErrorBoundary/ErrorBoundary";
-import { toggleUserStatus } from "../../../redux/features/userSlice";
+import { toggleUserStatus } from "../../../redux/features/user/userSlice";
+import { someMessages } from "../../../utils/constants";
 
 const UserManagement: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -41,7 +42,7 @@ const UserManagement: React.FC = () => {
         message.error(resultAction.payload || "Failed to update user status");
       }
     } catch {
-      message.error("Unexpected error occurred");
+      message.error(someMessages.UNKNOWN_ERROR);
     }
   };
 

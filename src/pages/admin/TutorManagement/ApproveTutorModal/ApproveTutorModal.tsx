@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import ConfirmationModal from "./ConfirmModal";
 import { useAppDispatch } from "../../../../hooks/hooks";
-import { toggleUserStatus } from "../../../../redux/features/userSlice";
+import { toggleUserStatus } from "../../../../redux/features/user/userSlice";
 import { UserDetails } from "../../../../entities/user/UserDetails";
 
 interface ApproveTutorsModalProps {

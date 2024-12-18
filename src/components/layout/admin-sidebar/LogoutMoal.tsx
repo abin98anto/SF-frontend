@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { logoutAdmin } from "../../../redux/features/Admin/adminAuthSlice"; // Adjust the import path as needed
+import { logoutAdmin } from "../../../redux/features/admin/adminAuthSlice"; // Adjust the import path as needed
 import {
   Button,
   Dialog,
