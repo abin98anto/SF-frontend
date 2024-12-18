@@ -44,7 +44,6 @@ export const handleFileUpload = async (
   }
 };
 
-// Example validators you could use
 export const validateImageFile = (file: File): boolean => {
   const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
   return allowedTypes.includes(file.type) && file.size < 5 * 1024 * 1024;

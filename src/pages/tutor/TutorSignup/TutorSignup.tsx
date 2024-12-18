@@ -19,7 +19,7 @@ import {
   Snackbar,
   Alert,
 } from "@mui/material";
-import { signUpSchema } from "../../../schemas/signUpSchema";
+import { signUpSchema } from "../../../entities/schemas/signUpSchema";
 import { SignUpFormValues } from "../../../entities/user/SignUpFormValues";
 import { UserRole } from "../../../entities/user/UserRole";
 import { TutorDummy } from "../../../entities/dummys/TutorDummy";

@@ -1,5 +1,5 @@
 import "./SignupPage.scss";
-import { signUpSchema } from "../../../schemas/signUpSchema";
+import { signUpSchema } from "../../../entities/schemas/signUpSchema";
 import { imageLinks, someMessages } from "../../../utils/constants";
 import { SignUpFormValues } from "../../../entities/user/SignUpFormValues";
 import { useAppDispatch } from "../../../hooks/hooks";
