@@ -57,4 +57,5 @@ export const someMessages = {
   PASS_REQUIRED: "Password is required.",
   UPLOAD_SUCESS: "Upload successfull!",
   UPLOAD_FAIL: "Failed to upload resume",
+  TUTOR_ONLY: "Only tutors are allowed to log in.",
 };

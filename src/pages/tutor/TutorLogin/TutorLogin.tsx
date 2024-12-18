@@ -5,11 +5,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { ThunkDispatch } from "@reduxjs/toolkit";
 
 import "./TutorLogin.scss";
-import { imageLinks } from "../../../utils/constants";
-import { TutorSignUpDummy } from "../../../entities/dummys/TutorDummy";
+import { imageLinks, someMessages } from "../../../utils/constants";
 import { RootState } from "../../../redux/store";
 import { loginTutor } from "../../../redux/services/UserAuthServices";
 import { LoginFormValues } from "../../../entities/user/LoginFormValues";
+import { validateEmail } from "../../../utils/form-checks/validateEmail";
+import { TutorDummy } from "../../../entities/dummys/TutorDummy";
 
 const TutorLogin = () => {
   const dispatch = useDispatch<ThunkDispatch<RootState, any, any>>();
@@ -25,11 +26,6 @@ const TutorLogin = () => {
     formState: { errors },
     getValues,
   } = useForm<LoginFormValues>();
-
-  const validateEmail = (email: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
 
   const onSubmit = async (data: LoginFormValues) => {
     setCustomError(null);
@@ -55,27 +51,25 @@ const TutorLogin = () => {
           })
         );
 
-        // console.log("after login, ", result);
-
         if (loginTutor.fulfilled.match(result)) {
           const user = result.payload.user;
           if (user.role === "tutor") {
             navigate("/tutor/dashboard");
           } else {
-            setCustomError("Only tutors are allowed to log in.");
+            setCustomError(someMessages.TUTOR_ONLY);
           }
         } else {
-          setCustomError(result.payload || "Login failed");
+          setCustomError(result.payload || someMessages.LOGIN_FAILED);
         }
       } catch (err) {
-        console.error("Login failed", err);
-        setCustomError("An unexpected error occurred. Please try again.");
+        console.error(someMessages.LOGIN_FAILED, err);
+        setCustomError(someMessages.UNKNOWN_ERROR);
       }
     }
   };
 
   const handleAutofill = () => {
-    const autofillData = TutorSignUpDummy();
+    const autofillData = TutorDummy();
 
     if (!getValues("email")) {
       setValue("email", autofillData.email);
@@ -101,7 +95,7 @@ const TutorLogin = () => {
 
             <form className="form" onSubmit={handleSubmit(onSubmit)}>
               <input
-                {...register("email", { required: "Email is required." })}
+                {...register("email", { required: someMessages.EMAIL_REQUIRED})}
                 className={`input ${errors.email ? "error" : ""}`}
                 placeholder="Email"
                 disabled={loading}
@@ -111,7 +105,7 @@ const TutorLogin = () => {
               )}
 
               <input
-                {...register("password", { required: "Password is required." })}
+                {...register("password", { required: someMessages.PASS_REQUIRED })}
                 type="password"
                 className={`input ${errors.password ? "error" : ""}`}
                 placeholder="Password"
