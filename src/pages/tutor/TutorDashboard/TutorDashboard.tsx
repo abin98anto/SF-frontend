@@ -27,6 +27,7 @@ import "./TutorDashboard.scss";
 import { logoutUser } from "../../../redux/services/UserAuthServices";
 import { useNavigate } from "react-router-dom";
 import { UserRole } from "../../../entities/user/UserRole";
+import { someMessages } from "../../../utils/constants";
 
 const TutorDashboard = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -35,7 +36,6 @@ const TutorDashboard = () => {
     return state.userLogin.tutorInfo;
   });
 
-  console.log("tutt details");
   // Modal state
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
@@ -49,14 +49,12 @@ const TutorDashboard = () => {
 
   const handleLogoutConfirm = () => {
     dispatch(logoutUser(UserRole.TUTOR))
-      // logout(UserRole.TUTOR)
       .then(() => {
-        toast.success("Logged out successfully");
         setLogoutDialogOpen(false);
         navigate("/tutor/login");
       })
       .catch((error: any) => {
-        toast.error(error || "Logout failed");
+        toast.error(error || someMessages.LOGIN_FAILED);
       });
   };
 
@@ -81,7 +79,6 @@ const TutorDashboard = () => {
   // Handle modal open
   const handleOpenModal = () => {
     setOpen(true);
-    // Reset validation errors when opening modal
     setValidationErrors({ name: "", email: "" });
   };
 
@@ -90,7 +87,7 @@ const TutorDashboard = () => {
     setOpen(false);
   };
 
-  // Validate name
+  // Validate name - remove this and do using Yup.
   const validateName = (name: string): string => {
     if (!name.trim()) {
       return "Name is required";
@@ -108,7 +105,7 @@ const TutorDashboard = () => {
     return "";
   };
 
-  // Validate email
+  // Validate email - remove this and replace it with Yup.
   const validateEmail = (email: string): string => {
     if (!email.trim()) {
       return "Email is required";
@@ -187,9 +184,9 @@ const TutorDashboard = () => {
           ...prev,
           resume: resumeUploadResult.url || "",
         }));
-        toast.success("Resume uploaded successfully!");
+        toast.success(someMessages.UPLOAD_SUCESS);
       } else {
-        toast.error(resumeUploadResult.error || "Failed to upload resume");
+        toast.error(resumeUploadResult.error || someMessages.UPLOAD_FAIL);
       }
     }
   };
