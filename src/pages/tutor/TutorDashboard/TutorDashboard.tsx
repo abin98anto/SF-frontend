@@ -26,7 +26,7 @@ import { toast } from "react-toastify";
 import "./TutorDashboard.scss";
 import { logoutUser } from "../../../redux/services/UserAuthServices";
 import { useNavigate } from "react-router-dom";
-import { UserRole } from "../../../entities/SignUpFormValues";
+import { UserRole } from "../../../entities/user/UserRole";
 
 const TutorDashboard = () => {
   const dispatch = useDispatch<AppDispatch>();

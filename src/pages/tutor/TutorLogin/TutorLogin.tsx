@@ -9,7 +9,7 @@ import { imageLinks } from "../../../utils/constants";
 import { TutorSignUpDummy } from "../../../entities/tutor/TutorSignUpDummy";
 import { RootState } from "../../../redux/store";
 import { loginUser } from "../../../redux/services/UserAuthServices";
-import { LoginFormValues } from "../../../entities/LoginFormValues";
+import { LoginFormValues } from "../../../entities/user/LoginFormValues";
 
 const TutorLogin = () => {
   const dispatch = useDispatch<ThunkDispatch<RootState, any, any>>();

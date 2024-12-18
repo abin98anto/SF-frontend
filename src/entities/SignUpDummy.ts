@@ -1,4 +1,5 @@
-import { SignUpFormValues, UserRole } from "./SignUpFormValues";
+import { SignUpFormValues } from "./user/SignUpFormValues";
+import { UserRole } from "./user/UserRole";
 
 export const SignUpDummy = (): SignUpFormValues => {
   return {

@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 // import axios from "axios";
 // import { UserRole } from "../../entities/SignUpFormValues";
 import { loginUser, logoutUser } from "../services/UserAuthServices";
-import { UserDetails } from "../../entities/UserDetails";
+import { UserDetails } from "../../entities/user/UserDetails";
 
 // export interface UserDetails {
 //   id?: string;

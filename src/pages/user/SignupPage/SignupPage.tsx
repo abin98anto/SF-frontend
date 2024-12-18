@@ -1,10 +1,13 @@
 import "./SignupPage.scss";
 import { signUpSchema } from "../../../schemas/signUpSchema";
 import { imageLinks, signupMessages } from "../../../utils/constants";
-import { SignUpFormValues, UserRole } from "../../../entities/SignUpFormValues";
+import { SignUpFormValues } from "../../../entities/user/SignUpFormValues";
 import { SignUpDummy } from "../../../entities/SignUpDummy";
 import { useAppDispatch } from "../../../hooks/hooks";
-import { signUpUser, verifyOTP } from "../../../redux/features/userSlice";
+import {
+  signUpUser,
+  verifyOTP,
+} from "../../../redux/services/UserSignupServices";
 
 import React, { useRef, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -20,6 +23,7 @@ import {
   Alert,
 } from "@mui/material";
 import GoogleButton from "../../../components/google-btn/GoogleButton";
+import { UserRole } from "../../../entities/user/UserRole";
 
 const SignupPage: React.FC = () => {
   const dispatch = useAppDispatch();

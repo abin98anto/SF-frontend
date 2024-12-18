@@ -1,12 +1,18 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import {
-  OTPVerificationPayload,
-  OTPVerificationResponse,
-  TutorSignUpFormValues,
-  TutorState,
-} from "../../../entities/tutor/TutorSignUpFormValues";
+
 import { tutorSignupMessages } from "../../../utils/constants";
+import { signUpUser, verifyOTP } from "../../services/UserSignupServices";
+import { SignUpFormValues } from "../../../entities/user/SignUpFormValues";
+import { OTPVerificationResponse } from "../../../entities/user/OTP";
+
+export interface TutorState {
+  tutorInfo: SignUpFormValues | null;
+  loading: boolean;
+  error: string | null;
+  isVerified?: boolean;
+  tutor?: OTPVerificationResponse | null;
+}
 
 const initialState: TutorState = {
   loading: false,
@@ -15,71 +21,71 @@ const initialState: TutorState = {
 };
 
 // Async thunk to handle tutor sign-up
-export const signUpTutor = createAsyncThunk(
-  "tutor/sendOTP",
-  async (tutorData: TutorSignUpFormValues, { rejectWithValue }) => {
-    try {
-      const response = await axios.post(
-        "http://localhost:3000/tutor/signup",
-        tutorData
-      );
+// export const signUpTutor = createAsyncThunk(
+//   "tutor/sendOTP",
+//   async (tutorData: TutorSignUpFormValues, { rejectWithValue }) => {
+//     try {
+//       const response = await axios.post(
+//         "http://localhost:3000/tutor/signup",
+//         tutorData
+//       );
 
-      // console.log("alien", response);
+//       // console.log("alien", response);
 
-      if (response.data.message === tutorSignupMessages.EMAIL_EXISTS) {
-        return rejectWithValue(tutorSignupMessages.EMAIL_EXISTS);
-      }
-      return response.data;
-    } catch (error: any) {
-      // console.log("erroror", error);
-      if (
-        axios.isAxiosError(error) &&
-        error.response?.data?.message === tutorSignupMessages.EMAIL_EXISTS
-      ) {
-        return rejectWithValue(tutorSignupMessages.EMAIL_EXISTS);
-      }
+//       if (response.data.message === tutorSignupMessages.EMAIL_EXISTS) {
+//         return rejectWithValue(tutorSignupMessages.EMAIL_EXISTS);
+//       }
+//       return response.data;
+//     } catch (error: any) {
+//       // console.log("erroror", error);
+//       if (
+//         axios.isAxiosError(error) &&
+//         error.response?.data?.message === tutorSignupMessages.EMAIL_EXISTS
+//       ) {
+//         return rejectWithValue(tutorSignupMessages.EMAIL_EXISTS);
+//       }
 
-      return rejectWithValue(
-        error.response?.data || tutorSignupMessages.UNKNOWN_ERROR
-      );
-    }
-  }
-);
+//       return rejectWithValue(
+//         error.response?.data || tutorSignupMessages.UNKNOWN_ERROR
+//       );
+//     }
+//   }
+// );
 
-export const verifyTutorOTP = createAsyncThunk<
-  OTPVerificationResponse,
-  OTPVerificationPayload,
-  { rejectValue: string }
->("tutor/verifyOTP", async (payload, thunkAPI) => {
-  try {
-    const response = await axios.post(
-      "http://localhost:3000/tutor/verify-otp",
-      payload
-    );
+// export const verifyTutorOTP = createAsyncThunk<
+//   OTPVerificationResponse,
+//   OTPVerificationPayload,
+//   { rejectValue: string }
+// >("tutor/verifyOTP", async (payload, thunkAPI) => {
+//   try {
+//     const response = await axios.post(
+//       "http://localhost:3000/tutor/verify-otp",
+//       payload
+//     );
 
-    // console.log("resssponsee", response);
-    if (response.data.success) {
-      return response.data;
-    } else {
-      if (response.data.message === "Invalid OTP") {
-        return thunkAPI.rejectWithValue(tutorSignupMessages.WRONG_OTP);
-      } else if (response.data.message === "OTP expired") {
-        return thunkAPI.rejectWithValue(tutorSignupMessages.OTP_EXPIRED);
-      } else {
-        return thunkAPI.rejectWithValue(
-          tutorSignupMessages.OTP_VERIFICATION_FAIL
-        );
-      }
-    }
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      const errorMessage = error.response?.data?.error || error.message;
-      return thunkAPI.rejectWithValue(errorMessage);
-    }
+//     // console.log("resssponsee", response);
+//     if (response.data.success) {
+//       return response.data;
+//     } else {
+//       if (response.data.message === "Invalid OTP") {
+//         return thunkAPI.rejectWithValue(tutorSignupMessages.WRONG_OTP);
+//       } else if (response.data.message === "OTP expired") {
+//         return thunkAPI.rejectWithValue(tutorSignupMessages.OTP_EXPIRED);
+//       } else {
+//         return thunkAPI.rejectWithValue(
+//           tutorSignupMessages.OTP_VERIFICATION_FAIL
+//         );
+//       }
+//     }
+//   } catch (error) {
+//     if (axios.isAxiosError(error)) {
+//       const errorMessage = error.response?.data?.error || error.message;
+//       return thunkAPI.rejectWithValue(errorMessage);
+//     }
 
-    return thunkAPI.rejectWithValue(tutorSignupMessages.UNKNOWN_ERROR);
-  }
-});
+//     return thunkAPI.rejectWithValue(tutorSignupMessages.UNKNOWN_ERROR);
+//   }
+// });
 
 // In your TutorSignUpFormValues.ts or a similar file
 export interface UpdateTutorProfilePayload {
@@ -95,16 +101,7 @@ export const updateTutorProfile = createAsyncThunk<
   { rejectValue: string }
 >("tutor/updateProfile", async (profileData, thunkAPI) => {
   try {
-    const response = await axios.put(
-      "http://localhost:3000/tutor/update-profile",
-      profileData,
-      {
-        withCredentials: true, // Important for sending cookies
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const response = await axios.put("/tutor/update-profile", profileData);
 
     return response.data;
   } catch (error) {
@@ -127,28 +124,28 @@ const tutorSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(signUpTutor.pending, (state) => {
+      .addCase(signUpUser.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(signUpTutor.fulfilled, (state, action) => {
+      .addCase(signUpUser.fulfilled, (state, action) => {
         state.loading = false;
         state.tutorInfo = action.meta.arg;
       })
-      .addCase(signUpTutor.rejected, (state, action) => {
+      .addCase(signUpUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
-      .addCase(verifyTutorOTP.pending, (state) => {
+      .addCase(verifyOTP.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(verifyTutorOTP.fulfilled, (state, action) => {
+      .addCase(verifyOTP.fulfilled, (state, action) => {
         state.loading = false;
         state.isVerified = true;
         state.tutor = action.payload;
       })
-      .addCase(verifyTutorOTP.rejected, (state, action) => {
+      .addCase(verifyOTP.rejected, (state, action) => {
         state.loading = false;
         state.error =
           action.payload || tutorSignupMessages.OTP_VERIFICATION_FAIL;

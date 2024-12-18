@@ -2,7 +2,10 @@ import "./TutorSignup.scss";
 import { imageLinks, signupMessages } from "../../../utils/constants";
 import { TutorSignUpDummy } from "../../../entities/tutor/TutorSignUpDummy";
 import { useAppDispatch } from "../../../hooks/hooks";
-import { signUpUser, verifyOTP } from "../../../redux/features/userSlice";
+import {
+  signUpUser,
+  verifyOTP,
+} from "../../../redux/services/UserSignupServices";
 
 import React, { useRef, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -18,7 +21,8 @@ import {
   Alert,
 } from "@mui/material";
 import { signUpSchema } from "../../../schemas/signUpSchema";
-import { SignUpFormValues, UserRole } from "../../../entities/SignUpFormValues";
+import { SignUpFormValues } from "../../../entities/user/SignUpFormValues";
+import { UserRole } from "../../../entities/user/UserRole";
 
 const SignupPage: React.FC = () => {
   const dispatch = useAppDispatch();

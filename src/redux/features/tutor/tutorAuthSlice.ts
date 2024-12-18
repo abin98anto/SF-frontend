@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 // import axios from "axios";
-import { UserDetails } from "../../../entities/UserDetails";
+import { UserDetails } from "../../../entities/user/UserDetails";
 // import { LoginFormValues } from "../../../entities/LoginFormValues";
 import { loginUser, logoutUser } from "../../services/UserAuthServices";
 

@@ -1,7 +1,7 @@
 import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { SignUpFormValues } from "../../../entities/SignUpFormValues";
+import { SignUpFormValues } from "../../../entities/user/SignUpFormValues";
 import { signUpSchema } from "../../../schemas/signUpSchema";
 import FileUploadButton from "../../FileUploadButton/FileUploadButton";
 import GoogleButton from "../../google-btn/GoogleButton";

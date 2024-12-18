@@ -15,7 +15,8 @@ import {
 import { logoutUser } from "../../../redux/services/UserAuthServices";
 import "./Header.scss";
 import { RootState, AppDispatch } from "../../../redux/store";
-import { UserRole } from "../../../entities/SignUpFormValues";
+// import { UserRole } from "../../../entities/user/SignUpFormValues";
+import { UserRole } from "../../../entities/user/UserRole";
 
 const Header = () => {
   // const navigate = Navigate();

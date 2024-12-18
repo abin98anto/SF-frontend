@@ -3,9 +3,9 @@ import axios from "axios";
 import axiosInstance from "../../utils/axiosConfig";
 
 // import { LoginFormValues, UserDetails } from "../features/userAuthSlice";
-import { UserRole } from "../../entities/SignUpFormValues";
-import { UserDetails } from "../../entities/UserDetails";
-import { LoginFormValues } from "../../entities/LoginFormValues";
+import { UserRole } from "../../entities/user/SignUpFormValues";
+import { UserDetails } from "../../entities/user/UserDetails";
+import { LoginFormValues } from "../../entities/user/LoginFormValues";
 
 // Correct type definition for createAsyncThunk
 export const loginUser = createAsyncThunk<
