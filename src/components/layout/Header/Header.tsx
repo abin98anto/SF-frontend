@@ -11,16 +11,16 @@ import {
   DialogTitle,
   Button,
 } from "@mui/material";
-import { logoutUser } from "../../../redux/features/userAuthSlice"; // Adjust the import path as needed
+import { logoutUser } from "../../../redux/features/userAuthSlice";
 import "./Header.scss";
-import { RootState, AppDispatch } from "../../../redux/store"; // Import AppDispatch
+import { RootState, AppDispatch } from "../../../redux/store";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [openLogoutModal, setOpenLogoutModal] = useState(false); // Manage the modal visibility
+  const [openLogoutModal, setOpenLogoutModal] = useState(false);
 
-  const dispatch = useDispatch<AppDispatch>(); // Use AppDispatch here
+  const dispatch = useDispatch<AppDispatch>();
   const { isAuthenticated, userInfo } = useSelector(
     (state: RootState) => state.userLogin
   );
@@ -49,9 +49,9 @@ const Header = () => {
 
   // Handle logout action after confirmation
   const handleLogout = () => {
-    dispatch(logoutUser()); // This should work correctly now
-    setOpenLogoutModal(false); // Close the modal after logout
-    handleProfileMenuClose(); // Close the profile menu
+    dispatch(logoutUser());
+    setOpenLogoutModal(false); 
+    handleProfileMenuClose(); 
   };
 
   return (
@@ -148,14 +148,14 @@ const Header = () => {
             <IconButton onClick={handleProfileMenuOpen}>
               <Avatar
                 src={userInfo?.profilePicture}
-                alt={userInfo?.firstName || "User"}
+                alt={userInfo?.name || "User"}
                 sx={{
                   width: 40,
                   height: 40,
                   border: "2px solid #primary.main",
                 }}
               >
-                {userInfo?.firstName?.[0]}
+                {userInfo?.name?.[0]}
               </Avatar>
             </IconButton>
             <Menu
@@ -192,7 +192,9 @@ const Header = () => {
         aria-labelledby="logout-dialog-title"
         aria-describedby="logout-dialog-description"
       >
-        <DialogTitle id="logout-dialog-title">Are you sure you want to logout?</DialogTitle>
+        <DialogTitle id="logout-dialog-title">
+          Are you sure you want to logout?
+        </DialogTitle>
         <DialogActions>
           <Button onClick={handleLogoutModalClose} color="primary">
             No

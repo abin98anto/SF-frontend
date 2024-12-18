@@ -87,7 +87,7 @@ export const toggleUserStatus = createAsyncThunk<
     const response = await axios.patch(
       `http://localhost:3000/admin/toggle-status?id=${userId}`
     );
-    return response.data.isActive; // Backend should return the new status
+    return response.data.isActive;
   } catch (error) {
     if (axios.isAxiosError(error)) {
       return rejectWithValue(

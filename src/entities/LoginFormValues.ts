@@ -6,6 +6,6 @@ export interface LoginFormValues {
 export interface UserState {
   loading: boolean;
   error: string | null;
-  userInfo: any | null; // Replace 'any' with your user info type
+  userInfo: any | null;
   isAuthenticated: boolean;
 }

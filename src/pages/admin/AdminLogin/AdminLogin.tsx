@@ -57,7 +57,6 @@ const AdminLogin = () => {
             password: data.password,
           })
         );
-        // console.log("the result in adminlogin", result);
         if (loginAdmin.fulfilled.match(result)) {
           navigate("/admin/dashboard");
         } else {
@@ -124,7 +123,6 @@ const AdminLogin = () => {
             </button>
           </form>
 
-          {/* Show login error message if credentials are invalid */}
           {loginError && <p className="error-message">{loginError}</p>}
 
           <div className="buttons-container">

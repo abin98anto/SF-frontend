@@ -98,7 +98,6 @@ const TutorDashboard = () => {
     if (name.length > 50) {
       return "Name cannot exceed 50 characters";
     }
-    // Regex to allow only letters, spaces, and hyphens
     const nameRegex = /^[a-zA-Z\s-]+$/;
     if (!nameRegex.test(name)) {
       return "Name can only contain letters, spaces, and hyphens";
@@ -118,17 +117,14 @@ const TutorDashboard = () => {
     return "";
   };
 
-  // Handle input changes with validation
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
-    // Update edited profile
     setEditedProfile((prev) => ({
       ...prev,
       [name]: value,
     }));
 
-    // Validate input
     if (name === "name") {
       const nameError = validateName(value);
       setValidationErrors((prev) => ({
@@ -146,14 +142,12 @@ const TutorDashboard = () => {
     }
   };
 
-  // Handle profile picture upload
   const handleProfilePictureUpload = async (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
 
-      // Validate image file
       const imageUploadResult = await handleFileUpload(file, {
         validateFile: validateImageFile,
         onUploadStart: () => setIsUploading(true),
@@ -179,7 +173,6 @@ const TutorDashboard = () => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
 
-      // Validate PDF file
       const resumeUploadResult = await handleFileUpload(file, {
         validateFile: validatePdfFile,
         onUploadStart: () => setIsUploading(true),
@@ -206,25 +199,20 @@ const TutorDashboard = () => {
     }));
   };
 
-  // Handle form submission with final validation
   const handleSubmit = () => {
-    // Validate all fields before submission
     const nameError = validateName(editedProfile.name);
     const emailError = validateEmail(editedProfile.email);
 
-    // Update validation errors
     setValidationErrors({
       name: nameError,
       email: emailError,
     });
 
-    // Check if there are any validation errors
     if (nameError || emailError) {
       toast.error("Please correct the errors before submitting");
       return;
     }
 
-    // Dispatch action to update profile
     dispatch(updateTutorProfile(editedProfile));
     handleCloseModal();
     toast.success("Profile updated successfully!");

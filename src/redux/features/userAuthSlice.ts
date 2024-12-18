@@ -30,9 +30,9 @@ const initialState: UserState = {
 
 // Correct type definition for createAsyncThunk
 export const loginUser = createAsyncThunk<
-  { message: string; user: UserDetails }, // Return type
-  LoginFormValues, // First argument type
-  { rejectValue: string } // ThunkAPI config type
+  { message: string; user: UserDetails },
+  LoginFormValues,
+  { rejectValue: string } 
 >("user/login", async (credentials, thunkAPI) => {
   try {
     const response = await axios.post(
@@ -62,9 +62,9 @@ export const loginUser = createAsyncThunk<
 });
 
 export const logoutUser = createAsyncThunk<
-  void, // Return type
-  void, // First argument type (none in this case)
-  { rejectValue: string } // ThunkAPI config type
+  void,
+  void,
+  { rejectValue: string }
 >("user/logout", async (_, thunkAPI) => {
   try {
     const response = await axios.post(

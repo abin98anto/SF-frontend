@@ -5,6 +5,7 @@ import tutorReducer from "./features/tutor/tutorSlice";
 import tutorAuthReducer from "./features/tutor/tutorAuthSlice";
 import adminAuthReducer from "./features/Admin/adminAuthSlice";
 import userListReducer from "./features/userListSlice";
+import tutorListReducer from "./features/tutor/tutorListSlice";
 
 const store = configureStore({
   reducer: {
@@ -13,6 +14,7 @@ const store = configureStore({
     userList: userListReducer,
     tutor: tutorReducer,
     tutorLogin: tutorAuthReducer,
+    tutorList: tutorListReducer,
     adminLogin: adminAuthReducer,
   },
 });

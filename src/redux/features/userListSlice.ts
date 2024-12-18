@@ -29,7 +29,6 @@ export const fetchUsers = createAsyncThunk(
     const response = await axios.get<User[]>(
       "http://localhost:3000/admin/users"
     );
-    // console.log("heyo", response);
     return response.data;
   }
 );
@@ -45,7 +44,7 @@ export const userListSlice = createSlice({
       const { userId, isActive } = action.payload;
       const user = state.users.find((u) => u._id === userId);
       if (user) {
-        user.isActive = isActive; // Update the user's status in the state
+        user.isActive = isActive;
       }
     },
   },

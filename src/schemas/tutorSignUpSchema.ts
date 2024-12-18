@@ -26,5 +26,4 @@ export const tutorSignUpSchema = yup.object().shape({
     .required("Confirm password is required")
     .oneOf([yup.ref("password")], "Passwords must match"),
 
-  resume: yup.string().required("Resume is required"),
 });

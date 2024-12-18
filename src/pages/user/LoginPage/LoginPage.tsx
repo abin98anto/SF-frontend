@@ -56,7 +56,7 @@ const LoginPage = () => {
         );
 
         if (loginUser.fulfilled.match(result)) {
-          navigate("/"); // Adjust route as needed
+          navigate("/");
         }
       } catch (err) {
         console.error("Login failed", err);

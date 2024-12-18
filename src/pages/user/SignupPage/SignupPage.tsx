@@ -1,10 +1,9 @@
 import "./SignupPage.scss";
 import { signUpSchema } from "../../../schemas/signUpSchema";
 import { imageLinks, signupMessages } from "../../../utils/constants";
-import { handleFileUpload, validateImageFile } from "../../../utils/fileUpload";
 import { SignUpFormValues } from "../../../entities/SignUpFormValues";
 import { SignUpDummy } from "../../../entities/SignUpDummy";
-import { useAppDispatch, useAppSelector } from "../../../hooks/hooks";
+import { useAppDispatch } from "../../../hooks/hooks";
 import { signUpUser, verifyOTP } from "../../../redux/features/userSlice";
 
 import React, { useRef, useState } from "react";
@@ -25,7 +24,6 @@ import GoogleButton from "../../../components/google-btn/GoogleButton";
 const SignupPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { loading } = useAppSelector((state) => state.user);
 
   const {
     register,
@@ -39,34 +37,12 @@ const SignupPage: React.FC = () => {
 
   const [userDetails, setUserDetails] = useState<SignUpFormValues | null>(null);
   const [errorMessage, setErrorMessage] = useState<string>("");
-  const [isUploading, setIsUploading] = useState<boolean>(false);
   const [openOTPModal, setOpenOTPModal] = useState<boolean>(false);
   const [openErrorToast, setOpenErrorToast] = useState<boolean>(false);
   const [otpValue, setOtpValue] = useState<string>("");
   const [submittedEmail, setSubmittedEmail] = useState<string>("");
   const [timer, setTimer] = useState<number>(60);
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
-
-  // Image input function.
-  const handleFileChange = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const result = await handleFileUpload(file, {
-        onUploadStart: () => setIsUploading(true),
-        onUploadEnd: () => setIsUploading(false),
-        validateFile: validateImageFile,
-      });
-
-      if (result.success && result.url) {
-        setValue("profilePicture", result.url);
-      } else {
-        alert(result.error || "Upload failed");
-      }
-    }
-  };
 
   // Autofill function.
   const handleAutofill = () => {
@@ -205,10 +181,6 @@ const SignupPage: React.FC = () => {
     setOpenErrorToast(false);
   };
 
-  const triggerFileInput = () => {
-    fileInputRef.current?.click();
-  };
-
   const otpModalStyle = {
     position: "absolute",
     top: "50%",
@@ -271,52 +243,9 @@ const SignupPage: React.FC = () => {
               <p className="error-message">{errors.confirmPassword.message}</p>
             )}
 
-            {/* Profile Picture */}
-            <input
-              type="file"
-              {...register("profilePicture")}
-              ref={fileInputRef}
-              onChange={handleFileChange}
-              style={{ display: "none" }}
-              accept="image/jpeg,image/png,image/gif"
-            />
-            <button
-              className="button"
-              onClick={triggerFileInput}
-              type="button"
-              disabled={isUploading}
-            >
-              <svg xmlns={imageLinks.GOOGLE_SVG}>
-                <rect className="border" pathLength={100} />
-                <rect className="loading" pathLength={100} />
-                <svg
-                  className="done-svg"
-                  xmlns={imageLinks.GOOGLE_SVG}
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    className="done done-cloud"
-                    pathLength={100}
-                    d={imageLinks.D_CLOUD}
-                  />
-                  <path
-                    className="done done-check"
-                    pathLength={100}
-                    d={imageLinks.D_CHECK}
-                  />
-                </svg>
-              </svg>
-              <div className="txt-upload">
-                {isUploading ? "Uploading..." : "Upload"}
-              </div>
-            </button>
-            {errors.profilePicture && (
-              <p className="error-message">{errors.profilePicture.message}</p>
-            )}
-
             {/* Submit Button */}
-            <button type="submit" className="form-btn" disabled={isUploading}>
-              {isUploading || loading ? "Processing..." : "Sign up"}
+            <button type="submit" className="form-btn">
+              Sign up
             </button>
           </form>
 

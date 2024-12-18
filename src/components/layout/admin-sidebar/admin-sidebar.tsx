@@ -7,9 +7,9 @@ import {
   UserCog,
   Layers,
   BookCheck,
-  LogOut,
 } from "lucide-react";
 import "./admin-sidebar.scss";
+import LogoutModal from "./LogoutMoal";
 
 const menuItems = [
   {
@@ -54,9 +54,6 @@ export default function Sidebar() {
   };
 
   const handleSignOut = () => {
-    // Implement your sign-out logic here
-    console.log("Signing out...");
-    // After signing out, navigate to the login page
     navigate("/admin/login");
   };
 
@@ -84,8 +81,7 @@ export default function Sidebar() {
 
       <div className="sidebar-footer">
         <button className="sign-out-button" onClick={handleSignOut}>
-          <LogOut className="nav-icon" />
-          <span className="nav-text">Sign-out</span>
+          <LogoutModal />
         </button>
       </div>
     </div>

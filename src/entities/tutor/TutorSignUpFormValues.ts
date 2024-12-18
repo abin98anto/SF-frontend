@@ -1,9 +1,13 @@
+import { UserRole } from "../SignUpFormValues";
+
 export interface TutorSignUpFormValues {
   name: string;
   email: string;
   password: string;
   confirmPassword: string;
-  resume: string;
+  _id?: string;
+  role?: UserRole;
+  // resume?: string;
 }
 
 export interface OTPVerificationPayload {
@@ -22,4 +26,24 @@ export interface TutorState {
   error: string | null;
   isVerified?: boolean;
   tutor?: OTPVerificationResponse | null;
+}
+
+export interface Tutor {
+  _id: string;
+  name: string;
+  email: string;
+  role: string;
+  isActive: boolean;
+  rating: number;
+  batchesHandling: number;
+  reviewsTaken: number;
+  sessionsTaken: number;
+  // resume?: string;
+}
+
+export interface TutorSignUpFormInput {
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
 }

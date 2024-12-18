@@ -5,6 +5,13 @@ export interface SignUpFormValues {
   confirmPassword: string;
   profilePicture: string;
   isActive?: boolean;
+  role?: UserRole;
+}
+
+export enum UserRole {
+  ADMIN = "admin",
+  USER = "user",
+  TUTOR = "tutor",
 }
 
 export interface OTPVerificationResponse {

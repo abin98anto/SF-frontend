@@ -1,10 +1,12 @@
 import "./TutorSignup.scss";
 import { tutorSignUpSchema } from "../../../schemas/tutorSignUpSchema";
 import { imageLinks, signupMessages } from "../../../utils/constants";
-import { handleFileUpload, validatePdfFile } from "../../../utils/fileUpload";
-import { TutorSignUpFormValues } from "../../../entities/tutor/TutorSignUpFormValues";
+import {
+  TutorSignUpFormInput,
+  TutorSignUpFormValues,
+} from "../../../entities/tutor/TutorSignUpFormValues";
 import { TutorSignUpDummy } from "../../../entities/tutor/TutorSignUpDummy";
-import { useAppDispatch, useAppSelector } from "../../../hooks/hooks";
+import { useAppDispatch } from "../../../hooks/hooks";
 import {
   signUpTutor,
   verifyTutorOTP,
@@ -27,7 +29,6 @@ import {
 const SignupPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { loading } = useAppSelector((state) => state.tutor);
 
   const {
     register,
@@ -35,46 +36,24 @@ const SignupPage: React.FC = () => {
     setValue,
     getValues,
     formState: { errors },
-  } = useForm<TutorSignUpFormValues>({
+  } = useForm<TutorSignUpFormInput>({
     resolver: yupResolver(tutorSignUpSchema),
   });
 
   const [tutorDetails, setTutorDetails] =
     useState<TutorSignUpFormValues | null>(null);
   const [errorMessage, setErrorMessage] = useState<string>("");
-  const [isUploading, setIsUploading] = useState<boolean>(false);
   const [openOTPModal, setOpenOTPModal] = useState<boolean>(false);
   const [openErrorToast, setOpenErrorToast] = useState<boolean>(false);
   const [otpValue, setOtpValue] = useState<string>("");
   const [submittedEmail, setSubmittedEmail] = useState<string>("");
   const [timer, setTimer] = useState<number>(60);
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
-
-  // File input function.
-  const handleFileChange = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const result = await handleFileUpload(file, {
-        onUploadStart: () => setIsUploading(true),
-        onUploadEnd: () => setIsUploading(false),
-        validateFile: validatePdfFile,
-      });
-
-      if (result.success && result.url) {
-        setValue("resume", result.url);
-      } else {
-        alert(result.error || "Upload failed");
-      }
-    }
-  };
 
   // Autofill function.
   const handleAutofill = () => {
     const autofillData = TutorSignUpDummy();
-    (Object.keys(autofillData) as Array<keyof TutorSignUpFormValues>).forEach(
+    (Object.keys(autofillData) as Array<keyof TutorSignUpFormInput>).forEach(
       (key) => {
         const currentValue = getValues(key);
         if (!currentValue) {
@@ -85,7 +64,7 @@ const SignupPage: React.FC = () => {
   };
 
   // Form submission.
-  const onSubmit: SubmitHandler<TutorSignUpFormValues> = async (data) => {
+  const onSubmit: SubmitHandler<TutorSignUpFormInput> = async (data) => {
     setTutorDetails(data);
     setSubmittedEmail(data.email);
 
@@ -98,10 +77,10 @@ const SignupPage: React.FC = () => {
 
       if (errorPayload?.message === signupMessages.EMAIL_EXISTS) {
         setErrorMessage(signupMessages.EMAIL_EXISTS);
-        setOpenErrorToast(true); // Ensure this is always set for Snackbar
+        setOpenErrorToast(true);
       } else {
         setErrorMessage(signupMessages.UNKOWN_ERROR);
-        setOpenErrorToast(true); // Show generic error if no specific match
+        setOpenErrorToast(true);
       }
     }
   };
@@ -126,9 +105,6 @@ const SignupPage: React.FC = () => {
       if (verifyTutorOTP.fulfilled.match(result)) {
         navigate("/tutor/login");
       } else {
-        // setErrorMessage(result.payload || signupMessages.UNKNOWN_ERROR);
-        // setErrorMessage(result.payload || signupMessages.UNKOWN_ERROR);
-        // setOpenErrorToast(true);
         if (result.payload === signupMessages.WRONG_OTP) {
           setErrorMessage(signupMessages.WRONG_OTP);
         } else if (result.payload === signupMessages.OTP_EXPIRED) {
@@ -212,10 +188,6 @@ const SignupPage: React.FC = () => {
     setOpenErrorToast(false);
   };
 
-  const triggerFileInput = () => {
-    fileInputRef.current?.click();
-  };
-
   const otpModalStyle = {
     position: "absolute",
     top: "50%",
@@ -282,52 +254,9 @@ const SignupPage: React.FC = () => {
                 </p>
               )}
 
-              {/* Resume upload. */}
-              <input
-                type="file"
-                {...register("resume")}
-                ref={fileInputRef}
-                onChange={handleFileChange}
-                style={{ display: "none" }}
-                accept="application/pdf"
-              />
-              <button
-                className="button"
-                onClick={triggerFileInput}
-                type="button"
-                disabled={isUploading}
-              >
-                <svg xmlns={imageLinks.GOOGLE_SVG}>
-                  <rect className="border" pathLength={100} />
-                  <rect className="loading" pathLength={100} />
-                  <svg
-                    className="done-svg"
-                    xmlns={imageLinks.GOOGLE_SVG}
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      className="done done-cloud"
-                      pathLength={100}
-                      d={imageLinks.D_CLOUD}
-                    />
-                    <path
-                      className="done done-check"
-                      pathLength={100}
-                      d={imageLinks.D_CHECK}
-                    />
-                  </svg>
-                </svg>
-                <div className="txt-upload">
-                  {isUploading ? "Uploading..." : "Upload Resume (PDF)"}
-                </div>
-              </button>
-              {errors.resume && (
-                <p className="error-message">{errors.resume.message}</p>
-              )}
-
-              {/* Submit Button */}
-              <button type="submit" className="form-btn" disabled={isUploading}>
-                {isUploading || loading ? "Processing..." : "Sign up"}
+              {/* Submit ButtouseAppSelectorn */}
+              <button type="submit" className="form-btn">
+                Sign up
               </button>
             </form>
 

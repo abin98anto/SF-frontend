@@ -26,12 +26,11 @@ const UserManagement: React.FC = () => {
     try {
       const resultAction = await dispatch(toggleUserStatus(userId));
       if (toggleUserStatus.fulfilled.match(resultAction)) {
-        const newStatus = isActive; // Use the 'checked' value directly
+        const newStatus = isActive;
         message.success(
           `User status updated to ${newStatus ? "Active" : "Inactive"}`
         );
 
-        // Update the state locally
         dispatch(
           updateUserStatusLocally({
             userId,
@@ -105,7 +104,7 @@ const UserManagement: React.FC = () => {
                   ? users.map((user) => ({
                       ...user,
                       key: user._id,
-                      isActive: user.isActive ?? false, // Ensure isActive is boolean
+                      isActive: user.isActive ?? false,
                     }))
                   : []
               }

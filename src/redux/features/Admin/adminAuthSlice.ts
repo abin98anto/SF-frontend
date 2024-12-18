@@ -29,9 +29,9 @@ const initialState: AdminState = {
 
 // Correct type definition for createAsyncThunk
 export const loginAdmin = createAsyncThunk<
-  { message: string; user: adminDetails }, // Return type
-  AdminLoginFormValues, // First argument type
-  { rejectValue: string } // ThunkAPI config type
+  { message: string; user: adminDetails },
+  AdminLoginFormValues,
+  { rejectValue: string }
 >("admin/login", async (credentials, thunkAPI) => {
   try {
     const response = await axios.post(
@@ -44,7 +44,6 @@ export const loginAdmin = createAsyncThunk<
         },
       }
     );
-    // console.log("respoonse", response);
 
     return {
       message: response.data.message,
@@ -62,9 +61,9 @@ export const loginAdmin = createAsyncThunk<
 });
 
 export const logoutAdmin = createAsyncThunk<
-  void, // Return type
-  void, // First argument type (none in this case)
-  { rejectValue: string } // ThunkAPI config type
+  void,
+  void,
+  { rejectValue: string } 
 >("tutor/logout", async (_, thunkAPI) => {
   try {
     const response = await axios.post(
