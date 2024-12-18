@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
 import axios from "axios";
+import axiosInstance from "../../../utils/axiosConfig";
 
 interface Tutor {
   _id: string;
@@ -30,10 +31,7 @@ const initialState: TutorState = {
 export const fetchTutors = createAsyncThunk(
   "tutors/fetchUsers",
   async (): Promise<Tutor[]> => {
-    const response = await axios.get<Tutor[]>(
-      "http://localhost:3000/admin/tutors"
-    );
-    // console.log("heyo", response);
+    const response = await axiosInstance.get<Tutor[]>("/admin/tutors");
     return response.data;
   }
 );
@@ -49,7 +47,7 @@ export const tutorListSlice = createSlice({
       const { userId, isActive } = action.payload;
       const user = state.tutors.find((u) => u._id === userId);
       if (user) {
-        user.isActive = isActive; // Update the user's status in the state
+        user.isActive = isActive;
       }
     },
   },
