@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { BarChart2, BookOpen, UserCog } from "lucide-react";
+import { BarChart2, Users, MessageCircleMore } from "lucide-react";
 import "./tutor-sidebar.scss";
 import LogoutModal from "../admin-sidebar/LogoutMoal";
 
@@ -12,13 +12,18 @@ const menuItems = [
   },
   {
     title: "My Students",
-    icon: BookOpen,
+    icon: Users,
     path: "/tutor/my-students",
   },
   {
     title: "Messages",
-    icon: UserCog,
+    icon: MessageCircleMore,
     path: "/tutor/messages",
+  },
+  {
+    title: "Profile",
+    icon: MessageCircleMore,
+    path: "/tutor/profile",
   },
 ];
 
