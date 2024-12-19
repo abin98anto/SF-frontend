@@ -1,0 +1,179 @@
+.profile-section {
+  width: 100%;
+  padding: 2rem;
+  color: #ffffff;
+
+  .profile-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    color: #ffffff;
+  }
+
+  .profile-picture-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 3rem;
+
+    .profile-picture-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+
+      .profile-avatar {
+        width: 150px;
+        height: 150px;
+        background-color: #555555;
+      }
+
+      .profile-picture-actions {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+
+        .change-photo-btn {
+          color: #2196f3;
+          border-color: #2196f3;
+
+          &:hover {
+            background-color: rgba(33, 150, 243, 0.1);
+          }
+        }
+
+        .delete-photo-btn {
+          color: #f44336;
+
+          &:hover {
+            background-color: rgba(244, 67, 54, 0.1);
+          }
+        }
+      }
+    }
+  }
+
+  .section-title {
+    color: #ffffff;
+    font-weight: 500;
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .text-content {
+    color: #ffffff;
+  }
+
+  .form-field {
+    margin-bottom: 1.5rem;
+
+    .field-label {
+      color: #ffffff;
+    }
+
+    .input-field {
+      color: #ffffff;
+
+      &::before,
+      &::after {
+        border-color: rgba(255, 255, 255, 0.5);
+      }
+
+      input {
+        color: #ffffff;
+      }
+    }
+
+    .MuiOutlinedInput-root {
+      fieldset {
+        border-color: rgba(255, 255, 255, 0.5);
+      }
+
+      &:hover fieldset {
+        border-color: rgba(255, 255, 255, 0.7);
+      }
+
+      &.Mui-focused fieldset {
+        border-color: #2196f3;
+      }
+    }
+  }
+
+  .resume-section {
+    margin-bottom: 2rem;
+
+    .resume-content {
+      margin-top: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+
+      .current-resume {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.5rem;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+      }
+
+      .upload-btn {
+        color: #2196f3;
+        border-color: #2196f3;
+
+        &:hover {
+          background-color: rgba(33, 150, 243, 0.1);
+        }
+      }
+    }
+  }
+
+  .password-section {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    padding: 2rem;
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2rem;
+
+    .save-btn {
+      background-color: #2196f3;
+      color: #ffffff;
+
+      &:hover {
+        background-color: #1976d2;
+      }
+    }
+
+    .cancel-btn {
+      color: #ffffff;
+      border-color: rgba(255, 255, 255, 0.5);
+
+      &:hover {
+        border-color: #ffffff;
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+    }
+  }
+
+  .personal-info-actions {
+    margin-top: 1rem;
+  }
+
+  .password-actions {
+    margin-bottom: 0;
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 960px) {
+  .profile-section {
+    .password-section {
+      padding: 1.5rem;
+      margin-top: 2rem;
+    }
+  }
+}
