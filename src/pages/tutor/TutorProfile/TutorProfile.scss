@@ -178,47 +178,4 @@
   }
 }
 
-.Toastify__toast {
-  font-family: "Montserrat", sans-serif; // Example to align with your project's font
-}
 
-.profile-section .form-field .MuiInputBase-input {
-  color: white !important; // Ensure input text remains white
-}
-
-.profile-section .form-field .MuiInputLabel-root {
-  color: white !important; // Ensure label text remains white
-}
-
-.profile-section .form-field .MuiOutlinedInput-notchedOutline {
-  border-color: white !important; // Ensure border remains white
-}
-
-.profile-section .form-field:hover .MuiOutlinedInput-notchedOutline {
-  border-color: #cccccc !important; // Optional: lighter border on hover
-}
-
-.profile-section .form-field.Mui-focused .MuiOutlinedInput-notchedOutline {
-  border-color: white !important; // Focus state border remains white
-}
-
-.toast-container .Toastify__toast-icon {
-  font-size: 1.2rem; // Adjust the size of the tick icon
-  margin-right: 0.5rem; // Add some spacing to prevent it from taking too much space
-}
-
-.toast-container .Toastify__toast {
-  align-items: center; // Ensure proper alignment of the icon and text
-  padding: 0.5rem 1rem; // Adjust padding for better fit
-  border-radius: 8px; // Optional: Make the toast more visually appealing
-}
-
-.toast-container .Toastify__toast--success {
-  background-color: #4caf50 !important; // Custom background for success
-  color: white; // Ensure text is readable
-}
-
-.toast-container .Toastify__toast--error {
-  background-color: #f44336 !important; // Custom background for errors
-  color: white;
-}

@@ -12,6 +12,21 @@ import { LoginFormValues } from "../../../entities/user/LoginFormValues";
 import { validateEmail } from "../../../utils/form-checks/validateEmail";
 import { TutorDummy } from "../../../entities/dummys/TutorDummy";
 
+// Define interfaces for the response types
+interface UserDetails {
+  role: string;
+  // Add other user properties as needed
+}
+
+interface LoginResponse {
+  message: string;
+  user: UserDetails;
+}
+
+interface LoginError {
+  message: string;
+}
+
 const TutorLogin = () => {
   const dispatch = useDispatch<ThunkDispatch<RootState, any, any>>();
   const navigate = useNavigate();
@@ -51,15 +66,18 @@ const TutorLogin = () => {
           })
         );
 
-        if (loginTutor.fulfilled.match(result)) {
-          const user = result.payload.user;
-          if (user.role === "tutor") {
+        if (result.meta.requestStatus === "fulfilled") {
+          const payload = result.payload as LoginResponse;
+          if (payload?.user?.role === "tutor") {
             navigate("/tutor/dashboard");
           } else {
             setCustomError(someMessages.TUTOR_ONLY);
           }
         } else {
-          setCustomError(result.payload || someMessages.LOGIN_FAILED);
+          const errorPayload = result.payload as LoginError;
+          const errorMessage =
+            errorPayload?.message || someMessages.LOGIN_FAILED;
+          setCustomError(errorMessage);
         }
       } catch (err) {
         console.error(someMessages.LOGIN_FAILED, err);
@@ -80,6 +98,12 @@ const TutorLogin = () => {
     }
   };
 
+  // Helper function to get error message with proper type checking
+  const getErrorMessage = (error: string | LoginError): string => {
+    if (typeof error === "string") return error;
+    return error.message || someMessages.UNKNOWN_ERROR;
+  };
+
   return (
     <>
       <div className="heading">SkillForge</div>
@@ -91,11 +115,14 @@ const TutorLogin = () => {
             {/* Display custom error if exists */}
             {customError && <p className="error-message">{customError}</p>}
 
-            {error && <p className="error-message">{error}</p>}
+            {/* Safely handle error object */}
+            {error && <p className="error-message">{getErrorMessage(error)}</p>}
 
             <form className="form" onSubmit={handleSubmit(onSubmit)}>
               <input
-                {...register("email", { required: someMessages.EMAIL_REQUIRED})}
+                {...register("email", {
+                  required: someMessages.EMAIL_REQUIRED,
+                })}
                 className={`input ${errors.email ? "error" : ""}`}
                 placeholder="Email"
                 disabled={loading}
@@ -105,7 +132,9 @@ const TutorLogin = () => {
               )}
 
               <input
-                {...register("password", { required: someMessages.PASS_REQUIRED })}
+                {...register("password", {
+                  required: someMessages.PASS_REQUIRED,
+                })}
                 type="password"
                 className={`input ${errors.password ? "error" : ""}`}
                 placeholder="Password"
