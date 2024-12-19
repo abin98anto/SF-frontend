@@ -1,6 +1,11 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { BarChart2, Users, MessageCircleMore } from "lucide-react";
+import {
+  BarChart2,
+  Users,
+  MessageCircleMore,
+  CircleUserRound,
+} from "lucide-react";
 import "./tutor-sidebar.scss";
 import LogoutModal from "../admin-sidebar/LogoutMoal";
 
@@ -22,7 +27,7 @@ const menuItems = [
   },
   {
     title: "Profile",
-    icon: MessageCircleMore,
+    icon: CircleUserRound,
     path: "/tutor/profile",
   },
 ];
