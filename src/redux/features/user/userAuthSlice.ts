@@ -6,6 +6,7 @@ import {
 } from "../../services/UserAuthServices";
 import { UserDetails } from "../../../entities/user/UserDetails";
 import { someMessages } from "../../../utils/constants";
+import { updateUser } from "../../services/userUpdateService";
 
 export interface UserState {
   loading: boolean;
@@ -90,6 +91,21 @@ const userLoginSlice = createSlice({
       .addCase("tutor/logout", (state) => {
         state.tutorInfo = null;
         state.isAuthenticated = !!state.userInfo;
+      })
+      .addCase(updateUser.pending, (state) => {
+        state.loading = true;
+        state.error = "";
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = "";
+        state.tutorInfo = state.tutorInfo
+          ? { ...state.tutorInfo, ...action.payload }
+          : action.payload;
+      })
+      .addCase(updateUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Failed to update tutor";
       });
   },
 });

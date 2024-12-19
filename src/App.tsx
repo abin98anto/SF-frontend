@@ -29,6 +29,7 @@ import { TutorLayout } from "./components/layout/tutor-layout/tutor-layout";
 import MyStudents from "./pages/tutor/MyStudents/MyStudents";
 import TutorChat from "./pages/tutor/TutorChat/TutorChat";
 import TutorProfile from "./pages/tutor/TutorProfile/TutorProfile";
+import { ToastContainer } from "react-toastify";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -73,6 +74,7 @@ function App() {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
+        <ToastContainer position="top-right" autoClose={3000} />
         <RouterProvider router={router} />
       </PersistGate>
     </Provider>

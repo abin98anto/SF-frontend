@@ -14,12 +14,12 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../../hooks/hooks";
-import {
-  fetchTutors,
-  selectTutors,
-  selectTutorsStatus,
-  selectTutorsError,
-} from "../../../redux/features/tutor/tutorListSlice";
+// import {
+//   fetchTutors,
+//   selectTutors,
+//   selectTutorsStatus,
+//   selectTutorsError,
+// } from "../../../redux/features/tutor/tutorListSlice";
 import { toggleUserStatus } from "../../../redux/features/user/userSlice";
 import ApproveTutorsModal from "./ApproveTutorModal/ApproveTutorModal";
 import "./TutorManagement.scss";
@@ -27,19 +27,19 @@ import { UserDetails } from "../../../entities/user/UserDetails";
 
 const TutorManagement: React.FC = () => {
   const dispatch = useAppDispatch();
-  const tutors = useAppSelector(selectTutors);
-  const status = useAppSelector(selectTutorsStatus);
-  const error = useAppSelector(selectTutorsError);
+  // const tutors = useAppSelector(selectTutors);
+  // const status = useAppSelector(selectTutorsStatus);
+  // const error = useAppSelector(selectTutorsError);
   const [approveModalOpen, setApproveModalOpen] = useState(false);
 
-  useEffect(() => {
-    dispatch(fetchTutors());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(fetchTutors());
+  // }, [dispatch]);
 
   const handleStatusToggle = async (id: string) => {
     try {
       await dispatch(toggleUserStatus(id)).unwrap();
-      dispatch(fetchTutors());
+      // dispatch(fetchTutors());
     } catch (error) {
       console.error("Failed to toggle user status", error);
     }
@@ -49,12 +49,12 @@ const TutorManagement: React.FC = () => {
     setApproveModalOpen(true);
   };
 
-  const activeTutors = tutors.filter(
-    (tutor: UserDetails) => tutor.isActive === true
-  );
-  const pendingTutors = tutors.filter(
-    (tutor: UserDetails) => tutor.isActive !== true
-  );
+  // const activeTutors = tutors.filter(
+  //   (tutor: UserDetails) => tutor.isActive === true
+  // );
+  // const pendingTutors = tutors.filter(
+  //   (tutor: UserDetails) => tutor.isActive !== true
+  // );
 
   return (
     <div className="tutor-management">
@@ -72,7 +72,7 @@ const TutorManagement: React.FC = () => {
         </Button>
       </div>
 
-      <TableContainer component={Paper} className="table-container">
+      {/* <TableContainer component={Paper} className="table-container">
         {status === "loading" ? (
           <div className="loading-placeholder">
             <CircularProgress />
@@ -145,7 +145,7 @@ const TutorManagement: React.FC = () => {
         open={approveModalOpen}
         onClose={() => setApproveModalOpen(false)}
         pendingTutors={pendingTutors}
-      />
+      /> */}
     </div>
   );
 };

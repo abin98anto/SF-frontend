@@ -1,13 +1,13 @@
 import { UserRole } from "./UserRole";
 
 export interface SignUpFormValues {
-  id?: string;
+  id?: string | undefined;
   name: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-  isActive?: boolean;
-  role?: UserRole;
-  resume?: string;
-  profilePicture?: string;
+  email: string; // Make required
+  password: string; // Make required
+  confirmPassword: string; // Make required
+  isActive?: boolean | undefined;
+  role?: UserRole | undefined;
+  resume?: string | undefined;
+  profilePicture?: string | undefined;
 }

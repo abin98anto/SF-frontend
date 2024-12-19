@@ -1,19 +1,20 @@
 export interface UserDetails {
-  id?: string;
-  email?: string;
-  name?: string;
-  role?: string;
-  profilePicture?: string;
-  resume?: string;
-  dateJoined?: string;
-  isActive?: boolean;
-  otp?: number;
-  otpExpiration?: Date;
-  ratings?: rating[];
-  students?: [];
-  reviewsTaken?: number;
-  sessionsTaken?: number;
-  wallet?: number;
+  _id?: string | null;
+  id?: string | null;
+  email?: string | null;
+  name?: string | null;
+  role?: string | null;
+  profilePicture?: string | null;
+  resume?: string | null;
+  dateJoined?: string | null;
+  isActive?: boolean | null;
+  otp?: number | null;
+  otpExpiration?: Date | null;
+  ratings?: rating[] | null;
+  students?: [] | null;
+  reviewsTaken?: number | null;
+  sessionsTaken?: number | null;
+  wallet?: number | null;
 }
 
 export interface rating {

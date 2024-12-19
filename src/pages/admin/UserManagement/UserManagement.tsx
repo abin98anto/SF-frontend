@@ -1,13 +1,13 @@
 import React, { useEffect } from "react";
 import { Table, ConfigProvider, Switch, message } from "antd";
 import { useAppDispatch, useAppSelector } from "../../../hooks/hooks";
-import {
-  fetchUsers,
-  selectUsers,
-  selectUsersStatus,
-  selectUsersError,
-  updateUserStatusLocally,
-} from "../../../redux/features/user/userListSlice";
+// import {
+//   fetchUsers,
+//   selectUsers,
+//   selectUsersStatus,
+//   selectUsersError,
+//   updateUserStatusLocally,
+// } from "../../../redux/features/user/userListSlice";
 import "./UserManagement.scss";
 import ErrorBoundary from "../../../components/ErrorBoundary/ErrorBoundary";
 import { toggleUserStatus } from "../../../redux/features/user/userSlice";
@@ -15,13 +15,13 @@ import { someMessages } from "../../../utils/constants";
 
 const UserManagement: React.FC = () => {
   const dispatch = useAppDispatch();
-  const users = useAppSelector(selectUsers);
-  const status = useAppSelector(selectUsersStatus);
-  const error = useAppSelector(selectUsersError);
+  // const users = useAppSelector(selectUsers);
+  // const status = useAppSelector(selectUsersStatus);
+  // const error = useAppSelector(selectUsersError);
 
-  useEffect(() => {
-    dispatch(fetchUsers());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(fetchUsers());
+  // }, [dispatch]);
 
   const handleToggleStatus = async (userId: string, isActive: boolean) => {
     try {
@@ -32,12 +32,12 @@ const UserManagement: React.FC = () => {
           `User status updated to ${newStatus ? "Active" : "Inactive"}`
         );
 
-        dispatch(
-          updateUserStatusLocally({
-            userId,
-            isActive: newStatus,
-          })
-        );
+        // dispatch(
+        //   updateUserStatusLocally({
+        //     userId,
+        //     isActive: newStatus,
+        //   })
+        // );
       } else {
         message.error(resultAction.payload || "Failed to update user status");
       }
@@ -95,7 +95,7 @@ const UserManagement: React.FC = () => {
           },
         }}
       >
-        <div className="user-management">
+        {/* <div className="user-management">
           {status === "loading" && <p>Loading...</p>}
           {status === "failed" && <p>Error: {error}</p>}
           {status === "succeeded" && (
@@ -113,7 +113,7 @@ const UserManagement: React.FC = () => {
               rowKey="_id"
             />
           )}
-        </div>
+        </div> */}
       </ConfigProvider>
     </ErrorBoundary>
   );
