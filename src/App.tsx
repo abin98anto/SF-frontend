@@ -25,6 +25,7 @@ import TutorManagement from "./pages/admin/TutorManagement/TutorManagement";
 import { PersistGate } from "redux-persist/integration/react";
 import store, { persistor } from "./redux/store";
 import { Provider } from "react-redux";
+import { TutorLayout } from "./components/layout/tutor-layout/tutor-layout";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -42,7 +43,9 @@ const router = createBrowserRouter(
       <Route path="/tutor">
         <Route path="signup" element={<TutorSignup />} />
         <Route path="login" element={<TutorLogin />} />
-        <Route path="dashboard" element={<TutorDashboard />} />
+        <Route element={<TutorLayout />}>
+          <Route path="dashboard" element={<TutorDashboard />} />
+        </Route>
       </Route>
 
       <Route path="/admin">
