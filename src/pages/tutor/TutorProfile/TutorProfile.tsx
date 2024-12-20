@@ -37,16 +37,12 @@ const ProfileSection = () => {
   const [updateSuccess, setUpdateSuccess] = useState(false);
 
   // Get user info from Redux state
-  const { loading, tutorInfo } = useSelector(
-    (state: RootState) => state.userLogin
-  );
+  const { loading, userInfo } = useSelector((state: RootState) => state.tutor);
 
   const [profileImage, setProfileImage] = useState<string | null>(
-    tutorInfo?.profilePicture || "/default-avatar.png"
+    userInfo?.profilePicture || "/default-avatar.png"
   );
-  const [resume, setResume] = useState<string | null>(
-    tutorInfo?.resume || null
-  );
+  const [resume, setResume] = useState<string | null>(userInfo?.resume || null);
 
   const {
     register,
@@ -56,30 +52,13 @@ const ProfileSection = () => {
     setValue,
   } = useForm<ProfileFormData>();
 
-  // Populate form with user data when component mounts or userInfo changes
-  // useEffect(() => {
-  //   if (tutorInfo) {
-  //     setValue("name", tutorInfo.name || "");
-  //     setValue("email", tutorInfo.email || "");
-
-  //     // Update profile image if exists
-  //     if (tutorInfo.profilePicture) {
-  //       setProfileImage(tutorInfo.profilePicture);
-  //     }
-
-  //     // Update resume if exists
-  //     if (tutorInfo.resume) {
-  //       setResume(tutorInfo.resume);
-  //     }
-  //   }
-  // }, [tutorInfo, setValue]);
   useEffect(() => {
-    if (tutorInfo) {
-      setValue("name", tutorInfo.name || "");
-      setValue("email", tutorInfo.email || "");
-      setProfileImage(tutorInfo.profilePicture || "/default-avatar.png");
+    if (userInfo) {
+      setValue("name", userInfo.name || "");
+      setValue("email", userInfo.email || "");
+      setProfileImage(userInfo.profilePicture || "/default-avatar.png");
     }
-  }, [tutorInfo, setValue]);
+  }, [userInfo, setValue]);
 
   const handleImageChange = async (
     event: React.ChangeEvent<HTMLInputElement>
@@ -125,9 +104,9 @@ const ProfileSection = () => {
 
   const handleCancel = () => {
     // Reset form to initial user data
-    if (tutorInfo) {
-      setValue("name", tutorInfo.name || "");
-      setValue("email", tutorInfo.email || "");
+    if (userInfo) {
+      setValue("name", userInfo.name || "");
+      setValue("email", userInfo.email || "");
     } else {
       reset();
     }

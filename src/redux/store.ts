@@ -11,7 +11,7 @@ import adminAuthReducer from "./features/admin/adminAuthSlice";
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["user", "userLogin", "adminLogin"],
+  whitelist: ["user", "userLogin", "adminLogin", "tutor"],
 };
 
 const rootReducer = combineReducers({
