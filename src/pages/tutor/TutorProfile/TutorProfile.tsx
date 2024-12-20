@@ -17,11 +17,13 @@ import {
   Edit as EditIcon,
   Delete as DeleteIcon,
   Upload as UploadIcon,
+  Close as CloseIcon,
 } from "@mui/icons-material";
 import { updateUser } from "../../../redux/services/userUpdateService";
 import { RootState } from "../../../redux/store";
 import "./TutorProfile.scss";
 import { uploadToCloudinary } from "../../../utils/cloudinary";
+import { createPortal } from "react-dom";
 
 interface ProfileFormData {
   name: string;
@@ -31,10 +33,75 @@ interface ProfileFormData {
   confirmPassword: string;
 }
 
+// Modal Component
+const ResumeModal = ({
+  isOpen,
+  onClose,
+  resumeUrl,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  resumeUrl: string;
+}) => {
+  if (!isOpen) return null;
+
+  return createPortal(
+    <div
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        zIndex: 1000,
+      }}
+      onClick={onClose}
+    >
+      <div
+        style={{
+          backgroundColor: "white",
+          padding: "20px",
+          borderRadius: "8px",
+          width: "90%",
+          height: "90%",
+          position: "relative",
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <IconButton
+          style={{
+            position: "absolute",
+            right: "10px",
+            top: "10px",
+          }}
+          onClick={onClose}
+        >
+          <CloseIcon />
+        </IconButton>
+        <iframe
+          src={resumeUrl}
+          style={{
+            width: "100%",
+            height: "100%",
+            border: "none",
+          }}
+          title="Resume Viewer"
+        />
+      </div>
+    </div>,
+    document.body
+  );
+};
+
 const ProfileSection = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [updateError, setUpdateError] = useState<string | null>(null);
   const [updateSuccess, setUpdateSuccess] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Get user info from Redux state
   const { loading, userInfo } = useSelector((state: RootState) => state.tutor);
@@ -69,7 +136,7 @@ const ProfileSection = () => {
     try {
       const uploadedImageUrl = await uploadToCloudinary(file);
       setProfileImage(uploadedImageUrl);
-      await dispatch(updateUser({ profilePicture: uploadedImageUrl })).unwrap();
+      await dispatch(updateUser({ profilePicture: uploadedImageUrl }));
       setUpdateSuccess(true);
       setUpdateError(null);
     } catch (error) {
@@ -78,11 +145,53 @@ const ProfileSection = () => {
     }
   };
 
+  const deleteImage = async () => {
+    try {
+      setProfileImage("/default-avatar.png");
+      await dispatch(updateUser({ profilePicture: null }));
+      setUpdateSuccess(true);
+      setUpdateError(null);
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      setUpdateError("Failed to upload image");
+    }
+  };
+
+  const handleResumeChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const resumeUrl = await uploadToCloudinary(file);
+      setResume(resumeUrl);
+      await dispatch(updateUser({ resume: resumeUrl }));
+      setUpdateSuccess(true);
+      setUpdateError(null);
+    } catch (error) {
+      console.error("Error uploading resume:", error);
+      setUpdateError("Failed to upload resume");
+    }
+  };
+
+  const deleteResume = async () => {
+    try {
+      setResume(null);
+      await dispatch(updateUser({ resume: null }));
+      setUpdateSuccess(true);
+      setUpdateError(null);
+    } catch (error) {
+      console.error("Error deleting resume: ", error);
+      setUpdateError("Failed to delete resume");
+    }
+  };
+
   const onSubmitPersonalInfo = async (data: ProfileFormData) => {
     try {
       setUpdateError(null);
       setUpdateSuccess(false);
-      await dispatch(updateUser(data)).unwrap();
+      await dispatch(updateUser(data));
       setUpdateSuccess(true);
     } catch (error) {
       setUpdateError(
@@ -92,7 +201,6 @@ const ProfileSection = () => {
   };
 
   const handleCancel = () => {
-    // Reset form to initial user data
     if (userInfo) {
       setValue("name", userInfo.name || "");
       setValue("email", userInfo.email || "");
@@ -131,7 +239,7 @@ const ProfileSection = () => {
               accept="image/*"
               id="profile-image-input"
               hidden
-              onChange={handleImageChange} // Handle image upload
+              onChange={handleImageChange}
             />
             <label htmlFor="profile-image-input">
               <Button
@@ -148,7 +256,7 @@ const ProfileSection = () => {
               size="small"
               className="delete-photo-btn"
               disabled={!profileImage || profileImage === "/default-avatar.png"}
-              onClick={() => setProfileImage("/default-avatar.png")} // Reset to default avatar
+              onClick={deleteImage}
             >
               <DeleteIcon />
             </IconButton>
@@ -209,10 +317,18 @@ const ProfileSection = () => {
               <Box className="resume-content">
                 {resume ? (
                   <Box className="current-resume">
-                    <Typography className="text-content">
-                      Current Resume: {resume.split("/").pop()}
-                    </Typography>
-                    <IconButton color="error" size="small">
+                    <Button
+                      variant="text"
+                      onClick={() => setIsModalOpen(true)}
+                      style={{ textTransform: "none" }}
+                    >
+                      View Resume
+                    </Button>
+                    <IconButton
+                      color="error"
+                      size="small"
+                      onClick={deleteResume}
+                    >
                       <DeleteIcon />
                     </IconButton>
                   </Box>
@@ -226,6 +342,7 @@ const ProfileSection = () => {
                   accept=".pdf,.doc,.docx"
                   id="resume-input"
                   hidden
+                  onChange={handleResumeChange}
                 />
                 <label htmlFor="resume-input">
                   <Button
@@ -322,6 +439,15 @@ const ProfileSection = () => {
           </Paper>
         </Grid>
       </Grid>
+
+      {/* Resume Modal */}
+      {resume && (
+        <ResumeModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          resumeUrl={resume}
+        />
+      )}
     </Box>
   );
 };

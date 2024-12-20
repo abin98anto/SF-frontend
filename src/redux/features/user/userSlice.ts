@@ -1,7 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { SignUpFormValues } from "../../../entities/user/SignUpFormValues";
-import { OTPVerificationResponse } from "../../../entities/user/OTPValues";
 import axiosInstance from "../../../utils/axiosConfig";
 import { someMessages } from "../../../utils/constants";
 import { signUpUser, verifyOTP } from "../../services/UserSignupServices";

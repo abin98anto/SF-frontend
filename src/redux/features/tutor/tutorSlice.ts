@@ -1,10 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { UserDetails } from "../../../entities/user/UserDetails";
-import {
-  loginTutor,
-  logoutTutor,
-  logoutUser,
-} from "../../services/UserAuthServices";
+import { loginTutor, logoutTutor } from "../../services/UserAuthServices";
 import { someMessages } from "../../../utils/constants";
 import { updateUser } from "../../services/userUpdateService";
 

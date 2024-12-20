@@ -23,7 +23,7 @@ const Header = () => {
 
   const dispatch = useDispatch<AppDispatch>();
   const { isAuthenticated, userInfo } = useSelector(
-    (state: RootState) => state.userLogin
+    (state: RootState) => state.user
   );
 
   const toggleMenu = () => {
@@ -145,7 +145,7 @@ const Header = () => {
           <>
             <IconButton onClick={handleProfileMenuOpen}>
               <Avatar
-                src={userInfo?.profilePicture}
+                src={userInfo?.profilePicture ?? undefined}
                 alt={userInfo?.name || "User"}
                 sx={{
                   width: 40,

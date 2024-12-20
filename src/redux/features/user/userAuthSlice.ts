@@ -36,57 +36,54 @@ const userLoginSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder
-      // User Login
-      .addCase(loginUser.pending, (state) => {
-        state.loading = true;
-        state.error = "";
-      })
-      .addCase(loginUser.fulfilled, (state, action) => {
-        state.loading = false;
-        state.isAuthenticated = true;
-        state.error = "";
-        state.userInfo = action.payload.user;
-      })
-      .addCase(loginUser.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload || someMessages.LOGIN_FAILED;
-      })
+    builder;
+    // // User Login
+    // .addCase(loginUser.pending, (state) => {
+    //   state.loading = true;
+    //   state.error = "";
+    // })
+    // .addCase(loginUser.fulfilled, (state, action) => {
+    //   state.loading = false;
+    //   state.isAuthenticated = true;
+    //   state.error = "";
+    //   state.userInfo = action.payload.user;
+    // })
+    // .addCase(loginUser.rejected, (state, action) => {
+    //   state.loading = false;
+    //   state.error = action.payload || someMessages.LOGIN_FAILED;
+    // })
 
-      // User Logout
-      .addCase(logoutUser.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(logoutUser.fulfilled, (state) => {
-        state.loading = false;
-        state.error = "";
-        state.userInfo = null;
-        state.isAuthenticated = !!state.tutorInfo;
-      })
-      .addCase(logoutUser.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload || someMessages.LOGOUT_FAILED;
-      })
+    // User Logout
+    // .addCase(logoutUser.pending, (state) => {
+    //   state.loading = true;
+    // })
+    // .addCase(logoutUser.fulfilled, (state) => {
+    //   state.loading = false;
+    //   state.error = "";
+    //   state.userInfo = null;
+    //   state.isAuthenticated = !!state.tutorInfo;
+    // })
+    // .addCase(logoutUser.rejected, (state, action) => {
+    //   state.loading = false;
+    //   state.error = action.payload || someMessages.LOGOUT_FAILED;
+    // })
 
-      // .addCase("tutor/logout", (state) => {
-      //   state.tutorInfo = null;
-      //   state.isAuthenticated = !!state.userInfo;
-      // })
-      .addCase(updateUser.pending, (state) => {
-        state.loading = true;
-        state.error = "";
-      })
-      .addCase(updateUser.fulfilled, (state, action) => {
-        state.loading = false;
-        state.error = "";
-        state.tutorInfo = state.tutorInfo
-          ? { ...state.tutorInfo, ...action.payload }
-          : action.payload;
-      })
-      .addCase(updateUser.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload || "Failed to update tutor";
-      });
+    // User Update.
+    // .addCase(updateUser.pending, (state) => {
+    //   state.loading = true;
+    //   state.error = "";
+    // })
+    // .addCase(updateUser.fulfilled, (state, action) => {
+    //   state.loading = false;
+    //   state.error = "";
+    //   state.tutorInfo = state.tutorInfo
+    //     ? { ...state.tutorInfo, ...action.payload }
+    //     : action.payload;
+    // })
+    // .addCase(updateUser.rejected, (state, action) => {
+    //   state.loading = false;
+    //   state.error = action.payload || "Failed to update tutor";
+    // });
   },
 });
 

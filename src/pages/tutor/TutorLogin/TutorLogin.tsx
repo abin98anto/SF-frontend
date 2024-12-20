@@ -27,7 +27,7 @@ const TutorLogin = () => {
   const navigate = useNavigate();
   const [customError, setCustomError] = useState<string | null>(null);
 
-  const { loading, error } = useSelector((state: RootState) => state.userLogin);
+  const { loading, error } = useSelector((state: RootState) => state.tutor);
 
   const {
     register,

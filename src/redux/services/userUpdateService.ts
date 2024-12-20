@@ -16,14 +16,19 @@ export const updateUser = createAsyncThunk<
     // console.log("hellloo");
     // Get current tutor ID from state
     const state = getState();
-    const tutorId = state.userLogin.tutorInfo?._id;
+    const tutorId = state.tutor.userInfo?._id;
     console.log("thehre", state);
     if (!tutorId) {
+      console.log("gone..");
       return rejectWithValue("No tutor found. Please login again.");
     }
 
-    const data = updateData;
-    const response = await axiosInstance.put(`/update?id=${tutorId}`, data);
+    // const data = updateData;
+    // console.log("first");
+    const response = await axiosInstance.put(
+      `/update?id=${tutorId}`,
+      updateData
+    );
     console.log("in the service", response);
     return response.data.user;
   } catch (error) {
