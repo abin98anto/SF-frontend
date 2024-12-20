@@ -11,12 +11,7 @@ import { loginTutor } from "../../../redux/services/UserAuthServices";
 import { LoginFormValues } from "../../../entities/user/LoginFormValues";
 import { validateEmail } from "../../../utils/form-checks/validateEmail";
 import { TutorDummy } from "../../../entities/dummys/TutorDummy";
-
-// Define interfaces for the response types
-interface UserDetails {
-  role: string;
-  // Add other user properties as needed
-}
+import { UserDetails } from "../../../entities/user/UserDetails";
 
 interface LoginResponse {
   message: string;

@@ -58,20 +58,20 @@ const userLoginSlice = createSlice({
       })
 
       // Tutor Login
-      .addCase(loginTutor.pending, (state) => {
-        state.loading = true;
-        state.error = "";
-      })
-      .addCase(loginTutor.fulfilled, (state, action) => {
-        state.loading = false;
-        state.isAuthenticated = true;
-        state.error = "";
-        state.tutorInfo = action.payload.user;
-      })
-      .addCase(loginTutor.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload || someMessages.LOGIN_FAILED;
-      })
+      // .addCase(loginTutor.pending, (state) => {
+      //   state.loading = true;
+      //   state.error = "";
+      // })
+      // .addCase(loginTutor.fulfilled, (state, action) => {
+      //   state.loading = false;
+      //   state.isAuthenticated = true;
+      //   state.error = "";
+      //   state.tutorInfo = action.payload.user;
+      // })
+      // .addCase(loginTutor.rejected, (state, action) => {
+      //   state.loading = false;
+      //   state.error = action.payload || someMessages.LOGIN_FAILED;
+      // })
 
       // User Logout
       .addCase(logoutUser.pending, (state) => {

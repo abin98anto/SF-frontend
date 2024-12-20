@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { SignUpFormValues } from "../../../entities/user/SignUpFormValues";
@@ -6,8 +5,6 @@ import { OTPVerificationResponse } from "../../../entities/user/OTPValues";
 import axiosInstance from "../../../utils/axiosConfig";
 import { someMessages } from "../../../utils/constants";
 import { signUpUser, verifyOTP } from "../../services/UserSignupServices";
-// import { UserDetails } from "../../../entities/user/UserDetails";
-// import { updateUser } from "../../services/userUpdateService";
 
 export interface UserState {
   userInfo: SignUpFormValues | null;
@@ -22,95 +19,6 @@ const initialState: UserState = {
   error: null,
   userInfo: null,
 };
-
-// export interface UserState {
-//   loading: boolean;
-//   error: string;
-//   userInfo: UserDetails | null;
-//   tutorInfo: UserDetails | null;
-//   isAuthenticated: boolean;
-// }
-
-// const initialState: UserState = {
-//   loading: false,
-//   error: "",
-//   userInfo: null,
-//   tutorInfo: null,
-//   isAuthenticated: false,
-// };
-
-// export const updateUserDetails = createAsyncThunk<
-//   UserDetails,
-//   { userId: string; userData: Partial<UserDetails> },
-//   { rejectValue: string }
-// >(
-//   "user/updateUserDetails",
-//   async ({ userId, userData }, { rejectWithValue }) => {
-//     try {
-//       const response = await axiosInstance.patch(
-//         `/users?id=${userId}`,
-//         userData
-//       );
-//       return response.data;
-//     } catch (error) {
-//       if (axios.isAxiosError(error)) {
-//         return rejectWithValue(
-//           error.response?.data?.message || "Failed to update user details"
-//         );
-//       }
-//       return rejectWithValue("Failed to update user details");
-//     }
-//   }
-// );
-
-// export const updateUserDetails = createAsyncThunk<
-//   any,
-//   UserDetails,
-//   { rejectValue: string }
-// >("tutor/updateProfile", async (profileData, thunkAPI) => {
-//   try {
-//     const response = await axiosInstance.put(
-//       "/tutor/update-profile",
-//       profileData
-//     );
-
-//     return response.data;
-//   } catch (error) {
-//     if (axios.isAxiosError(error)) {
-//       const errorMessage = error.response?.data?.message || error.message;
-//       return thunkAPI.rejectWithValue(errorMessage);
-//     }
-
-//     return thunkAPI.rejectWithValue("Failed to update profile");
-//   }
-// });
-
-// export const updateUser = createAsyncThunk<
-//   UserDetails,
-//   Partial<UserDetails>,
-//   { rejectValue: string }
-// >("user/update", async (updateData, { rejectWithValue }) => {
-//   try {
-//     const response = await axios.put<{ user: UserDetails }>(
-//       `/api/users/update`,
-//       updateData,
-//       {
-//         headers: {
-//           "Content-Type": "application/json",
-//         },
-//       }
-//     );
-
-//     return response.data.user;
-//   } catch (error) {
-//     if (axios.isAxiosError(error)) {
-//       return rejectWithValue(
-//         error.response?.data?.message || "Failed to update user"
-//       );
-//     }
-//     return rejectWithValue("An unexpected error occurred");
-//   }
-// });
 
 // Async thunk to toggle user status
 export const toggleUserStatus = createAsyncThunk<
