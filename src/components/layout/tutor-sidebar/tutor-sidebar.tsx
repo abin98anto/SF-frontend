@@ -8,6 +8,9 @@ import {
 } from "lucide-react";
 import "./tutor-sidebar.scss";
 import LogoutModal from "../admin-sidebar/LogoutMoal";
+import { useAppDispatch } from "../../../hooks/hooks";
+import { logoutTutor } from "../../../redux/services/UserAuthServices";
+import { UserRole } from "../../../entities/user/UserRole";
 
 const menuItems = [
   {
@@ -33,6 +36,7 @@ const menuItems = [
 ];
 
 export default function TutorSidebar() {
+  const dispatch = useAppDispatch();
   const [isCollapsed] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -41,7 +45,8 @@ export default function TutorSidebar() {
     navigate(path);
   };
 
-  const handleSignOut = () => {
+  const handleSignOut = async () => {
+    await dispatch(logoutTutor(UserRole.TUTOR)).unwrap();
     navigate("/tutor/login");
   };
 

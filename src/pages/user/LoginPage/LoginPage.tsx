@@ -17,7 +17,7 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const [customError, setCustomError] = useState<string | null>(null);
 
-  const { loading, error } = useSelector((state: RootState) => state.userLogin);
+  const { loading, error } = useSelector((state: RootState) => state.user);
 
   const {
     register,

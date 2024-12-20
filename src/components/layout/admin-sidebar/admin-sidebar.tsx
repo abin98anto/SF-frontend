@@ -53,7 +53,7 @@ export default function Sidebar() {
     navigate(path);
   };
 
-  const handleSignOut = () => {
+  const handleSignOut = async () => {
     navigate("/admin/login");
   };
 

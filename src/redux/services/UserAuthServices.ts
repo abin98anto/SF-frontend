@@ -72,3 +72,22 @@ export const loginTutor = createAsyncThunk<
     return thunkAPI.rejectWithValue(someMessages.LOGIN_FAILED);
   }
 });
+
+// User Logout.
+export const logoutTutor = createAsyncThunk<
+  void,
+  UserRole,
+  { rejectValue: string }
+>("user/logout", async (role, thunkAPI) => {
+  try {
+    const response = await axiosInstance.post("/logout", { role });
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || error.message
+      );
+    }
+    return thunkAPI.rejectWithValue(someMessages.LOGIN_FAILED);
+  }
+});

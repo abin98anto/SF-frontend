@@ -13,7 +13,7 @@ export const updateUser = createAsyncThunk<
   }
 >("tutor/update", async (updateData, { getState, rejectWithValue }) => {
   try {
-    console.log("hellloo");
+    // console.log("hellloo");
     // Get current tutor ID from state
     const state = getState();
     const tutorId = state.userLogin.tutorInfo?._id;

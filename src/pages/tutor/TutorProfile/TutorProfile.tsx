@@ -69,10 +69,7 @@ const ProfileSection = () => {
     try {
       const uploadedImageUrl = await uploadToCloudinary(file);
       setProfileImage(uploadedImageUrl);
-
-      // Update tutor info with the new profile picture
       await dispatch(updateUser({ profilePicture: uploadedImageUrl })).unwrap();
-
       setUpdateSuccess(true);
       setUpdateError(null);
     } catch (error) {
@@ -83,17 +80,9 @@ const ProfileSection = () => {
 
   const onSubmitPersonalInfo = async (data: ProfileFormData) => {
     try {
-      console.log("first", data);
       setUpdateError(null);
       setUpdateSuccess(false);
-
-      const updateData = {
-        name: data.name,
-        email: data.email,
-      };
-
-      let res = await dispatch(updateUser(data)).unwrap();
-      console.log("resullt s", res);
+      await dispatch(updateUser(data)).unwrap();
       setUpdateSuccess(true);
     } catch (error) {
       setUpdateError(

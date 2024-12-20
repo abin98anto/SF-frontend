@@ -5,8 +5,6 @@ import userReducer from "./features/user/userSlice";
 import userAuthReducer from "./features/user/userAuthSlice";
 import tutorReducer from "./features/tutor/tutorSlice";
 import adminAuthReducer from "./features/admin/adminAuthSlice";
-// import userListReducer from "./features/user/userListSlice";
-// import tutorListReducer from "./features/tutor/tutorListSlice";
 
 const persistConfig = {
   key: "root",
@@ -17,9 +15,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
   user: userReducer,
   userLogin: userAuthReducer,
-  // userList: userListReducer,
   tutor: tutorReducer,
-  // tutorList: tutorListReducer,
   adminLogin: adminAuthReducer,
 });
 

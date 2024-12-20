@@ -1,9 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import {
-  loginTutor,
-  loginUser,
-  logoutUser,
-} from "../../services/UserAuthServices";
+import { loginUser, logoutUser } from "../../services/UserAuthServices";
 import { UserDetails } from "../../../entities/user/UserDetails";
 import { someMessages } from "../../../utils/constants";
 import { updateUser } from "../../services/userUpdateService";
@@ -57,22 +53,6 @@ const userLoginSlice = createSlice({
         state.error = action.payload || someMessages.LOGIN_FAILED;
       })
 
-      // Tutor Login
-      // .addCase(loginTutor.pending, (state) => {
-      //   state.loading = true;
-      //   state.error = "";
-      // })
-      // .addCase(loginTutor.fulfilled, (state, action) => {
-      //   state.loading = false;
-      //   state.isAuthenticated = true;
-      //   state.error = "";
-      //   state.tutorInfo = action.payload.user;
-      // })
-      // .addCase(loginTutor.rejected, (state, action) => {
-      //   state.loading = false;
-      //   state.error = action.payload || someMessages.LOGIN_FAILED;
-      // })
-
       // User Logout
       .addCase(logoutUser.pending, (state) => {
         state.loading = true;
@@ -88,10 +68,10 @@ const userLoginSlice = createSlice({
         state.error = action.payload || someMessages.LOGOUT_FAILED;
       })
 
-      .addCase("tutor/logout", (state) => {
-        state.tutorInfo = null;
-        state.isAuthenticated = !!state.userInfo;
-      })
+      // .addCase("tutor/logout", (state) => {
+      //   state.tutorInfo = null;
+      //   state.isAuthenticated = !!state.userInfo;
+      // })
       .addCase(updateUser.pending, (state) => {
         state.loading = true;
         state.error = "";
