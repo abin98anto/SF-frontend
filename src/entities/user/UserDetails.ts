@@ -1,4 +1,5 @@
 export interface UserDetails {
+  isVerified: any;
   _id?: string | null;
   id?: string | null;
   email?: string | null;

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -8,145 +8,177 @@ import {
   TableRow,
   Paper,
   Button,
-  Rating,
-  Switch,
-  Typography,
   CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from "@mui/material";
-import { useAppDispatch, useAppSelector } from "../../../hooks/hooks";
-// import {
-//   fetchTutors,
-//   selectTutors,
-//   selectTutorsStatus,
-//   selectTutorsError,
-// } from "../../../redux/features/tutor/tutorListSlice";
-// import { toggleUserStatus } from "../../../redux/features/user/userSlice";
-import ApproveTutorsModal from "./ApproveTutorModal/ApproveTutorModal";
-import "./TutorManagement.scss";
+import { useAppDispatch } from "../../../hooks/hooks";
+import {
+  getUsers,
+  toggleUserStatus,
+} from "../../../redux/services/UserManagementServices";
 import { UserDetails } from "../../../entities/user/UserDetails";
+import { UserRole } from "../../../entities/user/UserRole";
+import ApproveTutorsModal from "./ApproveTutorModal/ApproveTutorModal";
 
 const TutorManagement: React.FC = () => {
   const dispatch = useAppDispatch();
-  // const tutors = useAppSelector(selectTutors);
-  // const status = useAppSelector(selectTutorsStatus);
-  // const error = useAppSelector(selectTutorsError);
-  const [approveModalOpen, setApproveModalOpen] = useState(false);
 
-  // useEffect(() => {
-  //   dispatch(fetchTutors());
-  // }, [dispatch]);
+  const [tutors, setTutors] = useState<UserDetails[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [selectedTutorId, setSelectedTutorId] = useState<string | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [dialogAction, setDialogAction] = useState("");
 
-  const handleStatusToggle = async (id: string) => {
+  const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
+
+  const handleOpenApproveModal = () => setIsApproveModalOpen(true);
+  const handleCloseApproveModal = () => setIsApproveModalOpen(false);
+
+  useEffect(() => {
+    fetchTutors();
+  }, []);
+
+  const fetchTutors = async () => {
     try {
-      // await dispatch(toggleUserStatus(id)).unwrap();
-      // dispatch(fetchTutors());
-    } catch (error) {
-      console.error("Failed to toggle user status", error);
+      const response = await dispatch(getUsers(UserRole.TUTOR));
+      const verifiedTutors = (response.payload as UserDetails[]).filter(
+        (tutor) => tutor.isVerified
+      );
+      setTutors(verifiedTutors);
+      setLoading(false);
+    } catch (err) {
+      console.log("Error fetching tutors", err);
+      setError("Error fetching tutors. Please try again later.");
+      setLoading(false);
     }
   };
 
-  const handleApprove = () => {
-    setApproveModalOpen(true);
+  const handleToggleActiveState = async () => {
+    if (!selectedTutorId) return;
+
+    try {
+      const result = await dispatch(toggleUserStatus(selectedTutorId)).unwrap();
+
+      setTutors((prevTutors) =>
+        prevTutors.map((tutor) =>
+          tutor._id === result ? { ...tutor, isActive: !tutor.isActive } : tutor
+        )
+      );
+
+      setIsDialogOpen(false);
+    } catch (error) {
+      console.error("Failed to toggle tutor state", error);
+    }
   };
 
-  // const activeTutors = tutors.filter(
-  //   (tutor: UserDetails) => tutor.isActive === true
-  // );
-  // const pendingTutors = tutors.filter(
-  //   (tutor: UserDetails) => tutor.isActive !== true
-  // );
+  const handleOpenDialog = (tutorId: string, action: string) => {
+    setSelectedTutorId(tutorId);
+    setDialogAction(action);
+    setIsDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setIsDialogOpen(false);
+    setSelectedTutorId(null);
+    setDialogAction("");
+  };
+
+  if (loading) {
+    return <CircularProgress />;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   return (
-    <div className="tutor-management">
-      <h1 className="tutor-heading">Tutor Management</h1>
-
-      <div className="header-section">
-        <h2 className="tutor-heading">Teachers List</h2>
+    <>
+      <TableContainer component={Paper}>
+        <h1>Tutor Management</h1>
         <Button
           variant="contained"
           color="primary"
-          onClick={handleApprove}
-          className="approve-button"
+          style={{ margin: "10px 0" }}
+          onClick={handleOpenApproveModal}
         >
           Approve Tutors
         </Button>
-      </div>
-
-      {/* <TableContainer component={Paper} className="table-container">
-        {status === "loading" ? (
-          <div className="loading-placeholder">
-            <CircularProgress />
-          </div>
-        ) : status === "failed" ? (
-          <div className="error-placeholder">
-            <Typography variant="h6" color="error">
-              Error: {error || "Failed to fetch tutors"}
-            </Typography>
-          </div>
-        ) : activeTutors.length > 0 ? (
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Name</TableCell>
-                <TableCell>Email</TableCell>
-                <TableCell>Role</TableCell>
-                <TableCell>Ratings</TableCell>
-                <TableCell>No. of batches handling</TableCell>
-                <TableCell>Reviews Taken</TableCell>
-                <TableCell>Sessions Taken</TableCell>
-                <TableCell>Status</TableCell>
-                <TableCell>Action</TableCell>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Sl No.</TableCell>
+              <TableCell>Name</TableCell>
+              <TableCell>Email</TableCell>
+              <TableCell>Subscription Type</TableCell>
+              <TableCell>Sessions Taken</TableCell>
+              <TableCell>Students Count</TableCell>
+              <TableCell>Joining Date</TableCell>
+              <TableCell>Actions</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {tutors.map((tutor, index) => (
+              <TableRow key={tutor._id || `tutor-${index}`}>
+                <TableCell>{index + 1}</TableCell>
+                <TableCell>{tutor.name}</TableCell>
+                <TableCell>{tutor.email}</TableCell>
+                <TableCell>{tutor.dateJoined}</TableCell>
+                <TableCell>{tutor.sessionsTaken}</TableCell>
+                <TableCell>{tutor.students?.length}</TableCell>
+                <TableCell>{tutor.dateJoined}</TableCell>
+                <TableCell>
+                  <Button
+                    variant="contained"
+                    color={tutor.isActive ? "primary" : "secondary"}
+                    onClick={() =>
+                      handleOpenDialog(
+                        tutor._id as string,
+                        tutor.isActive ? "block" : "unblock"
+                      )
+                    }
+                  >
+                    {tutor.isActive ? "Unblock" : "Block"}
+                  </Button>
+                </TableCell>
               </TableRow>
-            </TableHead>
-            <TableBody>
-              {activeTutors.map((tutor: UserDetails) => (
-                <TableRow key={tutor.id} className="active">
-                  <TableCell>{tutor.name}</TableCell>
-                  <TableCell>{tutor.email}</TableCell>
-                  <TableCell>{tutor.role}</TableCell>
-                  <TableCell>
-                    <Rating
-                      value={tutor.ratings?.length}
-                      readOnly
-                      precision={0.5}
-                    />
-                  </TableCell>
-                  <TableCell>{tutor.students}</TableCell>
-                  <TableCell>{tutor.reviewsTaken}</TableCell>
-                  <TableCell>{tutor.sessionsTaken}</TableCell>
-                  <TableCell>
-                    <span className="status-badge active">Active</span>
-                  </TableCell>
-                  <TableCell>
-                    <Switch
-                      checked={tutor.isActive === true}
-                      onChange={() => handleStatusToggle(tutor.id!)}
-                      color="primary"
-                    />
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        ) : (
-          <div className="no-data-placeholder">
-            <Typography variant="h6" color="textSecondary">
-              No active tutors available
-            </Typography>
-            <Typography variant="body2" color="textSecondary">
-              There are currently no active tutors in the system. Active tutors
-              will appear here once added.
-            </Typography>
-          </div>
-        )}
+            ))}
+          </TableBody>
+        </Table>
       </TableContainer>
 
+      {/* Confirmation Dialog */}
+      <Dialog
+        open={isDialogOpen}
+        onClose={handleCloseDialog}
+        aria-labelledby="confirmation-dialog-title"
+      >
+        <DialogTitle id="confirmation-dialog-title">
+          Confirm {dialogAction === "block" ? "Block" : "Unblock"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to {dialogAction} this tutor?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="secondary">
+            Cancel
+          </Button>
+          <Button onClick={handleToggleActiveState} color="primary">
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
       <ApproveTutorsModal
-        open={approveModalOpen}
-        onClose={() => setApproveModalOpen(false)}
-        pendingTutors={pendingTutors}
-      /> */}
-    </div>
+        open={isApproveModalOpen}
+        onClose={handleCloseApproveModal}
+      />
+    </>
   );
 };
 

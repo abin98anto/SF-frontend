@@ -1,6 +1,10 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
-  Modal,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
   Table,
   TableBody,
   TableCell,
@@ -8,102 +12,108 @@ import {
   TableHead,
   TableRow,
   Paper,
-  Button,
-  Typography,
 } from "@mui/material";
-import ConfirmationModal from "./ConfirmModal";
 import { useAppDispatch } from "../../../../hooks/hooks";
-import { toggleUserStatus } from "../../../../redux/features/user/userSlice";
+import { getUsers } from "../../../../redux/services/UserManagementServices";
 import { UserDetails } from "../../../../entities/user/UserDetails";
+import { UserRole } from "../../../../entities/user/UserRole";
+import { updateUser } from "../../../../redux/services/userUpdateService";
 
 interface ApproveTutorsModalProps {
   open: boolean;
   onClose: () => void;
-  pendingTutors: UserDetails[];
 }
 
 const ApproveTutorsModal: React.FC<ApproveTutorsModalProps> = ({
   open,
   onClose,
-  pendingTutors,
 }) => {
   const dispatch = useAppDispatch();
-  const [confirmationOpen, setConfirmationOpen] = React.useState(false);
-  const [selectedTutor, setSelectedTutor] = React.useState<UserDetails | null>(
-    null
-  );
 
-  const handleVerify = (tutor: UserDetails) => {
-    setSelectedTutor(tutor);
-    setConfirmationOpen(true);
+  const [unverifiedTutors, setUnverifiedTutors] = useState<UserDetails[]>([]);
+
+  useEffect(() => {
+    if (open) {
+      fetchUnverifiedTutors();
+    }
+  }, [open]);
+
+  const fetchUnverifiedTutors = async () => {
+    try {
+      const response = await dispatch(getUsers(UserRole.TUTOR));
+      const unverified = (response.payload as UserDetails[]).filter(
+        (tutor) => !tutor.isVerified
+      );
+      setUnverifiedTutors(unverified);
+    } catch (err) {
+      console.error("Error fetching unverified tutors", err);
+    }
   };
 
-  const handleConfirmVerify = () => {
-    if (typeof selectedTutor?.id === "string") {
-      dispatch(toggleUserStatus(selectedTutor.id));
+  const handleApproveTutor = async (tutorId: string) => {
+    try {
+      await dispatch(updateUser({ _id: tutorId, isVerified: true })).unwrap();
+      setUnverifiedTutors((prevTutors) =>
+        prevTutors.filter((tutor) => tutor._id !== tutorId)
+      );
+    } catch (err) {
+      console.error("Error approving tutor", err);
     }
-    setConfirmationOpen(false);
   };
 
   return (
-    <>
-      <Modal open={open} onClose={onClose}>
-        <Paper className="approve-tutors-modal">
-          <Typography variant="h6" component="h2" gutterBottom>
-            Approve Tutors
-          </Typography>
-          <TableContainer>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Name</TableCell>
-                  <TableCell>Email</TableCell>
-                  <TableCell>Resume</TableCell>
-                  <TableCell>Action</TableCell>
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
+      <DialogTitle>Approve Tutors</DialogTitle>
+      <DialogContent>
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Sl No.</TableCell>
+                <TableCell>Name</TableCell>
+                <TableCell>Email</TableCell>
+                <TableCell>Actions</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {unverifiedTutors.map((tutor, index) => (
+                <TableRow key={tutor._id || `tutor-${index}`}>
+                  <TableCell>{index + 1}</TableCell>
+                  <TableCell>{tutor.name}</TableCell>
+                  <TableCell>{tutor.email}</TableCell>
+                  <TableCell>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={() => console.log("View Resume clicked")}
+                      style={{ marginRight: 8 }}
+                    >
+                      View Resume
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="success"
+                      onClick={() => handleApproveTutor(tutor._id as string)}
+                      style={{ marginRight: 8 }}
+                    >
+                      Approve
+                    </Button>
+                    <Button variant="contained" color="error">
+                      Deny
+                    </Button>
+                  </TableCell>
                 </TableRow>
-              </TableHead>
-              <TableBody>
-                {pendingTutors.map((tutor) => (
-                  <TableRow key={tutor.id}>
-                    <TableCell>{tutor.name}</TableCell>
-                    <TableCell>{tutor.email}</TableCell>
-                    <TableCell>
-                      {tutor.resume ? (
-                        <a
-                          href={tutor.resume}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          View Resume
-                        </a>
-                      ) : (
-                        "No Resume"
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => handleVerify(tutor)}
-                      >
-                        Verify
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Paper>
-      </Modal>
-      <ConfirmationModal
-        open={confirmationOpen}
-        onClose={() => setConfirmationOpen(false)}
-        onConfirm={handleConfirmVerify}
-        title="Verify Tutor"
-        message={`Are you sure you want to verify ${selectedTutor?.name}?`}
-      />
-    </>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose} color="secondary">
+          Close
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 };
 
