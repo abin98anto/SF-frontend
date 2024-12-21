@@ -6,8 +6,15 @@ import {
   MessageCircleMore,
   CircleUserRound,
 } from "lucide-react";
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Button,
+} from "@mui/material";
 import "./tutor-sidebar.scss";
-import LogoutModal from "../admin-sidebar/LogoutMoal";
 import { useAppDispatch } from "../../../hooks/hooks";
 import { logoutTutor } from "../../../redux/services/UserAuthServices";
 import { UserRole } from "../../../entities/user/UserRole";
@@ -38,6 +45,7 @@ const menuItems = [
 export default function TutorSidebar() {
   const dispatch = useAppDispatch();
   const [isCollapsed] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -48,6 +56,19 @@ export default function TutorSidebar() {
   const handleSignOut = async () => {
     await dispatch(logoutTutor(UserRole.TUTOR)).unwrap();
     navigate("/tutor/login");
+  };
+
+  const openDialog = () => {
+    setIsDialogOpen(true);
+  };
+
+  const closeDialog = () => {
+    setIsDialogOpen(false);
+  };
+
+  const confirmLogout = () => {
+    closeDialog();
+    handleSignOut();
   };
 
   return (
@@ -73,10 +94,34 @@ export default function TutorSidebar() {
       </nav>
 
       <div className="sidebar-footer">
-        <button className="sign-out-button" onClick={handleSignOut}>
-          <LogoutModal />
+        <button className="sign-out-button" onClick={openDialog}>
+          Logout
         </button>
       </div>
+
+      {/* Logout Confirmation Dialog */}
+      <Dialog
+        open={isDialogOpen}
+        onClose={closeDialog}
+        aria-labelledby="logout-confirmation-dialog"
+      >
+        <DialogTitle id="logout-confirmation-dialog">
+          Confirm Logout
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to log out?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={closeDialog} color="secondary">
+            Cancel
+          </Button>
+          <Button onClick={confirmLogout} color="primary">
+            Logout
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useAppDispatch } from "../../../hooks/hooks";
 import { useNavigate } from "react-router-dom";
-import { logoutAdmin } from "../../../redux/features/admin/adminAuthSlice";
+import { logoutAdmin } from "../../../redux/services/AdminAuthServices";
 import {
   Button,
   Dialog,
@@ -31,7 +31,8 @@ export const LogoutModal: React.FC<LogoutModalProps> = ({ className }) => {
 
   const handleLogout = async () => {
     try {
-      await dispatch(logoutAdmin()).unwrap();
+      let result = await dispatch(logoutAdmin()).unwrap();
+      console.log("first", result);
       navigate("/admin/login");
     } catch (error) {
       console.error("Logout failed", error);
@@ -42,13 +43,16 @@ export const LogoutModal: React.FC<LogoutModalProps> = ({ className }) => {
 
   return (
     <>
-      <button
+      <div
+        role="button"
         className={`sign-out-button ${className}`}
         onClick={handleOpenModal}
+        tabIndex={0}
+        onKeyDown={(e) => e.key === "Enter" && handleOpenModal()}
       >
         <LogoutIcon className="nav-icon" />
         <span className="nav-text">Sign-out</span>
-      </button>
+      </div>
 
       <Dialog
         open={isOpen}

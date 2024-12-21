@@ -11,25 +11,22 @@ export const updateUser = createAsyncThunk<
     state: RootState;
     rejectValue: string;
   }
->("tutor/update", async (updateData, { getState, rejectWithValue }) => {
+>("user/update", async (updateData, { getState, rejectWithValue }) => {
   try {
     // console.log("hellloo");
     // Get current tutor ID from state
     const state = getState();
-    const tutorId = state.tutor.userInfo?._id;
-    console.log("thehre", state);
-    if (!tutorId) {
-      console.log("gone..");
+    const id = state.tutor.userInfo?._id;
+    // console.log("thehre", state);
+    if (!id) {
+      // console.log("gone..");
       return rejectWithValue("No tutor found. Please login again.");
     }
 
     // const data = updateData;
     // console.log("first");
-    const response = await axiosInstance.put(
-      `/update?id=${tutorId}`,
-      updateData
-    );
-    console.log("in the service", response);
+    const response = await axiosInstance.put(`/update?id=${id}`, updateData);
+    // console.log("in the service", response);
     return response.data.user;
   } catch (error) {
     if (axios.isAxiosError(error)) {

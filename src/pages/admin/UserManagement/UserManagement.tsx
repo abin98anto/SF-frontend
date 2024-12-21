@@ -1,121 +1,157 @@
-import React, { useEffect } from "react";
-import { Table, ConfigProvider, Switch, message } from "antd";
-import { useAppDispatch, useAppSelector } from "../../../hooks/hooks";
-// import {
-//   fetchUsers,
-//   selectUsers,
-//   selectUsersStatus,
-//   selectUsersError,
-//   updateUserStatusLocally,
-// } from "../../../redux/features/user/userListSlice";
-import "./UserManagement.scss";
-import ErrorBoundary from "../../../components/ErrorBoundary/ErrorBoundary";
-import { toggleUserStatus } from "../../../redux/features/user/userSlice";
-import { someMessages } from "../../../utils/constants";
+import React, { useState, useEffect } from "react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Button,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
+import { useAppDispatch } from "../../../hooks/hooks";
+import {
+  getUsers,
+  toggleUserStatus,
+} from "../../../redux/services/UserManagementServices";
+import { UserDetails } from "../../../entities/user/UserDetails";
 
 const UserManagement: React.FC = () => {
   const dispatch = useAppDispatch();
-  // const users = useAppSelector(selectUsers);
-  // const status = useAppSelector(selectUsersStatus);
-  // const error = useAppSelector(selectUsersError);
 
-  // useEffect(() => {
-  //   dispatch(fetchUsers());
-  // }, [dispatch]);
+  const [users, setUsers] = useState<UserDetails[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [dialogAction, setDialogAction] = useState("");
 
-  const handleToggleStatus = async (userId: string, isActive: boolean) => {
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  const fetchUsers = async () => {
     try {
-      const resultAction = await dispatch(toggleUserStatus(userId));
-      if (toggleUserStatus.fulfilled.match(resultAction)) {
-        const newStatus = isActive;
-        message.success(
-          `User status updated to ${newStatus ? "Active" : "Inactive"}`
-        );
-
-        // dispatch(
-        //   updateUserStatusLocally({
-        //     userId,
-        //     isActive: newStatus,
-        //   })
-        // );
-      } else {
-        message.error(resultAction.payload || "Failed to update user status");
-      }
-    } catch {
-      message.error(someMessages.UNKNOWN_ERROR);
+      const response = await dispatch(getUsers());
+      setUsers(response.payload as UserDetails[]);
+      setLoading(false);
+    } catch (err) {
+      console.log("Error fetching users", err);
+      setError("Error fetching users. Please try again later.");
+      setLoading(false);
     }
   };
 
-  const columns = [
-    {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
-    },
-    {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
-    },
-    {
-      title: "Joining Date",
-      dataIndex: "dateJoined",
-      key: "dateJoined",
-      render: (date: string) =>
-        new Date(date)
-          .toISOString()
-          .split("T")[0]
-          .split("-")
-          .reverse()
-          .join("-"),
-    },
-    {
-      title: "Status",
-      key: "status",
-      render: (_: any, record: { _id: string; isActive: boolean }) => (
-        <Switch
-          checked={record.isActive}
-          onChange={(checked) => handleToggleStatus(record._id, checked)}
-          checkedChildren="Active"
-          unCheckedChildren="Inactive"
-        />
-      ),
-    },
-  ];
+  const handleToggleActiveState = async () => {
+    if (!selectedUserId) return;
+
+    try {
+      const result = await dispatch(toggleUserStatus(selectedUserId)).unwrap();
+
+      // Optimistically update the local state
+      setUsers((prevUsers) =>
+        prevUsers.map((user) =>
+          user._id === result ? { ...user, isActive: !user.isActive } : user
+        )
+      );
+
+      setIsDialogOpen(false); // Close the dialog
+    } catch (error) {
+      console.error("Failed to toggle user state", error);
+    }
+  };
+
+  const handleOpenDialog = (userId: string, action: string) => {
+    setSelectedUserId(userId);
+    setDialogAction(action);
+    setIsDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setIsDialogOpen(false);
+    setSelectedUserId(null);
+    setDialogAction("");
+  };
+
+  if (loading) {
+    return <CircularProgress />;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   return (
-    <ErrorBoundary>
-      <h1 className="um-heading">User Management</h1>
-      <ConfigProvider
-        theme={{
-          token: {
-            colorPrimary: "#333",
-            colorBorder: "#444",
-            colorBorderSecondary: "#444",
-          },
-        }}
+    <>
+      <TableContainer component={Paper}>
+        <h1>User Management</h1>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Sl No.</TableCell>
+              <TableCell>Name</TableCell>
+              <TableCell>Email</TableCell>
+              <TableCell>Subscription Type</TableCell>
+              <TableCell>Actions</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {users.map((user, index) => (
+              <TableRow key={user._id || `user-${index}`}>
+                <TableCell>{index + 1}</TableCell>
+                <TableCell>{user.name}</TableCell>
+                <TableCell>{user.email}</TableCell>
+                <TableCell>{user.dateJoined}</TableCell>
+                <TableCell>
+                  <Button
+                    variant="contained"
+                    color={user.isActive ? "primary" : "secondary"}
+                    onClick={() =>
+                      handleOpenDialog(
+                        user._id as string,
+                        user.isActive ? "block" : "unblock"
+                      )
+                    }
+                  >
+                    {user.isActive ? "Unblock" : "Block"}
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+
+      {/* Confirmation Dialog */}
+      <Dialog
+        open={isDialogOpen}
+        onClose={handleCloseDialog}
+        aria-labelledby="confirmation-dialog-title"
       >
-        {/* <div className="user-management">
-          {status === "loading" && <p>Loading...</p>}
-          {status === "failed" && <p>Error: {error}</p>}
-          {status === "succeeded" && (
-            <Table
-              dataSource={
-                Array.isArray(users)
-                  ? users.map((user) => ({
-                      ...user,
-                      key: user._id,
-                      isActive: user.isActive ?? false,
-                    }))
-                  : []
-              }
-              columns={columns}
-              rowKey="_id"
-            />
-          )}
-        </div> */}
-      </ConfigProvider>
-    </ErrorBoundary>
+        <DialogTitle id="confirmation-dialog-title">
+          Confirm {dialogAction === "block" ? "Block" : "Unblock"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to {dialogAction} this user?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="secondary">
+            Cancel
+          </Button>
+          <Button onClick={handleToggleActiveState} color="primary">
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
   );
 };
 

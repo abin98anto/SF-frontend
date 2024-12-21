@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { ThunkDispatch } from "@reduxjs/toolkit";
 import { RootState } from "../../../redux/store";
 import { useForm } from "react-hook-form";
-import { loginAdmin } from "../../../redux/features/admin/adminAuthSlice";
+import { loginAdmin } from "../../../redux/services/AdminAuthServices";
 import { useNavigate } from "react-router-dom";
 import { AdminDummy } from "../../../entities/dummys/AdminDummy";
 import { useState } from "react";

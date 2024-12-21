@@ -1,6 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
-import axiosInstance from "../../../utils/axiosConfig";
+import { createSlice } from "@reduxjs/toolkit";
 import { someMessages } from "../../../utils/constants";
 import { signUpUser, verifyOTP } from "../../services/UserSignupServices";
 import { loginUser, logoutUser } from "../../services/UserAuthServices";
@@ -19,27 +17,6 @@ const initialState: UserState = {
   userInfo: null,
   isAuthenticated: false,
 };
-
-// Async thunk to toggle user status
-export const toggleUserStatus = createAsyncThunk<
-  boolean,
-  string,
-  { rejectValue: string }
->("user/toggleUserStatus", async (userId, { rejectWithValue }) => {
-  try {
-    const response = await axiosInstance.patch(
-      `/admin/toggle-status?id=${userId}`
-    );
-    return response.data.isActive;
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      return rejectWithValue(
-        error.response?.data?.message || someMessages.TOGGLE_FAIL
-      );
-    }
-    return rejectWithValue(someMessages.TOGGLE_FAIL);
-  }
-});
 
 const userSlice = createSlice({
   name: "user",
@@ -110,23 +87,23 @@ const userSlice = createSlice({
       .addCase(logoutUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || someMessages.LOGOUT_FAILED;
-      })
-
-      // Toggle User Status.
-      .addCase(toggleUserStatus.pending, (state) => {
-        state.loading = true;
-        state.error = "";
-      })
-      .addCase(toggleUserStatus.fulfilled, (state, action) => {
-        state.loading = false;
-        if (state.userInfo) {
-          state.userInfo.isActive = action.payload;
-        }
-      })
-      .addCase(toggleUserStatus.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload || "Error toggling user status.";
       });
+
+    // Toggle User Status.
+    // .addCase(toggleUserStatus.pending, (state) => {
+    //   state.loading = true;
+    //   state.error = "";
+    // })
+    // .addCase(toggleUserStatus.fulfilled, (state, action) => {
+    //   state.loading = false;
+    //   if (state.userInfo) {
+    //     state.userInfo.isActive = action.payload;
+    //   }
+    // })
+    // .addCase(toggleUserStatus.rejected, (state, action) => {
+    //   state.loading = false;
+    //   state.error = action.payload || "Error toggling user status.";
+    // });
   },
 });
 

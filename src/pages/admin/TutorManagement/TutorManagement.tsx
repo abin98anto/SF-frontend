@@ -20,7 +20,7 @@ import { useAppDispatch, useAppSelector } from "../../../hooks/hooks";
 //   selectTutorsStatus,
 //   selectTutorsError,
 // } from "../../../redux/features/tutor/tutorListSlice";
-import { toggleUserStatus } from "../../../redux/features/user/userSlice";
+// import { toggleUserStatus } from "../../../redux/features/user/userSlice";
 import ApproveTutorsModal from "./ApproveTutorModal/ApproveTutorModal";
 import "./TutorManagement.scss";
 import { UserDetails } from "../../../entities/user/UserDetails";
@@ -38,7 +38,7 @@ const TutorManagement: React.FC = () => {
 
   const handleStatusToggle = async (id: string) => {
     try {
-      await dispatch(toggleUserStatus(id)).unwrap();
+      // await dispatch(toggleUserStatus(id)).unwrap();
       // dispatch(fetchTutors());
     } catch (error) {
       console.error("Failed to toggle user status", error);
