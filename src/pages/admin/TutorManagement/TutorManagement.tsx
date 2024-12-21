@@ -47,7 +47,7 @@ const TutorManagement: React.FC = () => {
     try {
       const response = await dispatch(getUsers(UserRole.TUTOR));
       const verifiedTutors = (response.payload as UserDetails[]).filter(
-        (tutor) => tutor.isVerified
+        (tutor) => tutor.isVerified === true
       );
       setTutors(verifiedTutors);
       setLoading(false);
@@ -56,6 +56,10 @@ const TutorManagement: React.FC = () => {
       setError("Error fetching tutors. Please try again later.");
       setLoading(false);
     }
+  };
+
+  const handleTutorApproved = () => {
+    fetchTutors();
   };
 
   const handleToggleActiveState = async () => {
@@ -177,6 +181,7 @@ const TutorManagement: React.FC = () => {
       <ApproveTutorsModal
         open={isApproveModalOpen}
         onClose={handleCloseApproveModal}
+        onTutorApproved={handleTutorApproved}
       />
     </>
   );
