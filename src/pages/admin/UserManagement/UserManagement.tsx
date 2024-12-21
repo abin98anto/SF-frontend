@@ -21,6 +21,7 @@ import {
   toggleUserStatus,
 } from "../../../redux/services/UserManagementServices";
 import { UserDetails } from "../../../entities/user/UserDetails";
+import { UserRole } from "../../../entities/user/UserRole";
 
 const UserManagement: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -38,7 +39,7 @@ const UserManagement: React.FC = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await dispatch(getUsers());
+      const response = await dispatch(getUsers(UserRole.USER));
       setUsers(response.payload as UserDetails[]);
       setLoading(false);
     } catch (err) {
@@ -54,14 +55,13 @@ const UserManagement: React.FC = () => {
     try {
       const result = await dispatch(toggleUserStatus(selectedUserId)).unwrap();
 
-      // Optimistically update the local state
       setUsers((prevUsers) =>
         prevUsers.map((user) =>
           user._id === result ? { ...user, isActive: !user.isActive } : user
         )
       );
 
-      setIsDialogOpen(false); // Close the dialog
+      setIsDialogOpen(false);
     } catch (error) {
       console.error("Failed to toggle user state", error);
     }

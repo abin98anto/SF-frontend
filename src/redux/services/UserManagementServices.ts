@@ -2,17 +2,18 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { UserDetails } from "../../entities/user/UserDetails";
 import { RootState } from "../store";
 import axiosInstance from "../../utils/axiosConfig";
+import { UserRole } from "../../entities/user/UserRole";
 
 export const getUsers = createAsyncThunk<
   UserDetails[],
-  void,
+  UserRole,
   {
     state: RootState;
     rejectValue: string;
   }
->("admin/users", async (_, { rejectWithValue }) => {
+>("admin/users", async (role, { rejectWithValue }) => {
   try {
-    const response = await axiosInstance.get(`/admin/users`);
+    const response = await axiosInstance.get(`/admin/list?role=${role}`);
     return response.data.data;
   } catch (error) {
     console.log("Error getting the users", error);
