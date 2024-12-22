@@ -61,8 +61,8 @@ const ApproveTutorsModal: React.FC<ApproveTutorsModalProps> = ({
     }
   };
 
-  const handleViewResume = (resumeLink: string) => {
-    setResumeUrl(resumeLink);
+  const handleViewResume = (resumeLink: string | undefined) => {
+    setResumeUrl(resumeLink || null);
     setResumeModalOpen(true);
   };
 
@@ -190,7 +190,9 @@ const ApproveTutorsModal: React.FC<ApproveTutorsModalProps> = ({
               frameBorder="0"
             ></iframe>
           ) : (
-            <p>Loading resume...</p>
+            <DialogContentText style={{ textAlign: "center", padding: "2rem" }}>
+              The tutor has not uploaded their resume yet.
+            </DialogContentText>
           )}
         </DialogContent>
         <DialogActions>

@@ -118,7 +118,6 @@ const TutorManagement: React.FC = () => {
               <TableCell>Sl No.</TableCell>
               <TableCell>Name</TableCell>
               <TableCell>Email</TableCell>
-              <TableCell>Subscription Type</TableCell>
               <TableCell>Sessions Taken</TableCell>
               <TableCell>Students Count</TableCell>
               <TableCell>Joining Date</TableCell>
@@ -131,14 +130,13 @@ const TutorManagement: React.FC = () => {
                 <TableCell>{index + 1}</TableCell>
                 <TableCell>{tutor.name}</TableCell>
                 <TableCell>{tutor.email}</TableCell>
-                <TableCell>{tutor.dateJoined}</TableCell>
                 <TableCell>{tutor.sessionsTaken}</TableCell>
                 <TableCell>{tutor.students?.length}</TableCell>
                 <TableCell>{tutor.dateJoined}</TableCell>
                 <TableCell>
                   <Button
                     variant="contained"
-                    color={tutor.isActive ? "primary" : "secondary"}
+                    color={tutor.isActive ? "secondary" : "primary"}
                     onClick={() =>
                       handleOpenDialog(
                         tutor._id as string,
@@ -146,7 +144,7 @@ const TutorManagement: React.FC = () => {
                       )
                     }
                   >
-                    {tutor.isActive ? "Unblock" : "Block"}
+                    {tutor.isActive ? "Block" : "Unblock"}
                   </Button>
                 </TableCell>
               </TableRow>
