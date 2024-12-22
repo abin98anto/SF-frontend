@@ -7,6 +7,7 @@ import {
   UserCog,
   Layers,
   BookCheck,
+  SquareStack,
 } from "lucide-react";
 import "./admin-sidebar.scss";
 import LogoutModal from "./LogoutMoal";
@@ -41,6 +42,11 @@ const menuItems = [
     title: "Ledger",
     icon: BookCheck,
     path: "/admin/ledger",
+  },
+  {
+    title: "Category Management",
+    icon: SquareStack,
+    path: "/admin/category-management",
   },
 ];
 
