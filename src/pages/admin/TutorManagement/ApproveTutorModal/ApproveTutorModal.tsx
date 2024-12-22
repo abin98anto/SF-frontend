@@ -15,7 +15,10 @@ import {
   DialogContentText,
 } from "@mui/material";
 import { useAppDispatch } from "../../../../hooks/hooks";
-import { getUsers } from "../../../../redux/services/UserManagementServices";
+import {
+  getUsers,
+  denyTutor,
+} from "../../../../redux/services/UserManagementServices";
 import { UserDetails } from "../../../../entities/user/UserDetails";
 import { UserRole } from "../../../../entities/user/UserRole";
 import { verifyTutor } from "../../../../redux/services/TutorManagement";
@@ -23,7 +26,7 @@ import { verifyTutor } from "../../../../redux/services/TutorManagement";
 interface ApproveTutorsModalProps {
   open: boolean;
   onClose: () => void;
-  onTutorApproved: () => void; // Add this prop
+  onTutorApproved: () => void;
 }
 
 const ApproveTutorsModal: React.FC<ApproveTutorsModalProps> = ({
@@ -37,6 +40,7 @@ const ApproveTutorsModal: React.FC<ApproveTutorsModalProps> = ({
   const [resumeModalOpen, setResumeModalOpen] = useState(false);
   const [resumeUrl, setResumeUrl] = useState<string | null>(null);
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+  const [denyModalOpen, setDenyModalOpen] = useState(false);
   const [selectedTutor, setSelectedTutor] = useState<UserDetails | null>(null);
 
   useEffect(() => {
@@ -72,17 +76,20 @@ const ApproveTutorsModal: React.FC<ApproveTutorsModalProps> = ({
     setConfirmModalOpen(true);
   };
 
+  const handleDenyClick = (tutor: UserDetails) => {
+    setSelectedTutor(tutor);
+    setDenyModalOpen(true);
+  };
+
   const handleConfirmApproval = async () => {
     if (selectedTutor?._id) {
       try {
-        // console.log("selected user", selectedTutor);
         await dispatch(
           verifyTutor({
             _id: selectedTutor._id,
             isVerified: true,
           })
         );
-        // Refresh the tutor list after approval
         await fetchUnverifiedTutors();
         onTutorApproved();
       } catch (error) {
@@ -90,6 +97,20 @@ const ApproveTutorsModal: React.FC<ApproveTutorsModalProps> = ({
       }
     }
     setConfirmModalOpen(false);
+    setSelectedTutor(null);
+  };
+
+  const handleConfirmDenial = async () => {
+    if (selectedTutor?._id) {
+      try {
+        await dispatch(denyTutor(selectedTutor._id as string));
+        await fetchUnverifiedTutors();
+        onTutorApproved();
+      } catch (error) {
+        console.error("Error denying tutor:", error);
+      }
+    }
+    setDenyModalOpen(false);
     setSelectedTutor(null);
   };
 
@@ -131,7 +152,11 @@ const ApproveTutorsModal: React.FC<ApproveTutorsModalProps> = ({
                       >
                         Approve
                       </Button>
-                      <Button variant="contained" color="error">
+                      <Button
+                        variant="contained"
+                        color="error"
+                        onClick={() => handleDenyClick(tutor)}
+                      >
                         Deny
                       </Button>
                     </TableCell>
@@ -175,7 +200,7 @@ const ApproveTutorsModal: React.FC<ApproveTutorsModalProps> = ({
         </DialogActions>
       </Dialog>
 
-      {/* Confirmation Modal */}
+      {/* Approval Confirmation Modal */}
       <Dialog
         open={confirmModalOpen}
         onClose={() => setConfirmModalOpen(false)}
@@ -196,6 +221,29 @@ const ApproveTutorsModal: React.FC<ApproveTutorsModalProps> = ({
             variant="contained"
           >
             Yes, Approve
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Denial Confirmation Modal */}
+      <Dialog open={denyModalOpen} onClose={() => setDenyModalOpen(false)}>
+        <DialogTitle>Confirm Denial</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to deny {selectedTutor?.name}'s request to
+            become a tutor?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDenyModalOpen(false)} color="secondary">
+            Cancel
+          </Button>
+          <Button
+            onClick={handleConfirmDenial}
+            color="error"
+            variant="contained"
+          >
+            Yes, Deny
           </Button>
         </DialogActions>
       </Dialog>
