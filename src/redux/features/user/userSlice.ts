@@ -88,22 +88,6 @@ const userSlice = createSlice({
         state.loading = false;
         state.error = action.payload || someMessages.LOGOUT_FAILED;
       });
-
-    // Toggle User Status.
-    // .addCase(toggleUserStatus.pending, (state) => {
-    //   state.loading = true;
-    //   state.error = "";
-    // })
-    // .addCase(toggleUserStatus.fulfilled, (state, action) => {
-    //   state.loading = false;
-    //   if (state.userInfo) {
-    //     state.userInfo.isActive = action.payload;
-    //   }
-    // })
-    // .addCase(toggleUserStatus.rejected, (state, action) => {
-    //   state.loading = false;
-    //   state.error = action.payload || "Error toggling user status.";
-    // });
   },
 });
 

@@ -93,7 +93,6 @@ const TutorLogin = () => {
     }
   };
 
-  // Helper function to get error message with proper type checking
   const getErrorMessage = (error: string | LoginError): string => {
     if (typeof error === "string") return error;
     return error.message || someMessages.UNKNOWN_ERROR;

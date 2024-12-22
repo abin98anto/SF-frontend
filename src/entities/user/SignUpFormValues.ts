@@ -3,9 +3,9 @@ import { UserRole } from "./UserRole";
 export interface SignUpFormValues {
   id?: string | undefined;
   name: string;
-  email: string; // Make required
-  password: string; // Make required
-  confirmPassword: string; // Make required
+  email: string;
+  password: string;
+  confirmPassword: string;
   isActive?: boolean | undefined;
   role?: UserRole | undefined;
   resume?: string | undefined;

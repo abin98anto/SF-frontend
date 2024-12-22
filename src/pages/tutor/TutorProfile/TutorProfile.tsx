@@ -33,7 +33,6 @@ interface ProfileFormData {
   confirmPassword: string;
 }
 
-// Modal Component
 const ResumeModal = ({
   isOpen,
   onClose,
@@ -102,8 +101,6 @@ const ProfileSection = () => {
   const [updateError, setUpdateError] = useState<string | null>(null);
   const [updateSuccess, setUpdateSuccess] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  // Get user info from Redux state
   const { loading, userInfo } = useSelector((state: RootState) => state.tutor);
 
   const [profileImage, setProfileImage] = useState<string | null>(

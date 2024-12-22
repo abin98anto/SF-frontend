@@ -83,7 +83,11 @@ const adminLoginSlice = createSlice({
           state.error = "";
           state.userList = action.payload;
         }
-      );
+      )
+      .addCase(getUsers.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "User Fetch Failed!";
+      });
   },
 });
 
