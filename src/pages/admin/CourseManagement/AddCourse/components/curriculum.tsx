@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { ChevronDownIcon, EditIcon, TrashIcon, PlusIcon } from "lucide-react";
+import { useState, CSSProperties } from "react";
+import { EditIcon, TrashIcon, PlusIcon } from "lucide-react";
 import type { Curriculum, CurriculumSection } from "../form-types";
 import {
   FormSection,
@@ -8,6 +8,45 @@ import {
   CurriculumSection as StyledCurriculumSection,
   AddSectionButton,
 } from "../StyledComponents";
+
+// Modal styles with proper TypeScript types
+const modalStyles: {
+  overlay: CSSProperties;
+  modal: CSSProperties;
+  input: CSSProperties;
+  buttonContainer: CSSProperties;
+} = {
+  overlay: {
+    position: "fixed" as const,
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 1000,
+  },
+  modal: {
+    backgroundColor: "white",
+    padding: "20px",
+    borderRadius: "8px",
+    minWidth: "300px",
+  },
+  input: {
+    width: "100%",
+    padding: "8px",
+    marginBottom: "15px",
+    border: "1px solid #ccc",
+    borderRadius: "4px",
+  },
+  buttonContainer: {
+    display: "flex",
+    justifyContent: "flex-end",
+    gap: "10px",
+  },
+};
 
 interface CurriculumProps {
   data: Curriculum;
@@ -33,6 +72,9 @@ export function Curriculum({
       },
     ]
   );
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingSectionId, setEditingSectionId] = useState<number | null>(null);
+  const [editingName, setEditingName] = useState("");
 
   const addSection = () => {
     const newSection = {
@@ -42,6 +84,28 @@ export function Curriculum({
     };
     setSections([...sections, newSection]);
     onUpdate({ sections: [...sections, newSection] });
+  };
+
+  const handleEditClick = (section: CurriculumSection) => {
+    setEditingSectionId(section.id);
+    setEditingName(section.name);
+    setIsModalOpen(true);
+  };
+
+  const handleSaveEdit = () => {
+    if (editingSectionId === null) return;
+
+    const updatedSections = sections.map((section) =>
+      section.id === editingSectionId
+        ? { ...section, name: editingName }
+        : section
+    );
+
+    setSections(updatedSections);
+    onUpdate({ sections: updatedSections });
+    setIsModalOpen(false);
+    setEditingSectionId(null);
+    setEditingName("");
   };
 
   const validateForm = () => {
@@ -80,7 +144,7 @@ export function Curriculum({
                 <button>
                   <PlusIcon size={16} />
                 </button>
-                <button>
+                <button onClick={() => handleEditClick(section)}>
                   <EditIcon size={16} />
                 </button>
                 <button>
@@ -123,6 +187,28 @@ export function Curriculum({
           </div>
         ))}
       </StyledCurriculumSection>
+
+      {isModalOpen && (
+        <div style={modalStyles.overlay}>
+          <div style={modalStyles.modal}>
+            <h3>Edit Section Name</h3>
+            <input
+              type="text"
+              value={editingName}
+              onChange={(e) => setEditingName(e.target.value)}
+              style={modalStyles.input}
+            />
+            <div style={modalStyles.buttonContainer}>
+              <Button secondary onClick={() => setIsModalOpen(false)}>
+                Cancel
+              </Button>
+              <Button primary onClick={handleSaveEdit}>
+                Save
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <AddSectionButton onClick={addSection}>Add Sections</AddSectionButton>
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import type { BasicInfo } from "../form-types";
 import {
   FormSection,
@@ -46,10 +46,10 @@ export function BasicInformation({
       if (response.data && response.data.data) {
         setCategories(response.data.data);
       } else {
-        setError("No categories data received");
+        setcateError("No categories data received");
       }
     } catch (err) {
-      setError("Failed to fetch categories");
+      setcateError("Failed to fetch categories");
       console.error("Error fetching categories:", err);
     } finally {
       setIsLoading(false);
@@ -189,8 +189,8 @@ export function BasicInformation({
             />
             <select>
               <option>Day</option>
-              <option>Week</option>
-              <option>Month</option>
+              <option>Hours</option>
+              <option>Minutes</option>
             </select>
           </div>
         </InputGroup>

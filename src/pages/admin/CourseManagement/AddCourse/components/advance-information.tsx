@@ -1,5 +1,5 @@
-import React from "react";
-import { ImageIcon } from "lucide-react";
+import React, { useState } from "react";
+import { ImageIcon, Upload as UploadIcon } from "lucide-react";
 import type { AdvanceInfo } from "../form-types";
 import {
   FormSection,
@@ -7,10 +7,13 @@ import {
   ButtonGroup,
   Button,
   UploadSection,
-  UploadIcon,
   UploadText,
   UploadButton,
 } from "../StyledComponents";
+import {
+  handleFileUpload,
+  validateImageFile,
+} from "../../../../../utils/fileUpload";
 
 interface AdvanceInformationProps {
   data: AdvanceInfo;
@@ -29,10 +32,32 @@ export function AdvanceInformation({
   onCancel,
   setError,
 }: AdvanceInformationProps) {
-  const handleThumbnailUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const [isUploading, setIsUploading] = useState(false);
+
+  const handleThumbnailUpload = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = e.target.files?.[0];
-    if (file) {
-      onUpdate({ thumbnail: file });
+    if (!file) return;
+
+    try {
+      setIsUploading(true);
+      const result = await handleFileUpload(file, {
+        validateFile: validateImageFile,
+        onUploadStart: () => setIsUploading(true),
+        onUploadEnd: () => setIsUploading(false),
+      });
+
+      if (result.success && result.url) {
+        onUpdate({
+          thumbnail: result.url,
+        });
+      } else {
+        setError(result.error || "Failed to upload image");
+      }
+    } catch (error) {
+      setError("An error occurred while uploading the image");
+      setIsUploading(false);
     }
   };
 
@@ -63,21 +88,21 @@ export function AdvanceInformation({
           <ImageIcon size={48} />
         </UploadIcon>
         <UploadText>
-          {data.thumbnail
-            ? data.thumbnail.name
+          {isUploading
+            ? "Uploading..."
+            : data.thumbnail
+            ? "Image uploaded successfully"
             : "Upload your course thumbnail"}
         </UploadText>
-        <UploadButton>
+        <UploadButton disabled={isUploading}>
           <input
             type="file"
             accept="image/*"
             onChange={handleThumbnailUpload}
             style={{ display: "none" }}
           />
-          <UploadIcon>
-            <UploadIcon />
-          </UploadIcon>
-          Upload
+          <UploadIcon />
+          {isUploading ? "Uploading..." : "Upload"}
         </UploadButton>
       </UploadSection>
 
@@ -101,7 +126,7 @@ export function AdvanceInformation({
             Back
           </Button>
         </div>
-        <Button primary onClick={handleNext}>
+        <Button primary onClick={handleNext} disabled={isUploading}>
           Save & Next
         </Button>
       </ButtonGroup>

@@ -8,7 +8,7 @@ export interface BasicInfo {
 }
 
 export interface AdvanceInfo {
-  thumbnail: File | null;
+  thumbnail: string | null;
   description: string;
 }
 

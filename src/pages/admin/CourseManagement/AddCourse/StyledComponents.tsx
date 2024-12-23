@@ -147,7 +147,7 @@ export const UploadText = styled.div`
   color: #6b7280;
 `;
 
-export const UploadButton = styled.label`
+export const UploadButton = styled("label")<{ disabled?: boolean }>`
   display: inline-block;
   margin-top: 1rem;
   padding: 0.5rem 1rem;
@@ -159,6 +159,8 @@ export const UploadButton = styled.label`
   &:hover {
     opacity: 0.9;
   }
+  opacity: ${(props) => (props.disabled ? 0.5 : 1)};
+  pointer-events: ${(props) => (props.disabled ? "none" : "auto")};
 `;
 
 export const CurriculumSection = styled.div`
