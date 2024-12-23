@@ -2,90 +2,9 @@ import { useState } from "react";
 import { Plus, Trash2, Pencil } from "lucide-react";
 import "./CourseManagement.scss";
 import { Course } from "../../../entities/courses/Course";
+import { Link } from "react-router-dom";
 
-const initialCourses: Course[] = [
-  {
-    id: 1,
-    name: "Web Development",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla...",
-    status: "Active",
-    currentUsers: 4000,
-    completion: 80,
-  },
-  {
-    id: 2,
-    name: "Flutter Development",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla...",
-    status: "Active",
-    currentUsers: 5000,
-    completion: 80,
-  },
-  {
-    id: 3,
-    name: "Golang Web Development",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla...",
-    status: "Active",
-    currentUsers: 10000,
-    completion: 80,
-  },
-  {
-    id: 4,
-    name: "Spoken English",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla...",
-    status: "Inactive",
-    currentUsers: 20,
-    completion: 80,
-  },
-  {
-    id: 5,
-    name: "Kotlin Development",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla...",
-    status: "Active",
-    currentUsers: 500,
-    completion: 80,
-  },
-  {
-    id: 6,
-    name: "Essay Writing",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla...",
-    status: "Active",
-    currentUsers: 8000,
-    completion: 80,
-  },
-  {
-    id: 7,
-    name: "German Speaking",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla...",
-    status: "Active",
-    currentUsers: 7000,
-    completion: 80,
-  },
-  {
-    id: 8,
-    name: "MERN Stack Development",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla...",
-    status: "Active",
-    currentUsers: 15000,
-    completion: 80,
-  },
-  {
-    id: 9,
-    name: "Python Django",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla...",
-    status: "Inactive",
-    currentUsers: 50,
-    completion: 80,
-  },
-];
+const initialCourses: Course[] = [];
 
 export default function CoursesTable() {
   const [courses] = useState<Course[]>(initialCourses);
@@ -122,7 +41,7 @@ export default function CoursesTable() {
           </div>
           <button className="add-course-btn">
             <Plus size={16} />
-            Add Course
+            <Link to={"/admin/course-management/add"}>Add Course</Link>
           </button>
         </div>
 

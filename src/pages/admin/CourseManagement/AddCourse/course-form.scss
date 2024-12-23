@@ -1,0 +1,118 @@
+// Variables
+$coral: #ff7052;
+$light-coral: rgba(255, 112, 82, 0.1);
+$border-color: #e5e7eb;
+$text-gray: #6b7280;
+
+// Common styles
+.form-container {
+  @apply max-w-4xl mx-auto bg-white rounded-lg shadow-sm;
+
+  .header {
+    @apply p-6 border-b border-gray-200;
+
+    h1 {
+      @apply text-2xl font-semibold text-center;
+    }
+  }
+}
+
+.progress-steps {
+  @apply flex justify-between px-8 py-4;
+
+  .step {
+    @apply flex items-center gap-2;
+
+    &.completed {
+      .step-icon {
+        @apply bg-green-500 text-white;
+      }
+
+      .step-text {
+        @apply text-green-500;
+      }
+    }
+
+    &.active {
+      .progress-line {
+        @apply bg-coral;
+      }
+    }
+  }
+}
+
+.form-section {
+  @apply p-8;
+
+  .input-group {
+    @apply mb-6;
+
+    label {
+      @apply block mb-2 font-medium;
+    }
+
+    input,
+    textarea,
+    select {
+      @apply w-full p-3 border border-gray-200 rounded-md;
+
+      &:focus {
+        @apply outline-none ring-2 ring-coral ring-opacity-50;
+      }
+    }
+
+    .char-count {
+      @apply text-sm text-gray-500 text-right mt-1;
+    }
+  }
+}
+
+.button-group {
+  @apply flex justify-between mt-8;
+
+  button {
+    @apply px-6 py-2 rounded-md;
+
+    &.primary {
+      @apply bg-coral text-white hover:bg-opacity-90;
+    }
+
+    &.secondary {
+      @apply text-gray-600 hover:bg-gray-50;
+    }
+  }
+}
+
+.upload-section {
+  @apply border-2 border-dashed border-gray-300 rounded-lg p-8 text-center;
+
+  .upload-icon {
+    @apply mx-auto mb-4 text-gray-400;
+  }
+
+  .upload-text {
+    @apply text-sm text-gray-500;
+  }
+
+  .upload-button {
+    @apply mt-4 px-4 py-2 bg-coral text-white rounded-md hover:bg-opacity-90;
+  }
+}
+
+.curriculum-section {
+  .section-item {
+    @apply bg-gray-50 p-4 mb-4 rounded-lg;
+
+    .section-header {
+      @apply flex items-center justify-between;
+    }
+
+    .lecture-item {
+      @apply bg-white p-3 my-2 rounded-md flex items-center justify-between;
+    }
+  }
+
+  .add-section-button {
+    @apply w-full py-3 bg-light-coral text-coral text-center rounded-lg hover:bg-opacity-90;
+  }
+}

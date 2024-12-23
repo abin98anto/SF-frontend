@@ -37,11 +37,7 @@ const CategoryManagement = () => {
       const response = await axiosInstance.get<ICategoryResponse>(
         "/admin/categories"
       );
-      // console.log("Raw API Response:", response.data.data);
-
-      // Handle potential nested data structure
       const categoriesData = response.data.data;
-      // console.log("first", categoriesData);
 
       if (!Array.isArray(categoriesData)) {
         throw new Error("Invalid data format received from API");

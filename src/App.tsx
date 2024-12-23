@@ -31,6 +31,7 @@ import TutorChat from "./pages/tutor/TutorChat/TutorChat";
 import TutorProfile from "./pages/tutor/TutorProfile/TutorProfile";
 import { ToastContainer } from "react-toastify";
 import CategoryManagement from "./pages/admin/CategoryManagement/CategoryManagement";
+import CourseForm from "./pages/admin/CourseManagement/AddCourse/course-form";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -61,6 +62,7 @@ const router = createBrowserRouter(
         <Route element={<AdminLayout />}>
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="course-management" element={<CourseManagement />} />
+          <Route path="course-management/add" element={<CourseForm />} />
           <Route path="tutor-management" element={<TutorManagement />} />
           <Route path="user-management" element={<UserManagement />} />
           <Route path="batch-management" element={<BatchManagement />} />
