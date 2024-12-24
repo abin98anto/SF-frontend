@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import type { FormData } from "./form-types";
 import { BasicInformation } from "./components/basic-information";
 import { AdvanceInformation } from "./components/advance-information";

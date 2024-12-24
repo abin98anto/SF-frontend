@@ -1,4 +1,4 @@
-import React, { useState, CSSProperties } from "react";
+import React, { useState } from "react";
 import { EditIcon, TrashIcon, PlusIcon, UploadIcon, XIcon } from "lucide-react";
 import type {
   Curriculum,
