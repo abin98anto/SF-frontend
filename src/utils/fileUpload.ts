@@ -53,3 +53,9 @@ export const validatePdfFile = (file: File): boolean => {
   const allowedTypes = ["application/pdf"];
   return allowedTypes.includes(file.type) && file.size < 10 * 1024 * 1024;
 };
+
+export const validateVideoFile = (file: File): boolean => {
+  const allowedTypes = ["video/mp4", "video/webm", "video/ogg"];
+  const maxSize = 100 * 1024 * 1024; // 100 MB
+  return allowedTypes.includes(file.type) && file.size <= maxSize;
+};

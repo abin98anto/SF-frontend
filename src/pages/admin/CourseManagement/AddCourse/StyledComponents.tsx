@@ -104,13 +104,16 @@ export const ButtonGroup = styled.div`
   margin-top: 2rem;
 `;
 
-export const Button = styled.button<{ primary?: boolean; secondary?: boolean }>`
+export const Button = styled.button<{
+  $primary?: boolean;
+  $secondary?: boolean;
+}>`
   padding: 0.5rem 1.5rem;
   border-radius: 0.375rem;
   font-weight: 500;
 
-  ${({ primary }) =>
-    primary &&
+  ${({ $primary }) =>
+    $primary &&
     `
     background-color: #FF7052;
     color: white;
@@ -119,8 +122,8 @@ export const Button = styled.button<{ primary?: boolean; secondary?: boolean }>`
     }
   `}
 
-  ${({ secondary }) =>
-    secondary &&
+  ${({ $secondary }) =>
+    $secondary &&
     `
     background-color: #F3F4F6;
     color: #4B5563;
@@ -147,7 +150,7 @@ export const UploadText = styled.div`
   color: #6b7280;
 `;
 
-export const UploadButton = styled("label")<{ disabled?: boolean }>`
+export const UploadButton = styled.label`
   display: inline-block;
   margin-top: 1rem;
   padding: 0.5rem 1rem;
@@ -159,8 +162,6 @@ export const UploadButton = styled("label")<{ disabled?: boolean }>`
   &:hover {
     opacity: 0.9;
   }
-  opacity: ${(props) => (props.disabled ? 0.5 : 1)};
-  pointer-events: ${(props) => (props.disabled ? "none" : "auto")};
 `;
 
 export const CurriculumSection = styled.div`
@@ -234,3 +235,73 @@ export const ModalButtonGroup = styled.div`
   gap: 1rem;
   margin-top: 1.5rem;
 `;
+
+export const SnackbarContainer = styled.div<{ $isVisible: boolean }>`
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #323232;
+  color: white;
+  padding: 16px;
+  border-radius: 4px;
+  z-index: 1000;
+  opacity: ${(props) => (props.$isVisible ? 1 : 0)};
+  transition: opacity 0.3s;
+`;
+
+export interface ModalStyles {
+  overlay: React.CSSProperties;
+  modal: React.CSSProperties;
+  input: React.CSSProperties;
+  buttonContainer: React.CSSProperties;
+  fileList: React.CSSProperties;
+  fileItem: React.CSSProperties;
+}
+
+export const modalStyles: ModalStyles = {
+  overlay: {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 1000,
+  },
+  modal: {
+    backgroundColor: "white",
+    padding: "20px",
+    borderRadius: "8px",
+    minWidth: "400px",
+    maxWidth: "600px",
+    width: "100%",
+  },
+  input: {
+    width: "100%",
+    padding: "8px",
+    marginBottom: "15px",
+    border: "1px solid #ccc",
+    borderRadius: "4px",
+  },
+  buttonContainer: {
+    display: "flex",
+    justifyContent: "flex-end",
+    gap: "10px",
+  },
+  fileList: {
+    marginTop: "10px",
+  },
+  fileItem: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: "5px",
+    backgroundColor: "#f0f0f0",
+    borderRadius: "4px",
+    marginBottom: "5px",
+  },
+};

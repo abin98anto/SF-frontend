@@ -12,14 +12,17 @@ export interface AdvanceInfo {
   description: string;
 }
 
+export interface Lecture {
+  id: number;
+  name: string;
+  videoUrl: string | null;
+  pdfUrls: string[];
+}
+
 export interface CurriculumSection {
   id: number;
   name: string;
-  lectures: Array<{
-    id: number;
-    name: string;
-    type: "Video" | "Attach File";
-  }>;
+  lectures: Lecture[];
 }
 
 export interface Curriculum {
@@ -31,3 +34,4 @@ export interface FormData {
   advanceInfo: AdvanceInfo;
   curriculum: Curriculum;
 }
+

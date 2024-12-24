@@ -1,12 +1,15 @@
-import { useState, useEffect } from "react";
+"use client";
+
+import React, { useState, useEffect } from "react";
 import type { FormData } from "./form-types";
 import { BasicInformation } from "./components/basic-information";
 import { AdvanceInformation } from "./components/advance-information";
 import { Curriculum } from "./components/curriculum";
 import { ProgressSteps } from "./components/progress-steps";
 import { ConfirmationModal } from "./components/ConfirmationModal";
-import { Snackbar } from "../../../../components/Snackbar/Snackbar";
+// import { Snackbar } from "./components/Snackbar";
 import { FormContainer, Header } from "./StyledComponents";
+import { Snackbar } from "../../../../components/Snackbar/Snackbar";
 
 const STORAGE_KEY = "courseFormData";
 
@@ -37,11 +40,16 @@ export default function CourseForm() {
     if (storedData) {
       const parsedData = JSON.parse(storedData);
       setFormData(parsedData);
-      if (parsedData.curriculum.sections.length > 0) {
+      // Determine the current step based on the data
+      if (
+        parsedData.curriculum &&
+        parsedData.curriculum.sections &&
+        parsedData.curriculum.sections.length > 0
+      ) {
         setCurrentStep(3);
       } else if (
-        parsedData.advanceInfo.description ||
-        parsedData.advanceInfo.thumbnail
+        parsedData.advanceInfo &&
+        (parsedData.advanceInfo.description || parsedData.advanceInfo.thumbnail)
       ) {
         setCurrentStep(2);
       } else {
@@ -51,7 +59,16 @@ export default function CourseForm() {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
+    const dataToStore = {
+      ...formData,
+      advanceInfo: {
+        ...formData.advanceInfo,
+        thumbnail: formData.advanceInfo.thumbnail
+          ? "thumbnail_placeholder"
+          : null,
+      },
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToStore));
   }, [formData]);
 
   const handleNext = () => {
@@ -93,14 +110,10 @@ export default function CourseForm() {
     section: keyof FormData,
     data: Partial<FormData[keyof FormData]>
   ) => {
-    setFormData((prev) => {
-      const newData = {
-        ...prev,
-        [section]: { ...prev[section], ...data },
-      };
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(newData));
-      return newData;
-    });
+    setFormData((prev) => ({
+      ...prev,
+      [section]: { ...prev[section], ...data },
+    }));
   };
 
   const handleError = (errorMessage: string) => {
@@ -143,6 +156,7 @@ export default function CourseForm() {
           onPrevious={handlePrevious}
           onCancel={handleCancel}
           setError={handleError}
+          courseFormData={formData} // Add this line
         />
       )}
 
