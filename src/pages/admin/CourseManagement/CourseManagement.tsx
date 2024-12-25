@@ -4,8 +4,10 @@ import "./CourseManagement.scss";
 import { Course } from "../../../entities/courses/Course";
 import { Link } from "react-router-dom";
 import axiosInstance from "../../../utils/axiosConfig";
+import ConfirmationModal from "./UnlistCourse/ConfirmationModal";
 
 interface APICourse {
+  isActive: boolean;
   _id: string;
   basicInfo: {
     title: string;
@@ -20,52 +22,90 @@ interface APICourse {
   updatedAt: string;
 }
 
+// Helper function to convert boolean to "Active" | "Inactive"
+const booleanToStatus = (isActive: boolean): "Active" | "Inactive" => {
+  return isActive ? "Active" : "Inactive";
+};
+
 export default function CoursesTable() {
   const [courses, setCourses] = useState<Course[]>([]);
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const itemsPerPage = 5;
 
   useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const response = await axiosInstance.get("/admin/courses");
-
-        // Transform the API data into the Course format
-        const transformedCourses: Course[] = response.data.data.map(
-          (course: APICourse) => ({
-            id: course._id,
-            name: course.basicInfo.title,
-            description: course.advanceInfo.description,
-            status: "Active", // Default value
-            currentUsers: 0, // Default value
-            completion: 0, // Default value
-            subtitle: course.basicInfo.subtitle,
-            duration: course.basicInfo.duration,
-            language: course.basicInfo.language,
-            createdAt: new Date(course.createdAt),
-            updatedAt: new Date(course.updatedAt),
-          })
-        );
-
-        setCourses(transformedCourses);
-      } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "Failed to fetch courses"
-        );
-        console.error("Error fetching courses:", err);
-        setCourses([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchCourses();
   }, []);
+
+  const fetchCourses = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await axiosInstance.get("/admin/courses");
+
+      const transformedCourses: Course[] = response.data.data.map(
+        (course: APICourse) => ({
+          id: course._id,
+          name: course.basicInfo.title,
+          description: course.advanceInfo.description,
+          status: booleanToStatus(course.isActive),
+          subtitle: course.basicInfo.subtitle,
+          duration: course.basicInfo.duration,
+          language: course.basicInfo.language,
+          createdAt: new Date(course.createdAt),
+          updatedAt: new Date(course.updatedAt),
+        })
+      );
+
+      setCourses(transformedCourses);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to fetch courses");
+      console.error("Error fetching courses:", err);
+      setCourses([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleStatusToggle = async (course: Course) => {
+    setSelectedCourse(course);
+    setModalOpen(true);
+  };
+
+  const handleConfirmStatusChange = async () => {
+    if (!selectedCourse) return;
+
+    try {
+      let newIsActive;
+      console.log("firstsedd", selectedCourse.status);
+      selectedCourse.status === "Active"
+        ? (newIsActive = false)
+        : (newIsActive = true);
+      const response = await axiosInstance.put(`/admin/update-course`, {
+        _id: selectedCourse.id,
+        isActive: newIsActive,
+      });
+      console.log("he response", response);
+      // Update the courses state with the new status
+      setCourses((prevCourses) =>
+        prevCourses.map((course) =>
+          course.id === selectedCourse.id
+            ? { ...course, status: booleanToStatus(newIsActive) }
+            : course
+        )
+      );
+
+      setModalOpen(false);
+      setSelectedCourse(null);
+    } catch (err) {
+      console.error("Error updating course status:", err);
+      // You might want to show an error message to the user here
+    }
+  };
 
   const filteredCourses = courses.filter((course) =>
     course.name.toLowerCase().includes(search.toLowerCase())
@@ -119,8 +159,6 @@ export default function CoursesTable() {
                   <th>NAME</th>
                   <th>DESCRIPTION</th>
                   <th>STATUS</th>
-                  <th>CURRENT USERS</th>
-                  <th>COMPLETION</th>
                   <th>ACTION</th>
                 </tr>
               </thead>
@@ -137,11 +175,9 @@ export default function CoursesTable() {
                         {course.status}
                       </span>
                     </td>
-                    <td>{course.currentUsers.toLocaleString()}</td>
-                    <td>{course.completion}%</td>
                     <td>
                       <div className="actions">
-                        <button>
+                        <button onClick={() => handleStatusToggle(course)}>
                           <Trash2 size={16} />
                         </button>
                         <button>
@@ -194,6 +230,21 @@ export default function CoursesTable() {
           </button>
         </div>
       </div>
+
+      <ConfirmationModal
+        isOpen={modalOpen}
+        onClose={() => {
+          setModalOpen(false);
+          setSelectedCourse(null);
+        }}
+        onConfirm={handleConfirmStatusChange}
+        title={`${
+          selectedCourse?.status === "Active" ? "Unlist" : "List"
+        } Course`}
+        message={`Are you sure you want to ${
+          selectedCourse?.status === "Active" ? "unlist" : "list"
+        } "${selectedCourse?.name}"?`}
+      />
     </div>
   );
 }

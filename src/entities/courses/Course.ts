@@ -3,6 +3,10 @@ export interface Course {
   name: string;
   description: string;
   status: "Active" | "Inactive";
-  currentUsers: number;
-  completion: number;
+  subtitle: string;
+  duration: string;
+  language: string;
+  createdAt: Date;
+  updatedAt: Date;
+  isActive: boolean;
 }

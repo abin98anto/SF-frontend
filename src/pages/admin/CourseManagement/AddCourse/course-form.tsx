@@ -10,10 +10,12 @@ import { ConfirmationModal } from "./components/ConfirmationModal";
 // import { Snackbar } from "./components/Snackbar";
 import { FormContainer, Header } from "./StyledComponents";
 import { Snackbar } from "../../../../components/Snackbar/Snackbar";
+import { useNavigate } from "react-router-dom";
 
 const STORAGE_KEY = "courseFormData";
 
 export default function CourseForm() {
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<FormData>({
     basicInfo: {
@@ -104,6 +106,7 @@ export default function CourseForm() {
     setCurrentStep(1);
     localStorage.removeItem(STORAGE_KEY);
     setIsModalOpen(false);
+    navigate("/admin/course-management");
   };
 
   const updateFormData = (
