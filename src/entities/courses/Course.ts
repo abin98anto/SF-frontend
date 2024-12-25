@@ -1,4 +1,6 @@
 export interface Course {
+  _id: any;
+  isActive: unknown;
   id: string;
   name: string;
   description: string;
