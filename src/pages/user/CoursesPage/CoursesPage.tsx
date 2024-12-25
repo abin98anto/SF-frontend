@@ -152,10 +152,10 @@ const CoursesPage = () => {
               />
               <div className="course-info">
                 <h2>{course.basicInfo.title}</h2>
-                <p>{course.basicInfo.language}</p>
+                <p>Language : {course.basicInfo.language}</p>
                 <p className="subtitle">{course.basicInfo.subtitle}</p>
                 <p className="category">
-                  {getCategoryName(course.basicInfo.category)}
+                  Category : {getCategoryName(course.basicInfo.category)}
                 </p>
               </div>
             </div>
