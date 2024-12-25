@@ -197,12 +197,8 @@ export function BasicInformation({
       </div>
 
       <ButtonGroup>
-        <Button secondary onClick={onCancel}>
-          Cancel
-        </Button>
-        <Button primary onClick={handleNext}>
-          Save & Next
-        </Button>
+        <Button onClick={onCancel}>Cancel</Button>
+        <Button onClick={handleNext}>Save & Next</Button>
       </ButtonGroup>
     </FormSection>
   );

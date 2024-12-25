@@ -85,11 +85,10 @@ export default function CoursesTable() {
       selectedCourse.status === "Active"
         ? (newIsActive = false)
         : (newIsActive = true);
-      const response = await axiosInstance.put(`/admin/update-course`, {
+      await axiosInstance.put(`/admin/update-course`, {
         _id: selectedCourse.id,
         isActive: newIsActive,
       });
-      console.log("he response", response);
       // Update the courses state with the new status
       setCourses((prevCourses) =>
         prevCourses.map((course) =>
@@ -180,9 +179,14 @@ export default function CoursesTable() {
                         <button onClick={() => handleStatusToggle(course)}>
                           <Trash2 size={16} />
                         </button>
-                        <button>
-                          <Pencil size={16} />
-                        </button>
+                        <Link
+                          to="/admin/course-management/edit"
+                          state={{ courseId: course.id }}
+                        >
+                          <button>
+                            <Pencil size={16} />
+                          </button>
+                        </Link>
                       </div>
                     </td>
                   </tr>

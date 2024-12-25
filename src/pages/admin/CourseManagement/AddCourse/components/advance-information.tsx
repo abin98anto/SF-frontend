@@ -94,7 +94,8 @@ export function AdvanceInformation({
             ? "Image uploaded successfully"
             : "Upload your course thumbnail"}
         </UploadText>
-        <UploadButton disabled={isUploading}>
+        {/* <UploadButton disabled={isUploading}> */}
+        <UploadButton>
           <input
             type="file"
             accept="image/*"
@@ -119,14 +120,12 @@ export function AdvanceInformation({
 
       <ButtonGroup>
         <div>
-          <Button secondary onClick={onCancel} style={{ marginRight: "1rem" }}>
+          <Button onClick={onCancel} style={{ marginRight: "1rem" }}>
             Cancel
           </Button>
-          <Button secondary onClick={onPrevious}>
-            Back
-          </Button>
+          <Button onClick={onPrevious}>Back</Button>
         </div>
-        <Button primary onClick={handleNext} disabled={isUploading}>
+        <Button onClick={handleNext} disabled={isUploading}>
           Save & Next
         </Button>
       </ButtonGroup>

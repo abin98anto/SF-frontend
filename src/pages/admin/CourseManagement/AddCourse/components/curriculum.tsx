@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   EditIcon,
   TrashIcon,
@@ -75,8 +75,12 @@ export function Curriculum({
   const [uploadingPdfs, setUploadingPdfs] = useState(false);
   const [publishing, setPublishing] = useState(false);
 
+  useEffect(() => {
+    setSections(data.sections || []);
+  }, [data.sections]);
+
   const addSection = () => {
-    const newSection = {
+    const newSection: CurriculumSection = {
       id: sections.length + 1,
       name: "New Section",
       lectures: [],
@@ -398,7 +402,6 @@ export function Curriculum({
                 </button>
               </div>
             </div>
-
             {section.lectures.map((lecture) => (
               <div key={lecture.id} className="lecture-item">
                 <div
@@ -431,6 +434,8 @@ export function Curriculum({
           </div>
         ))}
       </StyledCurriculumSection>
+
+      <AddSectionButton onClick={addSection}>Add Section</AddSectionButton>
 
       {isEditModalOpen && (
         <ModalOverlay>
@@ -673,8 +678,6 @@ export function Curriculum({
           </ModalContent>
         </ModalOverlay>
       )}
-
-      <AddSectionButton onClick={addSection}>Add Sections</AddSectionButton>
 
       <ButtonGroup>
         <div>
