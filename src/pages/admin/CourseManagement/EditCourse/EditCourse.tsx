@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axiosInstance from "../../../../utils/axiosConfig";
 import { ProgressSteps } from "../AddCourse/components/progress-steps";
@@ -46,19 +46,19 @@ export function EditCourse() {
         `/admin/get-course?id=${courseId}`
       );
       const courseData = response.data.data;
-      console.log("API Response:", JSON.stringify(courseData, null, 2));
+      // console.log("API Response:", JSON.stringify(courseData, null, 2));
 
       if (
         !courseData ||
         !courseData.curriculum ||
-        !courseData.curriculum.sections
+        !Array.isArray(courseData.curriculum)
       ) {
         throw new Error("Invalid course data structure");
       }
 
       // Process curriculum data
-      const processedSections: CurriculumSection[] =
-        courseData.curriculum.sections.map((section: any, index: number) => ({
+      const processedSections: CurriculumSection[] = courseData.curriculum.map(
+        (section: any, index: number) => ({
           id: index + 1,
           name: section.name,
           lectures: Array.isArray(section.lectures)
@@ -69,9 +69,10 @@ export function EditCourse() {
                 pdfUrls: lecture.pdfUrls || [],
               }))
             : [],
-        }));
+        })
+      );
 
-      const formattedData = {
+      setFormData({
         basicInfo: {
           title: courseData.basicInfo?.title || "",
           subtitle: courseData.basicInfo?.subtitle || "",
@@ -87,12 +88,7 @@ export function EditCourse() {
         curriculum: {
           sections: processedSections,
         },
-      };
-
-      setFormData(formattedData);
-
-      // Store the formatted data in local storage
-      localStorage.setItem("courseFormData", JSON.stringify(formattedData));
+      });
     } catch (error) {
       console.error("Error fetching course data:", error);
       setError("Failed to fetch course data. Please try again.");
@@ -126,10 +122,58 @@ export function EditCourse() {
     navigate("/admin/course-management");
   };
 
+  // const handleSubmit = async () => {
+  //   try {
+  //     const response = await axiosInstance.put(
+  //       `/admin/update-course?id=${courseId}`,
+  //       formData
+  //     );
+  //     console.log("handle submit", response);
+  //     localStorage.removeItem("courseFormData");
+  //     navigate("/admin/course-management");
+  //   } catch (error) {
+  //     console.error("Error updating course:", error);
+  //     setError("Failed to update course. Please try again.");
+  //   }
+  // };
+
   const handleSubmit = async () => {
     try {
-      await axiosInstance.put(`/admin/courses/${courseId}`, formData);
-      // Clear the local storage after successful submission
+      // Transform the curriculum sections to match the backend schema
+      const transformedCurriculum = formData.curriculum.sections.map(
+        (section) => ({
+          name: section.name,
+          lectures: section.lectures.map((lecture) => ({
+            name: lecture.name,
+            videoUrl: lecture.videoUrl,
+            pdfUrls: lecture.pdfUrls,
+          })),
+        })
+      );
+
+      // Prepare the complete course data
+      const courseData = {
+        basicInfo: {
+          title: formData.basicInfo.title,
+          subtitle: formData.basicInfo.subtitle,
+          category: formData.basicInfo.category,
+          topic: formData.basicInfo.topic,
+          language: formData.basicInfo.language,
+          duration: formData.basicInfo.duration,
+        },
+        advanceInfo: {
+          thumbnail: formData.advanceInfo.thumbnail,
+          description: formData.advanceInfo.description,
+        },
+        curriculum: transformedCurriculum,
+        _id: courseId,
+      };
+
+      const response = await axiosInstance.put(
+        `/admin/update-course?id=${courseId}`,
+        courseData
+      );
+      console.log("handle submit", response);
       localStorage.removeItem("courseFormData");
       navigate("/admin/course-management");
     } catch (error) {

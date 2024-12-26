@@ -33,24 +33,70 @@ import { ToastContainer } from "react-toastify";
 import CategoryManagement from "./pages/admin/CategoryManagement/CategoryManagement";
 import CourseForm from "./pages/admin/CourseManagement/AddCourse/course-form";
 import { EditCourse } from "./pages/admin/CourseManagement/EditCourse/EditCourse";
+import { PublicRoute } from "./components/ProtectedRoute/PublicRoute";
+import { ProtectedRuote } from "./components/ProtectedRoute/ProtectedRoute";
+import CourseDetailsPage from "./pages/user/CourseDetailsPage/CourseDetailsPage";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
+      {/* User routes remain the same */}
       <Route element={<UserLayout />}>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/signup" element={<SignupPage />} />
-        <Route path="/login" element={<LoginPage />} />
+        <Route
+          path="/signup"
+          element={
+            <PublicRoute userType="user">
+              <SignupPage />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            <PublicRoute userType="user">
+              <LoginPage />
+            </PublicRoute>
+          }
+        />
         <Route path="/courses" element={<CoursePage />} />
+        <Route path="/course/:id" element={<CourseDetailsPage />} />
         <Route path="/about" element={<AboutPage />} />
-        <Route path="/subscriptions" element={<SubscriptionPage />} />
+        <Route
+          path="/subscriptions"
+          element={
+            <ProtectedRuote userType="user">
+              <SubscriptionPage />
+            </ProtectedRuote>
+          }
+        />
       </Route>
 
-      {/* Tutor routes */}
+      {/* Tutor routes remain the same */}
       <Route path="/tutor">
-        <Route path="signup" element={<TutorSignup />} />
-        <Route path="login" element={<TutorLogin />} />
-        <Route element={<TutorLayout />}>
+        <Route
+          path="signup"
+          element={
+            <PublicRoute userType="tutor">
+              <TutorSignup />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="login"
+          element={
+            <PublicRoute userType="tutor">
+              <TutorLogin />
+            </PublicRoute>
+          }
+        />
+        <Route
+          element={
+            <ProtectedRuote userType="tutor">
+              <TutorLayout />
+            </ProtectedRuote>
+          }
+        >
           <Route path="dashboard" element={<TutorDashboard />} />
           <Route path="my-students" element={<MyStudents />} />
           <Route path="messages" element={<TutorChat />} />
@@ -58,13 +104,30 @@ const router = createBrowserRouter(
         </Route>
       </Route>
 
+      {/* Admin routes - Updated */}
       <Route path="/admin">
-        <Route path="login" element={<AdminLogin />} />
-        <Route element={<AdminLayout />}>
+        <Route
+          path="login"
+          element={
+            // <PublicRoute userType="admin">
+            <AdminLogin />
+            // </PublicRoute>
+          }
+        />
+        {/* Move the AuthGuard to wrap just the AdminLayout */}
+        <Route
+          element={
+            // <ProtectedRuote userType="admin">
+            <AdminLayout />
+            // </ProtectedRuote>
+          }
+        >
           <Route path="dashboard" element={<AdminDashboard />} />
-          <Route path="course-management" element={<CourseManagement />} />
-          <Route path="course-management/add" element={<CourseForm />} />
-          <Route path="course-management/edit" element={<EditCourse />} />
+          <Route path="course-management">
+            <Route index element={<CourseManagement />} />
+            <Route path="add" element={<CourseForm />} />
+            <Route path="edit" element={<EditCourse />} />
+          </Route>
           <Route path="tutor-management" element={<TutorManagement />} />
           <Route path="user-management" element={<UserManagement />} />
           <Route path="batch-management" element={<BatchManagement />} />

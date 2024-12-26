@@ -119,7 +119,7 @@ const UserManagement: React.FC = () => {
                       )
                     }
                   >
-                    {user.isActive ? "Unblock" : "Block"}
+                    {user.isActive ? "Block" : "Unblock"}
                   </Button>
                 </TableCell>
               </TableRow>

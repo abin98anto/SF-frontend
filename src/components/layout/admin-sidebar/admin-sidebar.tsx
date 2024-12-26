@@ -13,36 +13,16 @@ import "./admin-sidebar.scss";
 import LogoutModal from "./LogoutMoal";
 
 const menuItems = [
-  {
-    title: "Dashboard",
-    icon: BarChart2,
-    path: "/admin/dashboard",
-  },
+  { title: "Dashboard", icon: BarChart2, path: "/admin/dashboard" },
   {
     title: "Course Management",
     icon: BookOpen,
     path: "/admin/course-management",
   },
-  {
-    title: "Tutor Management",
-    icon: UserCog,
-    path: "/admin/tutor-management",
-  },
-  {
-    title: "User Management",
-    icon: Users,
-    path: "/admin/user-management",
-  },
-  {
-    title: "Batch Management",
-    icon: Layers,
-    path: "/admin/batch-management",
-  },
-  {
-    title: "Ledger",
-    icon: BookCheck,
-    path: "/admin/ledger",
-  },
+  { title: "Tutor Management", icon: UserCog, path: "/admin/tutor-management" },
+  { title: "User Management", icon: Users, path: "/admin/user-management" },
+  { title: "Batch Management", icon: Layers, path: "/admin/batch-management" },
+  { title: "Ledger", icon: BookCheck, path: "/admin/ledger" },
   {
     title: "Category Management",
     icon: SquareStack,
@@ -52,6 +32,7 @@ const menuItems = [
 
 export default function Sidebar() {
   const [isCollapsed] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -86,10 +67,21 @@ export default function Sidebar() {
       </nav>
 
       <div className="sidebar-footer">
-        <button className="sign-out-button" onClick={handleSignOut}>
-          <LogoutModal />
+        <button
+          className="sign-out-button"
+          onClick={() => setShowLogoutModal(true)}
+        >
+          Sign Out
         </button>
       </div>
+
+      {showLogoutModal && (
+        <LogoutModal
+          isVisible={showLogoutModal}
+          onClose={() => setShowLogoutModal(false)}
+          onConfirm={handleSignOut}
+        />
+      )}
     </div>
   );
 }

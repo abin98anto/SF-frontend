@@ -377,7 +377,7 @@ const ProfileSection = () => {
         </Grid>
 
         {/* Right Column - Password Change */}
-        <Grid item xs={12} md={6} className="right-column">
+        {/* <Grid item xs={12} md={6} className="right-column">
           <Paper className="password-section">
             <Typography variant="h6" gutterBottom className="section-title">
               Change Password
@@ -434,7 +434,7 @@ const ProfileSection = () => {
               </Button>
             </Box>
           </Paper>
-        </Grid>
+        </Grid> */}
       </Grid>
 
       {/* Resume Modal */}

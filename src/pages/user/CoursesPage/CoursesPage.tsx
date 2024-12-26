@@ -8,6 +8,7 @@ import {
 import "./CoursesPage.scss";
 import { Course } from "../../../entities/courses/Course";
 import axiosInstance from "../../../utils/axiosConfig";
+import { Link } from "react-router-dom";
 
 interface APIResponse {
   data: Course[];
@@ -50,7 +51,7 @@ const CoursesPage = () => {
 
         // Fetch courses
         const coursesResponse = await axiosInstance.get<APIResponse>(
-          "/admin/courses"
+          "/courses"
         );
 
         // Filter active courses
@@ -150,13 +151,20 @@ const CoursesPage = () => {
                 }
                 alt={course.basicInfo.title}
               />
+
               <div className="course-info">
-                <h2>{course.basicInfo.title}</h2>
-                <p>Language : {course.basicInfo.language}</p>
-                <p className="subtitle">{course.basicInfo.subtitle}</p>
-                <p className="category">
-                  Category : {getCategoryName(course.basicInfo.category)}
-                </p>
+                <Link
+                  to={`/course/${course._id}`}
+                  key={course._id}
+                  className="course-card-link"
+                >
+                  <h2>{course.basicInfo.title}</h2>
+                  <p>Language : {course.basicInfo.language}</p>
+                  <p className="subtitle">{course.basicInfo.subtitle}</p>
+                  <p className="category">
+                    Category : {getCategoryName(course.basicInfo.category)}
+                  </p>
+                </Link>
               </div>
             </div>
           ))}

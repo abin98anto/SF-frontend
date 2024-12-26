@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Avatar,
@@ -17,6 +17,7 @@ import { RootState, AppDispatch } from "../../../redux/store";
 import { UserRole } from "../../../entities/user/UserRole";
 
 const Header = () => {
+  const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [openLogoutModal, setOpenLogoutModal] = useState(false);
@@ -47,9 +48,10 @@ const Header = () => {
   };
 
   const handleLogout = () => {
-    dispatch(logoutUser(UserRole.USER));
+    dispatch(logoutUser(UserRole.USER)).unwrap();
     setOpenLogoutModal(false);
     handleProfileMenuClose();
+    navigate("/");
   };
 
   return (

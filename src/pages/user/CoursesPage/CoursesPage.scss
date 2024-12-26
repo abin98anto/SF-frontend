@@ -194,3 +194,28 @@
     }
   }
 }
+.course-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-gap: 20px;
+}
+
+.course-card-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.course-card {
+  border: 1px solid #ccc;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.course-card h3 {
+  margin-top: 0;
+}
+
+.course-card p {
+  margin-bottom: 0;
+}
