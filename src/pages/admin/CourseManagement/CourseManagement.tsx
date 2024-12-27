@@ -85,7 +85,7 @@ export default function CoursesTable() {
       selectedCourse.status === "Active"
         ? (newIsActive = false)
         : (newIsActive = true);
-      await axiosInstance.put(`/admin/update-course`, {
+      await axiosInstance.put(`/admin/change-status`, {
         _id: selectedCourse.id,
         isActive: newIsActive,
       });

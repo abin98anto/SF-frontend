@@ -104,7 +104,7 @@ const router = createBrowserRouter(
         </Route>
       </Route>
 
-      {/* Admin routes - Updated */}
+      {/* Admin routes*/}
       <Route path="/admin">
         <Route
           path="login"
@@ -114,7 +114,6 @@ const router = createBrowserRouter(
             // </PublicRoute>
           }
         />
-        {/* Move the AuthGuard to wrap just the AdminLayout */}
         <Route
           element={
             // <ProtectedRuote userType="admin">

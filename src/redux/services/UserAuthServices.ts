@@ -56,7 +56,7 @@ export const loginTutor = createAsyncThunk<
   { rejectValue: string }
 >("tutor/login", async (credentials, thunkAPI) => {
   try {
-    const response = await axiosInstance.post("/login", credentials);
+    const response = await axiosInstance.post("/tutor/login", credentials);
 
     return {
       message: response.data.message,
