@@ -19,7 +19,7 @@ import AdminDashboard from "./pages/admin/AdminDashboard/AdminDashboard";
 import AdminLayout from "./components/layout/admin-layout/admin-layout";
 import CourseManagement from "./pages/admin/CourseManagement/CourseManagement";
 import UserManagement from "./pages/admin/UserManagement/UserManagement";
-import BatchManagement from "./pages/admin/BatchManagement/BatchManagement";
+import BatchManagement from "./pages/admin/SubsManagement/SubsManagement";
 import Ledger from "./pages/admin/Ledger/Ledger";
 import TutorManagement from "./pages/admin/TutorManagement/TutorManagement";
 import { PersistGate } from "redux-persist/integration/react";

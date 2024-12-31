@@ -1,0 +1,28 @@
+.subs-management {
+  padding: 20px;
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+
+    h1 {
+      font-size: 24px;
+      margin: 0;
+    }
+  }
+
+  .MuiTableContainer-root {
+    margin-top: 20px;
+  }
+
+  .MuiTableCell-head {
+    font-weight: bold;
+    background-color: #f5f5f5;
+  }
+
+  .MuiIconButton-root {
+    padding: 6px;
+  }
+}

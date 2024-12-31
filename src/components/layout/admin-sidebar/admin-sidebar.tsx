@@ -21,7 +21,11 @@ const menuItems = [
   },
   { title: "Tutor Management", icon: UserCog, path: "/admin/tutor-management" },
   { title: "User Management", icon: Users, path: "/admin/user-management" },
-  { title: "Batch Management", icon: Layers, path: "/admin/batch-management" },
+  {
+    title: "Subscription Management",
+    icon: Layers,
+    path: "/admin/batch-management",
+  },
   { title: "Ledger", icon: BookCheck, path: "/admin/ledger" },
   {
     title: "Category Management",
