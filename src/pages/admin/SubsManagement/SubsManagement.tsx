@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Table,
   TableBody,
@@ -11,6 +11,7 @@ import {
   IconButton,
 } from "@mui/material";
 import { Edit, Delete, Add } from "@mui/icons-material";
+import AddSubscriptionModal from "./AddSubscription/AddSubscription";
 import "./SubsManagement.scss";
 
 interface Subscription {
@@ -46,11 +47,26 @@ const subscriptions: Subscription[] = [
 ];
 
 const SubsManagement: React.FC = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <div className="subs-management">
       <div className="header">
         <h1>Subscription Management</h1>
-        <Button variant="contained" color="primary" startIcon={<Add />}>
+        <Button
+          variant="contained"
+          color="primary"
+          startIcon={<Add />}
+          onClick={handleOpenModal}
+        >
           Add New Subscription
         </Button>
       </div>
@@ -87,6 +103,7 @@ const SubsManagement: React.FC = () => {
           </TableBody>
         </Table>
       </TableContainer>
+      <AddSubscriptionModal isOpen={isModalOpen} onClose={handleCloseModal} />
     </div>
   );
 };
