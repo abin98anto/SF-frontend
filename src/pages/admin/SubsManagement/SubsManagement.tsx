@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -9,44 +9,17 @@ import {
   Paper,
   Button,
   IconButton,
+  CircularProgress,
 } from "@mui/material";
 import { Edit, Delete, Add } from "@mui/icons-material";
 import AddSubscriptionModal from "./AddSubscription/AddSubscription";
 import "./SubsManagement.scss";
-
-interface Subscription {
-  id: number;
-  name: string;
-  monthlyPrice: number;
-  yearlyPrice: number;
-  offerDiscount: number;
-}
-
-const subscriptions: Subscription[] = [
-  {
-    id: 1,
-    name: "Basic",
-    monthlyPrice: 9.99,
-    yearlyPrice: 99.99,
-    offerDiscount: 10,
-  },
-  {
-    id: 2,
-    name: "Pro",
-    monthlyPrice: 19.99,
-    yearlyPrice: 199.99,
-    offerDiscount: 15,
-  },
-  {
-    id: 3,
-    name: "Enterprise",
-    monthlyPrice: 49.99,
-    yearlyPrice: 499.99,
-    offerDiscount: 20,
-  },
-];
+import axiosInstance from "../../../utils/axiosConfig";
+import SubscriptionPlan from "../../../entities/subscription/subscription";
 
 const SubsManagement: React.FC = () => {
+  const [subscriptions, setSubscriptions] = useState<SubscriptionPlan[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleOpenModal = () => {
@@ -56,6 +29,21 @@ const SubsManagement: React.FC = () => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
+
+  const fetchSubscriptions = async () => {
+    try {
+      const response = await axiosInstance.get("/admin/subscriptions");
+      setSubscriptions(response.data.data);
+    } catch (error) {
+      console.error("Failed to fetch subscriptions:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchSubscriptions();
+  }, []);
 
   return (
     <div className="subs-management">
@@ -71,37 +59,42 @@ const SubsManagement: React.FC = () => {
         </Button>
       </div>
       <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>No.</TableCell>
-              <TableCell>Name</TableCell>
-              <TableCell>Monthly Price</TableCell>
-              <TableCell>Yearly Price</TableCell>
-              <TableCell>Offer Discount</TableCell>
-              <TableCell>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {subscriptions.map((subscription) => (
-              <TableRow key={subscription.id}>
-                <TableCell>{subscription.id}</TableCell>
-                <TableCell>{subscription.name}</TableCell>
-                <TableCell>${subscription.monthlyPrice.toFixed(2)}</TableCell>
-                <TableCell>${subscription.yearlyPrice.toFixed(2)}</TableCell>
-                <TableCell>{subscription.offerDiscount}%</TableCell>
-                <TableCell>
-                  <IconButton color="primary" aria-label="edit">
-                    <Edit />
-                  </IconButton>
-                  <IconButton color="secondary" aria-label="delete">
-                    <Delete />
-                  </IconButton>
-                </TableCell>
+        {isLoading ? (
+          <div className="loading-container">
+            <CircularProgress />
+          </div>
+        ) : (
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>No.</TableCell>
+                <TableCell>Name</TableCell>
+                <TableCell>Monthly Price</TableCell>
+                <TableCell>Yearly Price</TableCell>
+                <TableCell>Offer Discount</TableCell>
+                <TableCell>Actions</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHead>
+            <TableBody>
+              {subscriptions.map((subscription, index) => (
+                <TableRow key={subscription._id}>
+                  <TableCell>{index + 1}</TableCell>
+                  <TableCell>{subscription.name}</TableCell>
+                  <TableCell>${subscription.price}</TableCell>
+                  <TableCell>{subscription.discountPrice}</TableCell>
+                  <TableCell>
+                    <IconButton color="primary" aria-label="edit">
+                      <Edit />
+                    </IconButton>
+                    <IconButton color="secondary" aria-label="delete">
+                      <Delete />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        )}
       </TableContainer>
       <AddSubscriptionModal isOpen={isModalOpen} onClose={handleCloseModal} />
     </div>
