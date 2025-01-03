@@ -42,7 +42,6 @@ export default function CourseForm() {
     if (storedData) {
       const parsedData = JSON.parse(storedData);
       setFormData(parsedData);
-      // Determine the current step based on the data
       if (
         parsedData.curriculum &&
         parsedData.curriculum.sections &&

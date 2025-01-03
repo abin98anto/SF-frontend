@@ -3,16 +3,18 @@ import styled from "styled-components";
 
 const SnackbarContainer = styled.div<{ isVisible: boolean }>`
   position: fixed;
-  bottom: 50px;
+  top: 10px;
   left: 55%;
   transform: translateX(-50%);
-  background-color: #323232;
+  background-color: #ff3333;
   color: white;
-  padding: 16px;
+  padding: 10px;
   border-radius: 4px;
   z-index: 1000;
   opacity: ${(props) => (props.isVisible ? 1 : 0)};
   transition: opacity 0.3s;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  height: 40px;
 `;
 
 interface SnackbarProps {
@@ -30,8 +32,7 @@ export const Snackbar: React.FC<SnackbarProps> = ({
     if (isVisible) {
       const timer = setTimeout(() => {
         onClose();
-      }, 15000);
-
+      }, 3500);
       return () => clearTimeout(timer);
     }
   }, [isVisible, onClose]);
