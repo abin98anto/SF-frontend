@@ -10,6 +10,10 @@ import {
   Button,
   IconButton,
   CircularProgress,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 import { Edit, Delete, Add } from "@mui/icons-material";
 import AddSubscriptionModal from "./AddSubscription/AddSubscription";
@@ -21,6 +25,10 @@ const SubsManagement: React.FC = () => {
   const [subscriptions, setSubscriptions] = useState<SubscriptionPlan[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [selectedSubscription, setSelectedSubscription] = useState<
+    string | null
+  >(null);
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -38,6 +46,35 @@ const SubsManagement: React.FC = () => {
       console.error("Failed to fetch subscriptions:", error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleSubscriptionAdded = async () => {
+    await fetchSubscriptions();
+    setIsModalOpen(false);
+  };
+
+  const handleDeleteClick = (subscriptionId: string) => {
+    setSelectedSubscription(subscriptionId);
+    setDeleteModalOpen(true);
+  };
+
+  const handleCloseDeleteModal = () => {
+    setDeleteModalOpen(false);
+    setSelectedSubscription(null);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!selectedSubscription) return;
+
+    try {
+      await axiosInstance.delete(
+        `/admin/delete-subscription?id=${selectedSubscription}`
+      );
+      await fetchSubscriptions();
+      handleCloseDeleteModal();
+    } catch (error) {
+      console.error("Failed to delete subscription:", error);
     }
   };
 
@@ -85,7 +122,11 @@ const SubsManagement: React.FC = () => {
                     <IconButton color="primary" aria-label="edit">
                       <Edit />
                     </IconButton>
-                    <IconButton color="secondary" aria-label="delete">
+                    <IconButton
+                      color="secondary"
+                      aria-label="delete"
+                      onClick={() => handleDeleteClick(subscription._id!)}
+                    >
                       <Delete />
                     </IconButton>
                   </TableCell>
@@ -95,7 +136,32 @@ const SubsManagement: React.FC = () => {
           </Table>
         )}
       </TableContainer>
-      <AddSubscriptionModal isOpen={isModalOpen} onClose={handleCloseModal} />
+
+      {/* Delete Confirmation Modal */}
+      <Dialog
+        open={deleteModalOpen}
+        onClose={handleCloseDeleteModal}
+        aria-labelledby="delete-dialog-title"
+      >
+        <DialogTitle id="delete-dialog-title">Confirm Delete</DialogTitle>
+        <DialogContent>
+          Are you sure you want to delete this subscription?
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDeleteModal} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleConfirmDelete} color="secondary" autoFocus>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <AddSubscriptionModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onSubscriptionAdded={handleSubscriptionAdded}
+      />
     </div>
   );
 };

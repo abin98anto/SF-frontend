@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import "./AddSubscription.scss";
 import axiosInstance from "../../../../utils/axiosConfig";
 import { Snackbar } from "../../../../components/Snackbar/Snackbar";
@@ -6,11 +6,13 @@ import { Snackbar } from "../../../../components/Snackbar/Snackbar";
 interface AddSubscriptionModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onSubscriptionAdded: () => void;
 }
 
 const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
   isOpen,
   onClose,
+  onSubscriptionAdded,
 }) => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -24,12 +26,27 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
     message: "",
   });
 
-  // Calculate tomorrow's date in YYYY-MM-DD format
   const minDate = useMemo(() => {
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
     return tomorrow.toISOString().split("T")[0];
   }, []);
+
+  const resetFields = () => {
+    setName("");
+    setDescription("");
+    setFeatures("");
+    setMonthlyPrice("");
+    setDiscount("");
+    setDiscountValidUntil("");
+    setSnackbar({ isVisible: false, message: "" });
+  };
+
+  useEffect(() => {
+    if (!isOpen) {
+      resetFields();
+    }
+  }, [isOpen]);
 
   const showError = (message: string) => {
     setSnackbar({
@@ -100,12 +117,15 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
       };
 
       await axiosInstance.post("/admin/create-subscription", subscriptionData);
+
       setSnackbar({
         isVisible: true,
         message: "Subscription created successfully",
       });
+
       setTimeout(() => {
-        onClose();
+        onSubscriptionAdded();
+        resetFields(); // Clear fields after successful addition
       }, 1000);
     } catch (error: any) {
       console.error("Failed to create subscription:", error);
