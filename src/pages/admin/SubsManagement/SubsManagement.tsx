@@ -70,8 +70,7 @@ const SubsManagement: React.FC = () => {
                 <TableCell>No.</TableCell>
                 <TableCell>Name</TableCell>
                 <TableCell>Monthly Price</TableCell>
-                <TableCell>Yearly Price</TableCell>
-                <TableCell>Offer Discount</TableCell>
+                <TableCell>Discount Price</TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
