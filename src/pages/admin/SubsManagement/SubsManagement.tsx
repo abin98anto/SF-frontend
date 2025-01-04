@@ -16,7 +16,7 @@ import {
   DialogActions,
 } from "@mui/material";
 import { Edit, Delete, Add } from "@mui/icons-material";
-import AddSubscriptionModal from "./AddSubscription/AddSubscription";
+import SubscriptionModal from "./SubscriptionModal/SubscriptionModal";
 import "./SubsManagement.scss";
 import axiosInstance from "../../../utils/axiosConfig";
 import SubscriptionPlan from "../../../entities/subscription/subscription";
@@ -29,13 +29,18 @@ const SubsManagement: React.FC = () => {
   const [selectedSubscription, setSelectedSubscription] = useState<
     string | null
   >(null);
+  const [editMode, setEditMode] = useState(false);
 
-  const handleOpenModal = () => {
+  const handleOpenModal = (mode: "add" | "edit", subscriptionId?: string) => {
+    setEditMode(mode === "edit");
+    setSelectedSubscription(subscriptionId || null);
     setIsModalOpen(true);
   };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
+    setEditMode(false);
+    setSelectedSubscription(null);
   };
 
   const fetchSubscriptions = async () => {
@@ -49,9 +54,9 @@ const SubsManagement: React.FC = () => {
     }
   };
 
-  const handleSubscriptionAdded = async () => {
+  const handleSubscriptionChange = async () => {
     await fetchSubscriptions();
-    setIsModalOpen(false);
+    handleCloseModal();
   };
 
   const handleDeleteClick = (subscriptionId: string) => {
@@ -90,7 +95,7 @@ const SubsManagement: React.FC = () => {
           variant="contained"
           color="primary"
           startIcon={<Add />}
-          onClick={handleOpenModal}
+          onClick={() => handleOpenModal("add")}
         >
           Add New Subscription
         </Button>
@@ -119,7 +124,11 @@ const SubsManagement: React.FC = () => {
                   <TableCell>${subscription.price}</TableCell>
                   <TableCell>{subscription.discountPrice}</TableCell>
                   <TableCell>
-                    <IconButton color="primary" aria-label="edit">
+                    <IconButton
+                      color="primary"
+                      aria-label="edit"
+                      onClick={() => handleOpenModal("edit", subscription._id)}
+                    >
                       <Edit />
                     </IconButton>
                     <IconButton
@@ -157,10 +166,12 @@ const SubsManagement: React.FC = () => {
         </DialogActions>
       </Dialog>
 
-      <AddSubscriptionModal
+      <SubscriptionModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
-        onSubscriptionAdded={handleSubscriptionAdded}
+        onSubscriptionChange={handleSubscriptionChange}
+        editMode={editMode}
+        subscriptionId={selectedSubscription || undefined}
       />
     </div>
   );

@@ -1,18 +1,22 @@
 import React, { useState, useMemo, useEffect } from "react";
-import "./AddSubscription.scss";
+import "./SubscriptionModal.scss";
 import axiosInstance from "../../../../utils/axiosConfig";
 import { Snackbar } from "../../../../components/Snackbar/Snackbar";
 
-interface AddSubscriptionModalProps {
+interface SubscriptionModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubscriptionAdded: () => void;
+  onSubscriptionChange: () => void;
+  editMode?: boolean;
+  subscriptionId?: string;
 }
 
-const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
+const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
   isOpen,
   onClose,
-  onSubscriptionAdded,
+  onSubscriptionChange,
+  editMode = false,
+  subscriptionId,
 }) => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -20,7 +24,6 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
   const [monthlyPrice, setMonthlyPrice] = useState("");
   const [discount, setDiscount] = useState("");
   const [discountValidUntil, setDiscountValidUntil] = useState("");
-
   const [snackbar, setSnackbar] = useState({
     isVisible: false,
     message: "",
@@ -42,11 +45,39 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
     setSnackbar({ isVisible: false, message: "" });
   };
 
+  const fetchSubscriptionDetails = async () => {
+    if (editMode && subscriptionId) {
+      try {
+        const response = await axiosInstance.get(
+          `/admin/subscription-details?id=${subscriptionId}`
+        );
+        const subscription = response.data.data;
+        setName(subscription.name);
+        setDescription(subscription.description);
+        setFeatures(subscription.features.join(", "));
+        setMonthlyPrice(subscription.price.toString());
+        setDiscount(subscription.discountPrice?.toString() || "");
+        setDiscountValidUntil(
+          subscription.discountValidUntil
+            ? new Date(subscription.discountValidUntil)
+                .toISOString()
+                .split("T")[0]
+            : ""
+        );
+      } catch (error) {
+        console.error("Failed to fetch subscription details:", error);
+        showError("Failed to load subscription details");
+      }
+    }
+  };
+
   useEffect(() => {
-    if (!isOpen) {
+    if (isOpen && editMode && subscriptionId) {
+      fetchSubscriptionDetails();
+    } else if (!isOpen) {
       resetFields();
     }
-  }, [isOpen]);
+  }, [isOpen, editMode, subscriptionId]);
 
   const showError = (message: string) => {
     setSnackbar({
@@ -113,24 +144,40 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
             ? new Date(discountValidUntil)
             : undefined,
         isActive: true,
-        createdAt: new Date(),
       };
 
-      await axiosInstance.post("/admin/create-subscription", subscriptionData);
-
-      setSnackbar({
-        isVisible: true,
-        message: "Subscription created successfully",
-      });
+      if (editMode && subscriptionId) {
+        await axiosInstance.put(
+          `/admin/update-subscription?id=${subscriptionId}`,
+          subscriptionData
+        );
+        setSnackbar({
+          isVisible: true,
+          message: "Subscription updated successfully",
+        });
+      } else {
+        await axiosInstance.post("/admin/create-subscription", {
+          ...subscriptionData,
+          createdAt: new Date(),
+        });
+        setSnackbar({
+          isVisible: true,
+          message: "Subscription created successfully",
+        });
+      }
 
       setTimeout(() => {
-        onSubscriptionAdded();
-        resetFields(); // Clear fields after successful addition
+        onSubscriptionChange();
+        resetFields();
       }, 1000);
     } catch (error: any) {
-      console.error("Failed to create subscription:", error);
+      console.error(
+        `Failed to ${editMode ? "update" : "create"} subscription:`,
+        error
+      );
       showError(
-        error.response?.data?.message || "Failed to create subscription"
+        error.response?.data?.message ||
+          `Failed to ${editMode ? "update" : "create"} subscription`
       );
     }
   };
@@ -143,7 +190,7 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
     <>
       <div className="modal-overlay">
         <div className="modal-content">
-          <h2>Add New Subscription</h2>
+          <h2>{editMode ? "Edit" : "Add New"} Subscription</h2>
           <form onSubmit={handleSubmit} noValidate>
             <div className="form-group">
               <label htmlFor="name">Name</label>
@@ -211,7 +258,7 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
             </div>
             <div className="button-group">
               <button type="submit" className="submit-btn">
-                Add Subscription
+                {editMode ? "Update" : "Add"} Subscription
               </button>
               <button type="button" onClick={onClose} className="cancel-btn">
                 Cancel
@@ -229,4 +276,4 @@ const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
   );
 };
 
-export default AddSubscriptionModal;
+export default SubscriptionModal;
