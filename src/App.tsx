@@ -62,14 +62,7 @@ const router = createBrowserRouter(
         <Route path="/courses" element={<CoursePage />} />
         <Route path="/course/:id" element={<CourseDetailsPage />} />
         <Route path="/about" element={<AboutPage />} />
-        <Route
-          path="/subscriptions"
-          element={
-            <ProtectedRuote userType="user">
-              <SubscriptionPage />
-            </ProtectedRuote>
-          }
-        />
+        <Route path="/subscriptions" element={<SubscriptionPage />} />
       </Route>
 
       {/* Tutor routes remain the same */}

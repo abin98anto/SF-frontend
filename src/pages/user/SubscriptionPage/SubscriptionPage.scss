@@ -1,0 +1,210 @@
+.subscription-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 4rem 1rem;
+
+  .header {
+    background: transparent;
+    text-align: center;
+    margin-bottom: 3rem;
+
+    h1 {
+      color: #1a1a3d;
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      color: #666;
+      font-size: 1.1rem;
+    }
+  }
+
+  .billing-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 3rem;
+
+    .toggle {
+      position: relative;
+      width: 48px;
+      height: 24px;
+      background: #5925dc;
+      border-radius: 12px;
+      cursor: pointer;
+
+      &::after {
+        content: "";
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 20px;
+        height: 20px;
+        background: white;
+        border-radius: 50%;
+        transition: transform 0.2s;
+      }
+
+      &.active::after {
+        transform: translateX(24px);
+      }
+    }
+
+    span {
+      color: #666;
+      &.active {
+        color: #1a1a3d;
+        font-weight: 500;
+      }
+    }
+  }
+
+  .plans-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+
+    .plan-card {
+      background: #f8f8f8;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      min-height: 400px;
+
+      &:hover {
+        background: white;
+        transform: translateY(-4px);
+      }
+
+      h3 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .price-container {
+        margin-bottom: 1.5rem;
+
+        .price {
+          font-size: 2rem;
+          color: #1a1a3d;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          flex-wrap: wrap;
+
+          .original-price {
+            text-decoration: line-through;
+            color: #666;
+            font-size: 1.5rem;
+          }
+
+          .discount-price {
+            color: #ff6636;
+          }
+
+          .period {
+            font-size: 1rem;
+            color: #666;
+          }
+        }
+
+        .discount-end {
+          font-size: 0.875rem;
+          color: #666;
+          margin-top: 0.5rem;
+        }
+      }
+
+      .features {
+        list-style: none;
+        margin-bottom: 2rem;
+        flex: 1;
+
+        li {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          color: #666;
+          margin-bottom: 0.75rem;
+
+          &::before {
+            content: "✓";
+            color: #5925dc;
+          }
+        }
+      }
+
+      button {
+        width: 100%;
+        padding: 0.75rem;
+        border: none;
+        border-radius: 6px;
+        background: #f4f4f5;
+        color: #1a1a3d;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+        margin-top: auto;
+
+        &:hover:not(:disabled) {
+          background: #ff6636;
+          color: white;
+        }
+
+        &:disabled {
+          opacity: 0.7;
+          cursor: not-allowed;
+        }
+
+        &.current-plan {
+          background: #e2e2e2;
+          color: #666;
+        }
+      }
+    }
+  }
+}
+
+.subscription-container {
+  position: relative;
+
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    border-radius: 100%;
+    background: rgba(89, 37, 220, 0.05);
+    z-index: -1;
+  }
+
+  &::before {
+    top: -150px;
+    left: -150px;
+  }
+
+  &::after {
+    bottom: -150px;
+    right: -150px;
+  }
+}
+
+body {
+  background: radial-gradient(
+      circle at 0% 0%,
+      rgba(89, 37, 220, 0.03) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 100% 100%,
+      rgba(89, 37, 220, 0.03) 0%,
+      transparent 50%
+    );
+  background-attachment: fixed;
+}

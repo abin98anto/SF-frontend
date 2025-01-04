@@ -1,3 +1,17 @@
+export enum SubscriptionType {
+  FREE = "free",
+  BASIC = "basic",
+  PRO = "pro",
+}
+
+export interface Subscription {
+  name: string;
+  type: SubscriptionType;
+  startDate: Date;
+  endDate: Date;
+  cancelledDate: Date;
+}
+
 export interface UserDetails {
   isVerified: any;
   _id?: string | null;
@@ -16,6 +30,7 @@ export interface UserDetails {
   reviewsTaken?: number | null;
   sessionsTaken?: number | null;
   wallet?: number | null;
+  subscription?: Subscription;
 }
 
 export interface rating {
