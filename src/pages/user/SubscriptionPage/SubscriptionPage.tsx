@@ -2,12 +2,20 @@ import { useState, useEffect } from "react";
 import "./SubscriptionPage.scss";
 import axiosInstance from "../../../utils/axiosConfig";
 import SubscriptionPlan from "../../../entities/subscription/subscription";
+import { useAppSelector } from "../../../hooks/hooks";
+import { RootState } from "../../../redux/store";
+import { SubscriptionType } from "../../../entities/user/UserDetails";
 
 const SubscriptionPage = () => {
   const [plans, setPlans] = useState<SubscriptionPlan[]>([]);
   const [isAnnual, setIsAnnual] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const userInfo = useAppSelector((state: RootState) => state.user.userInfo);
+  const isAuthenticated = useAppSelector(
+    (state: RootState) => state.user.isAuthenticated
+  );
 
   useEffect(() => {
     const fetchPlans = async () => {
@@ -51,6 +59,23 @@ const SubscriptionPage = () => {
     if (plan.price === 0) return 0;
     const basePrice = isAnnual ? plan.price! * 12 * 0.7 : plan.price!;
     return Math.floor(basePrice);
+  };
+
+  const isCurrentPlan = (planName: string): boolean => {
+    if (!isAuthenticated || !userInfo?.subscription) return false;
+
+    if (
+      planName === "" &&
+      userInfo.subscription.type === SubscriptionType.FREE
+    ) {
+      return true;
+    }
+    const planTypeMap: { [key: string]: SubscriptionType } = {
+      Basic: SubscriptionType.BASIC,
+      Pro: SubscriptionType.PRO,
+    };
+
+    return userInfo.subscription.type === planTypeMap[planName];
   };
 
   return (
@@ -128,7 +153,15 @@ const SubscriptionPage = () => {
                 <li key={`${plan._id}-${index}`}>{feature}</li>
               ))}
             </ul>
-            {plan.name === "" ? "" : <button type="button">choose</button>}
+            {isCurrentPlan(plan.name!) ? (
+              <button type="button" disabled className="current-plan">
+                Current Plan
+              </button>
+            ) : plan.name !== "" ? (
+              <button type="button">Choose</button>
+            ) : (
+              <span></span>
+            )}
           </div>
         ))}
       </div>
