@@ -5,11 +5,9 @@ export enum SubscriptionType {
 }
 
 export interface Subscription {
-  name: string;
-  type: SubscriptionType;
+  name: SubscriptionType;
   startDate: Date;
   endDate: Date;
-  cancelledDate: Date;
 }
 
 export interface UserDetails {

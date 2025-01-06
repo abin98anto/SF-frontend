@@ -2,11 +2,13 @@ import { useState, useEffect } from "react";
 import "./SubscriptionPage.scss";
 import axiosInstance from "../../../utils/axiosConfig";
 import SubscriptionPlan from "../../../entities/subscription/subscription";
-import { useAppSelector } from "../../../hooks/hooks";
+import { useAppSelector, useAppDispatch } from "../../../hooks/hooks";
 import { RootState } from "../../../redux/store";
 import { SubscriptionType } from "../../../entities/user/UserDetails";
+import { updateStudent } from "../../../redux/services/userUpdateService";
 
 const SubscriptionPage = () => {
+  const dispatch = useAppDispatch();
   const [plans, setPlans] = useState<SubscriptionPlan[]>([]);
   const [isAnnual, setIsAnnual] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -45,7 +47,7 @@ const SubscriptionPage = () => {
     };
 
     fetchPlans();
-  }, []);
+  }, [userInfo]);
 
   if (loading) {
     return <div className="subscription-container">Loading...</div>;
@@ -66,17 +68,106 @@ const SubscriptionPage = () => {
 
     if (
       planName === "" &&
-      userInfo.subscription.type === SubscriptionType.FREE
+      userInfo.subscription.name === SubscriptionType.FREE
     ) {
       return true;
     }
-    const planTypeMap: { [key: string]: SubscriptionType } = {
-      Basic: SubscriptionType.BASIC,
-      Pro: SubscriptionType.PRO,
-    };
+    // const planTypeMap: { [key: string]: SubscriptionType } = {
+    //   Basic: SubscriptionType.BASIC,
+    //   Pro: SubscriptionType.PRO,
+    // };
 
-    return userInfo.subscription.type === planTypeMap[planName];
+    // return userInfo.subscription.name === planTypeMap[planName];
+    return userInfo.subscription.name === planName;
   };
+
+  interface RazorpayResponse {
+    razorpay_payment_id: string;
+    razorpay_order_id: string;
+    razorpay_signature: string;
+  }
+
+  const initializeRazorpay = (): Promise<boolean> => {
+    return new Promise((resolve) => {
+      const script = document.createElement("script");
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
+  };
+
+  const handlePayment = async (plan: SubscriptionPlan) => {
+    console.log("yearl ong", isAnnual);
+    const res = await initializeRazorpay();
+
+    if (!res) {
+      alert("Razorpay SDK failed to load");
+      return;
+    }
+
+    try {
+      let price =
+        (plan.discountPrice as number) > 0 ? plan.discountPrice : plan.price;
+
+      if (isAnnual) price = plan.price! * 12 * 0.7;
+
+      const response = await axiosInstance.post("/order/razorpay/create", {
+        amount: price! * 100,
+        currency: "INR",
+      });
+
+      const options = {
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+        amount:
+          Math.min(plan.price as number, plan.discountPrice as number) * 100,
+        currency: "INR",
+        name: "SkillForge",
+        description: `Purchase Subscription`,
+        order_id: response.data.id,
+        handler: async function (response: RazorpayResponse) {
+          try {
+            await axiosInstance.post("/order/create-order", {
+              userId: userInfo?._id,
+              item: plan.name,
+              amount: price!,
+              paymentId: response.razorpay_payment_id,
+              orderId: response.razorpay_order_id,
+            });
+
+            // Dispatch updateUser thunk to update state and backend.
+            dispatch(
+              updateStudent({
+                subscription: {
+                  name: plan.name as SubscriptionType,
+                  startDate: new Date(),
+                  endDate: isAnnual
+                    ? new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
+                    : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+                },
+              })
+            );
+
+            console.log("after dispathc ", userInfo);
+            alert("Payment Successful!");
+          } catch (err) {
+            alert("Error recording order. Please contact support.");
+          }
+        },
+        theme: {
+          color: "#3399cc",
+        },
+      };
+
+      const paymentObject = new (window as any).Razorpay(options);
+      paymentObject.open();
+    } catch (error) {
+      console.log("error fetching submit payment", error);
+      alert("Something went wrong. Please try again later.");
+    }
+  };
+
+  // console.log("the user in subs", userInfo);
 
   return (
     <div className="subscription-container">
@@ -158,7 +249,9 @@ const SubscriptionPage = () => {
                 Current Plan
               </button>
             ) : plan.name !== "" ? (
-              <button type="button">Choose</button>
+              <button type="button" onClick={() => handlePayment(plan)}>
+                Choose
+              </button>
             ) : (
               <span></span>
             )}

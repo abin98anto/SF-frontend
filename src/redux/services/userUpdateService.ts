@@ -18,10 +18,33 @@ export const updateUser = createAsyncThunk<
     if (!id) {
       return rejectWithValue("No tutor found. Please login again.");
     }
-    const response = await axiosInstance.patch(
-      `/update?id=${id}`,
-      updateData
-    );
+    const response = await axiosInstance.patch(`/update?id=${id}`, updateData);
+    return response.data.user;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to update tutor"
+      );
+    }
+    return rejectWithValue("An unexpected error occurred");
+  }
+});
+
+export const updateStudent = createAsyncThunk<
+  UserDetails,
+  Partial<UserDetails>,
+  {
+    state: RootState;
+    rejectValue: string;
+  }
+>("student/update", async (updateData, { getState, rejectWithValue }) => {
+  try {
+    const state = getState();
+    const id = state.user.userInfo?._id;
+    if (!id) {
+      return rejectWithValue("No tutor found. Please login again.");
+    }
+    const response = await axiosInstance.patch(`/update?id=${id}`, updateData);
     return response.data.user;
   } catch (error) {
     if (axios.isAxiosError(error)) {

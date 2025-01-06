@@ -3,6 +3,7 @@ import { someMessages } from "../../../utils/constants";
 import { signUpUser, verifyOTP } from "../../services/UserSignupServices";
 import { loginUser, logoutUser } from "../../services/UserAuthServices";
 import { UserDetails } from "../../../entities/user/UserDetails";
+import { updateStudent } from "../../services/userUpdateService";
 
 export interface UserState {
   loading: boolean;
@@ -87,6 +88,23 @@ const userSlice = createSlice({
       .addCase(logoutUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || someMessages.LOGOUT_FAILED;
+      })
+
+      // Update User Case
+      .addCase(updateStudent.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(updateStudent.fulfilled, (state, action) => {
+        state.loading = false;
+        state.userInfo = {
+          ...state.userInfo,
+          ...action.payload,
+        };
+        state.error = "";
+      })
+      .addCase(updateStudent.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Failed to update user details";
       });
   },
 });
