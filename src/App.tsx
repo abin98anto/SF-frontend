@@ -144,8 +144,8 @@ const router = createBrowserRouter(
         <Route path="/course/:id" element={<CourseDetailsPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/subscriptions" element={<SubscriptionPage />} />
+        <Route path="/course-enrolled" element={<EnrolledPage />} />
       </Route>
-      <Route path="/course-enrolled" element={<EnrolledPage />} />
       {/* <Route path="/course-enrolled" element={<Page />} /> */}
 
       <Route path="/tutor">

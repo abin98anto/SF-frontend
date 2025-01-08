@@ -6,7 +6,7 @@ import Curriculum from "./Curriculum";
 import ChatBubble from "./ChatBubble";
 
 interface CourseViewerProps {
-  course: ICourse;
+  course: ICourse | undefined;
 }
 
 const CourseViewer: React.FC<CourseViewerProps> = ({ course }) => {
@@ -15,9 +15,9 @@ const CourseViewer: React.FC<CourseViewerProps> = ({ course }) => {
   return (
     <div className="course-viewer">
       <div className="course-header">
-        <h1 className="course-title">{course.basicInfo.title}</h1>
+        <h1 className="course-title">{course?.basicInfo.title}</h1>
 
-        <p className="course-subtitle">{course.basicInfo.subtitle}</p>
+        <p className="course-subtitle">{course?.basicInfo.subtitle}</p>
       </div>
 
       <div className="course-content">
@@ -30,7 +30,7 @@ const CourseViewer: React.FC<CourseViewerProps> = ({ course }) => {
 
         <div className="curriculum-section">
           <Curriculum
-            sections={course.curriculum}
+            sections={course?.curriculum}
             onVideoSelect={setCurrentVideoUrl}
           />
         </div>

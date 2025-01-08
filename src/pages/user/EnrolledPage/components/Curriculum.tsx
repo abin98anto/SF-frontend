@@ -1,12 +1,9 @@
 import React from "react";
-
 import "./Curriculum.scss";
 import { Section } from "../../../../entities/courses/Course";
 
-// import { Section } from "../../../core/entities/ICourses";
-
 interface CurriculumProps {
-  sections: Section[];
+  sections: Section[] | undefined;
 
   onVideoSelect: (videoUrl: string) => void;
 }
@@ -17,7 +14,7 @@ const Curriculum: React.FC<CurriculumProps> = ({ sections, onVideoSelect }) => {
       <h2 className="curriculum-title">Course Content</h2>
 
       <div className="sections">
-        {sections.map((section, index) => (
+        {sections?.map((section, index) => (
           <div key={index} className="section">
             <h3 className="section-title">{section.name}</h3>
 
