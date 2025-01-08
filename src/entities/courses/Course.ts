@@ -80,6 +80,7 @@
 // }
 
 export interface Lesson {
+  _id: string;
   name: string;
   videoUrl: string;
   pdfUrls: string[];

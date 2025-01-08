@@ -29,10 +29,22 @@ export interface UserDetails {
   sessionsTaken?: number | null;
   wallet?: number | null;
   subscription?: Subscription;
+  coursesEnrolled?: CoursesEnrolled[];
 }
 
 export interface rating {
   id: string;
   stars: number;
   comments?: string;
+}
+
+export class CoursesEnrolled {
+  constructor(
+    public courseId: string,
+    public tutorId: string,
+    public lastCompletedChapter: number[],
+    public progressPercentage: number,
+    public startDate: Date,
+    public endDate: Date | null
+  ) {}
 }

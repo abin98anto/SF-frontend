@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import axiosInstance from "../../../utils/axiosConfig";
+import { useAppSelector } from "../../../hooks/hooks";
 import { ChevronDown, ChevronUp, Play, FileText } from "lucide-react";
+import Swal from "sweetalert2";
+import axios from "axios";
 
 interface Course {
   _id: any;
@@ -29,7 +32,7 @@ interface Course {
     description: string;
   };
   curriculum: Array<{
-    id: string; // Updated to string
+    id: string;
     name: string;
     lectures: Array<{
       id: number;
@@ -46,10 +49,86 @@ const CourseDetailsPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [expandedSections, setExpandedSections] = useState<{
-    [key: string]: boolean; // Updated to string
+    [key: string]: boolean;
   }>({});
+  const [enrollingCourse, setEnrollingCourse] = useState(false);
 
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const userInfo = useAppSelector((state) => state.user.userInfo);
+  const isAuthenticated = useAppSelector((state) => state.user.isAuthenticated);
+
+  const handleStartCourse = async () => {
+    if (!isAuthenticated) {
+      Swal.fire({
+        title: "Please Login",
+        text: "You need to login to start this course",
+        icon: "warning",
+        showConfirmButton: true,
+      });
+      return;
+    }
+
+    if (!userInfo?.subscription?.name) {
+      Swal.fire({
+        title: "Subscription Required",
+        text: "Please subscribe to access this course",
+        icon: "warning",
+        showConfirmButton: true,
+      });
+      return;
+    }
+
+    try {
+      setEnrollingCourse(true);
+
+      const enrollmentData = {
+        coursesEnrolled: {
+          courseId: id,
+          tutorId: "",
+          lastCompletedChapter: [],
+          progressPercentage: 0,
+          startDate: new Date(),
+          endDate: null,
+        },
+      };
+
+      await axiosInstance.patch(
+        `/course-enroll?id=${userInfo._id}`,
+        enrollmentData
+      );
+
+      Swal.fire({
+        title: "Success!",
+        text: "Successfully enrolled in the course",
+        icon: "success",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+
+      navigate(`/course-enrolled?id=${id}`);
+    } catch (error) {
+      console.error("Error enrolling in course:", error);
+
+      if (axios.isAxiosError(error)) {
+        Swal.fire({
+          title: "Error",
+          text: error.response?.data || "An error occurred while enrolling.",
+          icon: "error",
+          showConfirmButton: true,
+        });
+      } else {
+        Swal.fire({
+          title: "Error",
+          text: "An unexpected error occurred.",
+          icon: "error",
+          showConfirmButton: true,
+        });
+      }
+    } finally {
+      setEnrollingCourse(false);
+    }
+  };
 
   useEffect(() => {
     const fetchCourse = async () => {
@@ -69,7 +148,6 @@ const CourseDetailsPage: React.FC = () => {
   }, [id]);
 
   const toggleSection = (sectionId: string) => {
-    // Updated to string
     setExpandedSections((prev) => ({
       ...prev,
       [sectionId]: !prev[sectionId],
@@ -132,6 +210,12 @@ const CourseDetailsPage: React.FC = () => {
           <p>Category: {course.basicInfo?.category}</p>
           <p>Language: {course.basicInfo?.language}</p>
           <p>Duration: {course.basicInfo?.duration} hrs</p>
+          <StartCourseButton
+            onClick={handleStartCourse}
+            disabled={enrollingCourse}
+          >
+            {enrollingCourse ? "Enrolling..." : "Start Course"}
+          </StartCourseButton>
         </CourseInfo>
       </CourseHeader>
 
@@ -362,16 +446,37 @@ const Duration = styled.span`
   color: #6b7280;
 `;
 
-const PreviewLink = styled.button`
-  color: #6366f1;
-  background: none;
+// const PreviewLink = styled.button`
+//   color: #6366f1;
+//   background: none;
+//   border: none;
+//   cursor: pointer;
+//   font-size: 14px;
+//   font-weight: 500;
+
+//   &:hover {
+//     text-decoration: underline;
+//   }
+// `;
+
+const StartCourseButton = styled.button`
+  background-color: #6366f1;
+  color: white;
+  padding: 12px 24px;
   border: none;
-  cursor: pointer;
-  font-size: 14px;
+  border-radius: 6px;
   font-weight: 500;
+  cursor: pointer;
+  margin-top: 16px;
+  transition: background-color 0.2s;
 
   &:hover {
-    text-decoration: underline;
+    background-color: #4f46e5;
+  }
+
+  &:disabled {
+    background-color: #9ca3af;
+    cursor: not-allowed;
   }
 `;
 

@@ -34,7 +34,6 @@ import CategoryManagement from "./pages/admin/CategoryManagement/CategoryManagem
 import CourseForm from "./pages/admin/CourseManagement/AddCourse/course-form";
 import CourseDetailsPage from "./pages/user/CourseDetailsPage/CourseDetailsPage";
 import { EditCourse } from "./pages/admin/CourseManagement/EditCourse/EditCourse";
-import Page from "./pages/user/CourseEnrolledPage/page";
 import EnrolledPage from "./pages/user/EnrolledPage/EnrolledPage";
 // import { PublicRoute } from "./components/ProtectedRoute/PublicRoute";
 // import { ProtectedRuote } from "./components/ProtectedRoute/ProtectedRoute";
@@ -146,7 +145,6 @@ const router = createBrowserRouter(
         <Route path="/subscriptions" element={<SubscriptionPage />} />
         <Route path="/course-enrolled" element={<EnrolledPage />} />
       </Route>
-      {/* <Route path="/course-enrolled" element={<Page />} /> */}
 
       <Route path="/tutor">
         <Route path="signup" element={<TutorSignup />} />

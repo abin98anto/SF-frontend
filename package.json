@@ -20,6 +20,7 @@
     "@mui/material": "^6.2.1",
     "@mui/system": "^6.2.1",
     "@reduxjs/toolkit": "^2.4.0",
+    "@sweetalert2/theme-default": "^5.0.26",
     "antd": "^5.22.5",
     "axios": "^1.7.9",
     "bootstrap": "^5.3.3",
@@ -34,6 +35,7 @@
     "react-toastify": "^10.0.6",
     "redux-persist": "^6.0.0",
     "styled-components": "^6.1.13",
+    "sweetalert2": "^11.15.10",
     "yup": "^1.6.1"
   },
   "devDependencies": {

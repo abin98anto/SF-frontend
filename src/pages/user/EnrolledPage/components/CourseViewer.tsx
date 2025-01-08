@@ -32,6 +32,7 @@ const CourseViewer: React.FC<CourseViewerProps> = ({ course }) => {
           <Curriculum
             sections={course?.curriculum}
             onVideoSelect={setCurrentVideoUrl}
+            completedLectures={[]}
           />
         </div>
       </div>

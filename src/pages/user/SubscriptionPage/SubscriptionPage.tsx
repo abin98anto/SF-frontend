@@ -6,6 +6,9 @@ import { useAppSelector, useAppDispatch } from "../../../hooks/hooks";
 import { RootState } from "../../../redux/store";
 import { SubscriptionType } from "../../../entities/user/UserDetails";
 import { updateStudent } from "../../../redux/services/userUpdateService";
+import Swal from "sweetalert2";
+// import Swal from "sweetalert2/dist/sweetalert2.js";
+import "@sweetalert2/theme-default/default.css";
 
 const SubscriptionPage = () => {
   const dispatch = useAppDispatch();
@@ -72,12 +75,6 @@ const SubscriptionPage = () => {
     ) {
       return true;
     }
-    // const planTypeMap: { [key: string]: SubscriptionType } = {
-    //   Basic: SubscriptionType.BASIC,
-    //   Pro: SubscriptionType.PRO,
-    // };
-
-    // return userInfo.subscription.name === planTypeMap[planName];
     return userInfo.subscription.name === planName;
   };
 
@@ -148,8 +145,18 @@ const SubscriptionPage = () => {
               })
             );
 
-            console.log("after dispathc ", userInfo);
-            alert("Payment Successful!");
+            // console.log("after dispathc ", userInfo);
+            // alert("Payment Successful!");
+            Swal.fire({
+              title: "Success!",
+              text: `You have successfully subscribed to the '${plan.name}' plan`,
+              icon: "success",
+              timer: 3000,
+              timerProgressBar: true,
+              showConfirmButton: false,
+              position: "top-end",
+              toast: true,
+            });
           } catch (err) {
             alert("Error recording order. Please contact support.");
           }
