@@ -35,3 +35,46 @@ export interface Course {
     }>;
   };
 }
+
+export interface Lesson {
+  _id: number;
+  name: string;
+  videoUrl: string;
+  pdfUrls: string[];
+}
+
+export interface Section {
+  _id: string;
+  name: string;
+  lectures: Lecture[];
+}
+
+export interface ICourse {
+  basicInfo: {
+    title: string;
+    subtitle: string;
+    category: string;
+    topic: string;
+    language: string;
+    duration: string;
+  };
+  advanceInfo: {
+    thumbnail: string | null;
+    description: string;
+  };
+  curriculum: Section[];
+  isActive: boolean;
+}
+
+export interface Message {
+  id: number;
+  text: string;
+  sender: "user" | "system";
+  timestamp: string;
+}
+
+interface Lecture {
+  _id?: string;
+  name: string;
+  videoUrl: string;
+}

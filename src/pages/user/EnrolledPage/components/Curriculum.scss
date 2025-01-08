@@ -1,0 +1,99 @@
+.curriculum {
+
+  background: white;
+
+  border-radius: 12px;
+
+  padding: 1.5rem;
+
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+}
+
+.curriculum-title {
+
+  font-size: 1.5rem;
+
+  font-weight: 600;
+
+  margin-bottom: 1.5rem;
+
+  color: hsl(var(--foreground));
+
+}
+
+.sections {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 1.5rem;
+
+}
+
+.section {
+
+  border: 1px solid hsl(var(--border));
+
+  border-radius: 8px;
+
+  overflow: hidden;
+
+}
+
+.section-title {
+
+  background: hsl(var(--secondary));
+
+  padding: 1rem;
+
+  font-weight: 500;
+
+  color: hsl(var(--foreground));
+
+}
+
+.lectures {
+
+  display: flex;
+
+  flex-direction: column;
+
+}
+
+.lecture {
+
+  display: flex;
+
+  align-items: center;
+
+  padding: 1rem;
+
+  background: none;
+
+  border: none;
+
+  border-top: 1px solid hsl(var(--border));
+
+  cursor: pointer;
+
+  text-align: left;
+
+  transition: background-color 0.2s;
+
+  &:hover {
+
+    background: hsl(var(--accent));
+
+  }
+
+}
+
+.lecture-name {
+
+  color: hsl(var(--foreground));
+
+  font-size: 0.9rem;
+
+}

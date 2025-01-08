@@ -32,64 +32,126 @@ import TutorProfile from "./pages/tutor/TutorProfile/TutorProfile";
 import { ToastContainer } from "react-toastify";
 import CategoryManagement from "./pages/admin/CategoryManagement/CategoryManagement";
 import CourseForm from "./pages/admin/CourseManagement/AddCourse/course-form";
-import { EditCourse } from "./pages/admin/CourseManagement/EditCourse/EditCourse";
-import { PublicRoute } from "./components/ProtectedRoute/PublicRoute";
-import { ProtectedRuote } from "./components/ProtectedRoute/ProtectedRoute";
 import CourseDetailsPage from "./pages/user/CourseDetailsPage/CourseDetailsPage";
+import { EditCourse } from "./pages/admin/CourseManagement/EditCourse/EditCourse";
+import Page from "./pages/user/CourseEnrolledPage/page";
+import EnrolledPage from "./pages/user/EnrolledPage/EnrolledPage";
+// import { PublicRoute } from "./components/ProtectedRoute/PublicRoute";
+// import { ProtectedRuote } from "./components/ProtectedRoute/ProtectedRoute";
+
+// const router = createBrowserRouter(
+//   createRoutesFromElements(
+//     <>
+//       {/* User routes remain the same */}
+//       <Route element={<UserLayout />}>
+//         <Route path="/" element={<LandingPage />} />
+//         <Route
+//           path="/signup"
+//           element={
+//             <PublicRoute userType="user">
+//               <SignupPage />
+//             </PublicRoute>
+//           }
+//         />
+//         <Route
+//           path="/login"
+//           element={
+//             <PublicRoute userType="user">
+//               <LoginPage />
+//             </PublicRoute>
+//           }
+//         />
+//         <Route path="/courses" element={<CoursePage />} />
+//         <Route path="/course/:id" element={<CourseDetailsPage />} />
+//         <Route path="/about" element={<AboutPage />} />
+//         <Route path="/subscriptions" element={<SubscriptionPage />} />
+//       </Route>
+
+//       {/* Tutor routes remain the same */}
+//       <Route path="/tutor">
+//         <Route
+//           path="signup"
+//           element={
+//             <PublicRoute userType="tutor">
+//               <TutorSignup />
+//             </PublicRoute>
+//           }
+//         />
+//         <Route
+//           path="login"
+//           element={
+//             <PublicRoute userType="tutor">
+//               <TutorLogin />
+//             </PublicRoute>
+//           }
+//         />
+//         <Route
+//           element={
+//             <ProtectedRuote userType="tutor">
+//               <TutorLayout />
+//             </ProtectedRuote>
+//           }
+//         >
+//           <Route path="dashboard" element={<TutorDashboard />} />
+//           <Route path="my-students" element={<MyStudents />} />
+//           <Route path="messages" element={<TutorChat />} />
+//           <Route path="profile" element={<TutorProfile />} />
+//         </Route>
+//       </Route>
+
+//       {/* Admin routes*/}
+//       <Route path="/admin">
+//         <Route
+//           path="login"
+//           element={
+//             // <PublicRoute userType="admin">
+//             <AdminLogin />
+//             // </PublicRoute>
+//           }
+//         />
+//         <Route
+//           element={
+//             // <ProtectedRuote userType="admin">
+//             <AdminLayout />
+//             // </ProtectedRuote>
+//           }
+//         >
+//           <Route path="dashboard" element={<AdminDashboard />} />
+//           <Route path="course-management">
+//             <Route index element={<CourseManagement />} />
+//             <Route path="add" element={<CourseForm />} />
+//             <Route path="edit" element={<EditCourse />} />
+//           </Route>
+//           <Route path="tutor-management" element={<TutorManagement />} />
+//           <Route path="user-management" element={<UserManagement />} />
+//           <Route path="batch-management" element={<BatchManagement />} />
+//           <Route path="ledger" element={<Ledger />} />
+//           <Route path="category-management" element={<CategoryManagement />} />
+//         </Route>
+//       </Route>
+//     </>
+//   )
+// );
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
-      {/* User routes remain the same */}
       <Route element={<UserLayout />}>
         <Route path="/" element={<LandingPage />} />
-        <Route
-          path="/signup"
-          element={
-            <PublicRoute userType="user">
-              <SignupPage />
-            </PublicRoute>
-          }
-        />
-        <Route
-          path="/login"
-          element={
-            <PublicRoute userType="user">
-              <LoginPage />
-            </PublicRoute>
-          }
-        />
+        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/login" element={<LoginPage />} />
         <Route path="/courses" element={<CoursePage />} />
         <Route path="/course/:id" element={<CourseDetailsPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/subscriptions" element={<SubscriptionPage />} />
       </Route>
+      <Route path="/course-enrolled" element={<EnrolledPage />} />
+      {/* <Route path="/course-enrolled" element={<Page />} /> */}
 
-      {/* Tutor routes remain the same */}
       <Route path="/tutor">
-        <Route
-          path="signup"
-          element={
-            <PublicRoute userType="tutor">
-              <TutorSignup />
-            </PublicRoute>
-          }
-        />
-        <Route
-          path="login"
-          element={
-            <PublicRoute userType="tutor">
-              <TutorLogin />
-            </PublicRoute>
-          }
-        />
-        <Route
-          element={
-            <ProtectedRuote userType="tutor">
-              <TutorLayout />
-            </ProtectedRuote>
-          }
-        >
+        <Route path="signup" element={<TutorSignup />} />
+        <Route path="login" element={<TutorLogin />} />
+        <Route element={<TutorLayout />}>
           <Route path="dashboard" element={<TutorDashboard />} />
           <Route path="my-students" element={<MyStudents />} />
           <Route path="messages" element={<TutorChat />} />
@@ -97,23 +159,9 @@ const router = createBrowserRouter(
         </Route>
       </Route>
 
-      {/* Admin routes*/}
       <Route path="/admin">
-        <Route
-          path="login"
-          element={
-            // <PublicRoute userType="admin">
-            <AdminLogin />
-            // </PublicRoute>
-          }
-        />
-        <Route
-          element={
-            // <ProtectedRuote userType="admin">
-            <AdminLayout />
-            // </ProtectedRuote>
-          }
-        >
+        <Route path="login" element={<AdminLogin />} />
+        <Route element={<AdminLayout />}>
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="course-management">
             <Route index element={<CourseManagement />} />
