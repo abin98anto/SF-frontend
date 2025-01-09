@@ -112,20 +112,13 @@ const AdminLogin = () => {
             <button className="login-button" type="submit" disabled={loading}>
               {loading ? "Logging in..." : "Log in"}
             </button>
+
+            <div className="autofill" onClick={handleAutofill}>
+              a
+            </div>
           </form>
 
           {loginError && <p className="error-message">{loginError}</p>}
-
-          <div className="buttons-container">
-            <button
-              type="button"
-              onClick={handleAutofill}
-              className="autofill-btn"
-              disabled={loading}
-            >
-              Autofill
-            </button>
-          </div>
         </div>
       </div>
     </div>

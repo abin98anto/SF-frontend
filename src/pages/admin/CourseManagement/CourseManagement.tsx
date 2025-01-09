@@ -5,6 +5,7 @@ import { Course } from "../../../entities/courses/Course";
 import { Link } from "react-router-dom";
 import axiosInstance from "../../../utils/axiosConfig";
 import ConfirmationModal from "./UnlistCourse/ConfirmationModal";
+import { API_ENDPOINTS, someMessages } from "../../../utils/constants";
 
 interface APICourse {
   isActive: boolean;
@@ -22,7 +23,6 @@ interface APICourse {
   updatedAt: string;
 }
 
-// Helper function to convert boolean to "Active" | "Inactive"
 const booleanToStatus = (isActive: boolean): "Active" | "Inactive" => {
   return isActive ? "Active" : "Inactive";
 };
@@ -63,8 +63,10 @@ export default function CoursesTable() {
 
       setCourses(transformedCourses);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to fetch courses");
-      console.error("Error fetching courses:", err);
+      console.error(someMessages.COURSE_FETCH_FAIL, err);
+      setError(
+        err instanceof Error ? err.message : someMessages.COURSE_FETCH_FAIL
+      );
       setCourses([]);
     } finally {
       setLoading(false);
@@ -81,15 +83,14 @@ export default function CoursesTable() {
 
     try {
       let newIsActive;
-      console.log("firstsedd", selectedCourse.status);
       selectedCourse.status === "Active"
         ? (newIsActive = false)
         : (newIsActive = true);
-      await axiosInstance.put(`/admin/change-status`, {
+      await axiosInstance.put(API_ENDPOINTS.COURSE_UPDATE, {
         _id: selectedCourse.id,
         isActive: newIsActive,
       });
-      // Update the courses state with the new status
+
       setCourses((prevCourses) =>
         prevCourses.map((course) =>
           course.id === selectedCourse.id
@@ -101,8 +102,7 @@ export default function CoursesTable() {
       setModalOpen(false);
       setSelectedCourse(null);
     } catch (err) {
-      console.error("Error updating course status:", err);
-      // You might want to show an error message to the user here
+      console.error(someMessages.COURSE_UPDATE_FAIL, err);
     }
   };
 

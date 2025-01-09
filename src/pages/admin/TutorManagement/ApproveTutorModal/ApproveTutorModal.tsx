@@ -14,6 +14,7 @@ import {
   Paper,
   DialogContentText,
 } from "@mui/material";
+
 import { useAppDispatch } from "../../../../hooks/hooks";
 import {
   getUsers,
@@ -22,6 +23,7 @@ import {
 import { UserDetails } from "../../../../entities/user/UserDetails";
 import { UserRole } from "../../../../entities/user/UserRole";
 import { verifyTutor } from "../../../../redux/services/TutorManagement";
+import { someMessages } from "../../../../utils/constants";
 
 interface ApproveTutorsModalProps {
   open: boolean;
@@ -57,7 +59,7 @@ const ApproveTutorsModal: React.FC<ApproveTutorsModalProps> = ({
       );
       setUnverifiedTutors(unverified);
     } catch (err) {
-      console.error("Error fetching unverified tutors", err);
+      console.error(someMessages.UNV_TUTORS_FETCH_FAIL, err);
     }
   };
 
@@ -93,7 +95,7 @@ const ApproveTutorsModal: React.FC<ApproveTutorsModalProps> = ({
         await fetchUnverifiedTutors();
         onTutorApproved();
       } catch (error) {
-        console.error("Error approving tutor:", error);
+        console.error(someMessages.APPROVE_TUTOR_FAIL, error);
       }
     }
     setConfirmModalOpen(false);
@@ -107,7 +109,7 @@ const ApproveTutorsModal: React.FC<ApproveTutorsModalProps> = ({
         await fetchUnverifiedTutors();
         onTutorApproved();
       } catch (error) {
-        console.error("Error denying tutor:", error);
+        console.error(someMessages.DENY_TUTOR_FAIL, error);
       }
     }
     setDenyModalOpen(false);

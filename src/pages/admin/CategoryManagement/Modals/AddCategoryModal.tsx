@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { X } from "lucide-react";
 import "./AddCategoryModal.scss";
 import axiosInstance from "../../../../utils/axiosConfig";
+import { API_ENDPOINTS, someMessages } from "../../../../utils/constants";
 
 interface AddCategoryModalProps {
   isOpen: boolean;
@@ -26,12 +27,12 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({
     setError(null);
 
     try {
-      await axiosInstance.post("/admin/add-category", { name: categoryName });
+      await axiosInstance.post(API_ENDPOINTS.ADD_CAT, { name: categoryName });
       onCategoryAdded();
       onClose();
       setCategoryName("");
     } catch (err) {
-      setError("Failed to add category. Please try again.");
+      setError(someMessages.ADD_CAT_FAIL);
     } finally {
       setIsLoading(false);
     }

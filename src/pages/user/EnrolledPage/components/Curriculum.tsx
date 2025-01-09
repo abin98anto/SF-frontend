@@ -6,7 +6,7 @@ import { Check } from "lucide-react";
 interface CurriculumProps {
   sections: Section[] | undefined;
   onVideoSelect: (videoUrl: string) => void;
-  completedLectures: string[]; // New prop to track completed lectures
+  completedLectures: string[];
 }
 
 const Curriculum: React.FC<CurriculumProps> = ({

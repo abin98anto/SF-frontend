@@ -11,6 +11,7 @@ import {
   Avatar,
   Grid,
   Alert,
+  Paper,
 } from "@mui/material";
 import {
   Edit as EditIcon,
@@ -23,6 +24,7 @@ import { RootState } from "../../../redux/store";
 import "./TutorProfile.scss";
 import { uploadToCloudinary } from "../../../utils/cloudinary";
 import { createPortal } from "react-dom";
+import { someMessages } from "../../../utils/constants";
 
 interface ProfileFormData {
   name: string;
@@ -136,8 +138,8 @@ const ProfileSection = () => {
       setUpdateSuccess(true);
       setUpdateError(null);
     } catch (error) {
-      console.error("Error uploading image:", error);
-      setUpdateError("Failed to upload image");
+      console.error(someMessages.IMG_UPLOAD_FAIL, error);
+      setUpdateError(someMessages.IMG_UPLOAD_FAIL);
     }
   };
 
@@ -148,8 +150,8 @@ const ProfileSection = () => {
       setUpdateSuccess(true);
       setUpdateError(null);
     } catch (error) {
-      console.error("Error uploading image:", error);
-      setUpdateError("Failed to upload image");
+      console.error(someMessages.IMG_UPLOAD_FAIL, error);
+      setUpdateError(someMessages.IMG_UPLOAD_FAIL);
     }
   };
 
@@ -166,8 +168,8 @@ const ProfileSection = () => {
       setUpdateSuccess(true);
       setUpdateError(null);
     } catch (error) {
-      console.error("Error uploading resume:", error);
-      setUpdateError("Failed to upload resume");
+      console.error(someMessages.RESUME_UPLOAD_FAIL, error);
+      setUpdateError(someMessages.RESUME_UPLOAD_FAIL);
     }
   };
 
@@ -178,8 +180,8 @@ const ProfileSection = () => {
       setUpdateSuccess(true);
       setUpdateError(null);
     } catch (error) {
-      console.error("Error deleting resume: ", error);
-      setUpdateError("Failed to delete resume");
+      console.error(someMessages.RESUME_DEL_FAIL, error);
+      setUpdateError(someMessages.RESUME_DEL_FAIL);
     }
   };
 
@@ -191,7 +193,7 @@ const ProfileSection = () => {
       setUpdateSuccess(true);
     } catch (error) {
       setUpdateError(
-        typeof error === "string" ? error : "Failed to update profile"
+        typeof error === "string" ? error : someMessages.PROFILE_UPDATE_FAIL
       );
     }
   };
@@ -376,7 +378,7 @@ const ProfileSection = () => {
         </Grid>
 
         {/* Right Column - Password Change */}
-        {/* <Grid item xs={12} md={6} className="right-column">
+        <Grid item xs={12} md={6} className="right-column">
           <Paper className="password-section">
             <Typography variant="h6" gutterBottom className="section-title">
               Change Password
@@ -433,7 +435,7 @@ const ProfileSection = () => {
               </Button>
             </Box>
           </Paper>
-        </Grid> */}
+        </Grid>
       </Grid>
 
       {/* Resume Modal */}

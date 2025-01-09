@@ -34,6 +34,7 @@ import {
 } from "../../../../../utils/fileUpload";
 import axiosInstance from "../../../../../utils/axiosConfig";
 import { useNavigate } from "react-router-dom";
+import { API_ENDPOINTS, someMessages } from "../../../../../utils/constants";
 
 interface CurriculumProps {
   data: Curriculum;
@@ -121,9 +122,7 @@ export function Curriculum({
     if (file && validateVideoFile(file)) {
       setNewLessonVideo(file);
     } else {
-      setError(
-        "Invalid video file. Please upload a valid MP4, WebM, or OGG video file (max 100MB)."
-      );
+      setError(someMessages.INVALID_VIDEO);
     }
   };
 
@@ -141,7 +140,7 @@ export function Curriculum({
 
   const handleCreateLesson = async () => {
     if (!newLessonName.trim()) {
-      setError("Lesson name is required");
+      setError(someMessages.LESSON_REQ);
       return;
     }
 
@@ -158,7 +157,8 @@ export function Curriculum({
     });
 
     if (!videoUploadResult.success) {
-      setError(videoUploadResult.error || "Failed to upload video");
+      console.log(someMessages.VIDEO_UPLOAD_FAIL, videoUploadResult.error);
+      setError(someMessages.VIDEO_UPLOAD_FAIL);
       return;
     }
 
@@ -204,12 +204,12 @@ export function Curriculum({
 
   const validateForm = () => {
     if (sections.length === 0) {
-      setError("At least one section is required");
+      setError(someMessages.SECTION_REQ);
       return false;
     }
     for (const section of sections) {
       if (section.lectures.length === 0) {
-        setError("Each section must have at least one lecture");
+        setError(someMessages.LESSON_REQ2);
         return false;
       }
     }
@@ -221,17 +221,17 @@ export function Curriculum({
       try {
         setPublishing(true);
         const response = await axiosInstance.post(
-          "/admin/add-course",
+          API_ENDPOINTS.ADD_COURSE,
           courseFormData
         );
-        console.log("Course published successfully:", response.data);
+        console.log(someMessages.COURSE_PUB_SUCC, response.data);
         setIsSuccessModalOpen(true);
         setTimeout(() => {
-          navigate("/admin/course-management");
+          navigate(API_ENDPOINTS.COURSE_M);
         }, 4000);
       } catch (error) {
-        console.error("Error publishing course:", error);
-        setError("Failed to publish course. Please try again.");
+        console.error(someMessages.COURSE_PUB_FAIL, error);
+        setError(someMessages.COURSE_PUB_FAIL);
       } finally {
         setPublishing(false);
       }
@@ -252,7 +252,7 @@ export function Curriculum({
 
   const handleUpdateLesson = async () => {
     if (!newLessonName.trim()) {
-      setError("Lesson name is required");
+      setError(someMessages.LESSON_REQ);
       return;
     }
 
@@ -266,7 +266,8 @@ export function Curriculum({
       });
 
       if (!videoUploadResult.success) {
-        setError(videoUploadResult.error || "Failed to upload video");
+        console.log(someMessages.VIDEO_UPLOAD_FAIL, videoUploadResult.error);
+        setError(someMessages.VIDEO_UPLOAD_FAIL);
         return;
       }
       videoUrl = videoUploadResult.url as string;
@@ -518,8 +519,8 @@ export function Curriculum({
                 disabled={uploadingVideo || uploadingPdfs}
               >
                 {uploadingVideo || uploadingPdfs
-                  ? "Uploading..."
-                  : "Create Lesson"}
+                  ? someMessages.UPLOADING
+                  : someMessages.ADD_LESSSON}
               </Button>
             </ModalButtonGroup>
           </ModalContent>
@@ -551,7 +552,9 @@ export function Curriculum({
                   style={{ display: "none" }}
                 />
                 <UploadIcon size={16} />
-                {newLessonVideo ? "Change Video" : "Upload New Video"}
+                {newLessonVideo
+                  ? someMessages.VIDEO_CHANGE
+                  : someMessages.VIDEO_UPLOAD}
               </UploadButton>
               {newLessonVideo && <p>{newLessonVideo.name}</p>}
             </InputGroup>
@@ -608,8 +611,8 @@ export function Curriculum({
                 disabled={uploadingVideo || uploadingPdfs}
               >
                 {uploadingVideo || uploadingPdfs
-                  ? "Uploading..."
-                  : "Update Lesson"}
+                  ? someMessages.UPLOADING
+                  : someMessages.LESSON_UPDATE}
               </Button>
             </ModalButtonGroup>
           </ModalContent>
@@ -687,7 +690,7 @@ export function Curriculum({
           <Button onClick={onPrevious}>Back</Button>
         </div>
         <Button onClick={handlePublish} disabled={publishing}>
-          {publishing ? "Publishing..." : "Publish Course"}
+          {publishing ? someMessages.PUBLISHING : someMessages.COURSE_PUB}
         </Button>
       </ButtonGroup>
     </FormSection>

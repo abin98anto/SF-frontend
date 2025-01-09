@@ -6,6 +6,7 @@ import { useAppSelector } from "../../../hooks/hooks";
 import { ChevronDown, ChevronUp, Play, FileText } from "lucide-react";
 import Swal from "sweetalert2";
 import axios from "axios";
+import { someMessages } from "../../../utils/constants";
 
 interface Course {
   _id: any;
@@ -138,9 +139,9 @@ const CourseDetailsPage: React.FC = () => {
         setCourse(response.data.data);
         setLoading(false);
       } catch (err) {
-        setError("Failed to fetch course details");
+        setError(someMessages.COURSE_DETAILS_FETCH_FAIL);
         setLoading(false);
-        console.error("Error fetching course details:", err);
+        console.error(someMessages.COURSE_DETAILS_FETCH_FAIL, err);
       }
     };
 
@@ -201,7 +202,7 @@ const CourseDetailsPage: React.FC = () => {
         {course.advanceInfo?.thumbnail && (
           <CourseImage
             src={course.advanceInfo.thumbnail}
-            alt={course.basicInfo?.title || "Course thumbnail"}
+            alt={course.basicInfo?.title}
           />
         )}
         <CourseInfo>
@@ -291,7 +292,6 @@ const CourseDetailsPage: React.FC = () => {
                           {parseFloat(lecture.duration).toFixed(2)} hours
                         </Duration>
                       )}
-                      {/* {lecture.videoUrl && <PreviewLink>Preview</PreviewLink>} */}
                     </LectureMeta>
                   </LectureItem>
                 ))}
@@ -445,19 +445,6 @@ const Duration = styled.span`
   font-size: 14px;
   color: #6b7280;
 `;
-
-// const PreviewLink = styled.button`
-//   color: #6366f1;
-//   background: none;
-//   border: none;
-//   cursor: pointer;
-//   font-size: 14px;
-//   font-weight: 500;
-
-//   &:hover {
-//     text-decoration: underline;
-//   }
-// `;
 
 const StartCourseButton = styled.button`
   background-color: #6366f1;

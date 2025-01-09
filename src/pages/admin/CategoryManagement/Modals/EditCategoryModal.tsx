@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import axiosInstance from "../../../../utils/axiosConfig";
 import { ICategory } from "../../../../entities/categories/ICategories";
 import "./EditCategoryModal.scss";
+import { API_ENDPOINTS, someMessages } from "../../../../utils/constants";
 
 interface EditCategoryModalProps {
   isOpen: boolean;
@@ -34,15 +35,16 @@ const EditCategoryModal = ({
     setIsSubmitting(true);
 
     try {
-      await axiosInstance.patch(`/admin/update-category`, {
+      await axiosInstance.patch(API_ENDPOINTS.UPDATE_CAT, {
         _id: category?._id,
         name,
         isActive,
       });
       onCategoryEdited();
       onClose();
-    } catch (err: any) {
-      setError(err.response?.data?.message || "Failed to update category");
+    } catch (err) {
+      console.log(someMessages.UPDATE_CAT_FAIL, err);
+      setError(someMessages.UPDATE_CAT_FAIL);
     } finally {
       setIsSubmitting(false);
     }

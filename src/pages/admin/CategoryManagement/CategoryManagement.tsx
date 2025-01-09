@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
-import AddCategoryModal from "./Modals/AddCategoryModal";
-import { PlusCircle, Edit} from "lucide-react";
+import { PlusCircle, Edit } from "lucide-react";
+
 import "./CategoryManagement.scss";
-import { ICategory } from "../../../entities/categories/ICategories";
+import AddCategoryModal from "./Modals/AddCategoryModal";
 import axiosInstance from "../../../utils/axiosConfig";
 import EditCategoryModal from "./Modals/EditCategoryModal";
+import { ICategory } from "../../../entities/categories/ICategories";
+import { API_ENDPOINTS, someMessages } from "../../../utils/constants";
 
 interface ICategoryResponse {
   data: ICategory[];
@@ -35,18 +37,14 @@ const CategoryManagement = () => {
     setError(null);
     try {
       const response = await axiosInstance.get<ICategoryResponse>(
-        "/admin/categories"
+        API_ENDPOINTS.GET_CATS
       );
       const categoriesData = response.data.data;
 
-      if (!Array.isArray(categoriesData)) {
-        throw new Error("Invalid data format received from API");
-      }
-
       setCategories(categoriesData);
     } catch (err) {
-      console.error("Error fetching categories:", err);
-      setError("Error loading categories. Please try again.");
+      console.error(someMessages.FETCH_CAT_FAIL, err);
+      setError(someMessages.FETCH_CAT_FAIL);
     } finally {
       setIsLoading(false);
     }

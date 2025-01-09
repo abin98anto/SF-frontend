@@ -4,17 +4,13 @@ import "./ChatBubble.scss";
 
 const ChatBubble = () => {
   const [isOpen, setIsOpen] = useState(false);
-
   const [messages, setMessages] = useState<string[]>([]);
-
   const [newMessage, setNewMessage] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
     if (newMessage.trim()) {
       setMessages([...messages, newMessage]);
-
       setNewMessage("");
     }
   };

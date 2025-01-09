@@ -108,7 +108,7 @@ const userSlice = createSlice({
       })
       .addCase(updateStudent.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || "Failed to update user details";
+        state.error = action.payload || someMessages.USER_UPDATE_FAIL;
       })
 
       // Google Auth
@@ -124,7 +124,8 @@ const userSlice = createSlice({
       })
       .addCase(googleSignIn.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || someMessages.GOOGLE_SIGNIN_FAILED;
+        state.error =
+          (action.payload as string) || someMessages.GOOGLE_SIGNIN_FAILED;
       });
   },
 });

@@ -9,6 +9,7 @@ import {
 } from "../StyledComponents";
 import { ICategory } from "../../../../../entities/categories/ICategories";
 import axiosInstance from "../../../../../utils/axiosConfig";
+import { API_ENDPOINTS, someMessages } from "../../../../../utils/constants";
 
 interface ICategoryResponse {
   data: ICategory[];
@@ -41,16 +42,16 @@ export function BasicInformation({
     try {
       setIsLoading(true);
       const response = await axiosInstance.get<ICategoryResponse>(
-        "/admin/categories"
+        API_ENDPOINTS.GET_CATS
       );
       if (response.data && response.data.data) {
         setCategories(response.data.data);
       } else {
-        setcateError("No categories data received");
+        setcateError(someMessages.NO_CAT_RECIVIED);
       }
     } catch (err) {
-      setcateError("Failed to fetch categories");
-      console.error("Error fetching categories:", err);
+      console.error(someMessages.FETCH_CAT_FAIL, err);
+      setcateError(someMessages.FETCH_CAT_FAIL);
     } finally {
       setIsLoading(false);
     }
@@ -62,27 +63,27 @@ export function BasicInformation({
 
   const validateForm = () => {
     if (!data.title.trim()) {
-      setError("Title is required");
+      setError(someMessages.TITLE_REQ);
       return false;
     }
     if (!data.subtitle.trim()) {
-      setError("Subtitle is required");
+      setError(someMessages.SUBTITLE_REQ);
       return false;
     }
     if (!data.category) {
-      setError("Category is required");
+      setError(someMessages.CAT_REQ);
       return false;
     }
     if (!data.topic.trim()) {
-      setError("Topic is required");
+      setError(someMessages.TOPIC_REQ);
       return false;
     }
     if (!data.language) {
-      setError("Language is required");
+      setError(someMessages.LANG_REQ);
       return false;
     }
     if (!data.duration.trim()) {
-      setError("Duration is required");
+      setError(someMessages.DURA_REQ);
       return false;
     }
     return true;
@@ -141,7 +142,7 @@ export function BasicInformation({
             ))
           ) : (
             <option value="" disabled>
-              {isLoading ? "Loading categories..." : "No categories available"}
+              {isLoading ? someMessages.LOADING : someMessages.NO_CAT_RECIVIED}
             </option>
           )}
         </select>
@@ -155,7 +156,7 @@ export function BasicInformation({
           type="text"
           value={data.topic}
           onChange={(e) => handleChange("topic", e.target.value)}
-          placeholder="What is primarily taught in your course?"
+          placeholder={someMessages.TOPIC_PLACEHOLDER}
         />
       </InputGroup>
 
@@ -184,7 +185,7 @@ export function BasicInformation({
               type="number"
               value={data.duration}
               onChange={(e) => handleChange("duration", e.target.value)}
-              placeholder="Course duration"
+              placeholder={someMessages.DURA_PLACEHOLDER}
               min="1"
             />
             <select>

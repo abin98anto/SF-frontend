@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { ImageIcon, Upload as UploadIcon } from "lucide-react";
+
 import type { AdvanceInfo } from "../form-types";
 import {
   FormSection,
@@ -14,6 +15,7 @@ import {
   handleFileUpload,
   validateImageFile,
 } from "../../../../../utils/fileUpload";
+import { someMessages } from "../../../../../utils/constants";
 
 interface AdvanceInformationProps {
   data: AdvanceInfo;
@@ -53,21 +55,22 @@ export function AdvanceInformation({
           thumbnail: result.url,
         });
       } else {
-        setError(result.error || "Failed to upload image");
+        console.log(someMessages.IMG_UPLOAD_FAIL, result.error);
+        setError(someMessages.IMG_UPLOAD_FAIL);
       }
     } catch (error) {
-      setError("An error occurred while uploading the image");
+      setError(someMessages.IMG_UPLOAD_FAIL);
       setIsUploading(false);
     }
   };
 
   const validateForm = () => {
     if (!data.thumbnail) {
-      setError("Thumbnail is required");
+      setError(someMessages.THUMBNAIL_REQ);
       return false;
     }
     if (!data.description.trim()) {
-      setError("Description is required");
+      setError(someMessages.DESCRIPTION_RQ);
       return false;
     }
     return true;
@@ -89,12 +92,11 @@ export function AdvanceInformation({
         </UploadIcon>
         <UploadText>
           {isUploading
-            ? "Uploading..."
+            ? someMessages.UPLOADING
             : data.thumbnail
-            ? "Image uploaded successfully"
-            : "Upload your course thumbnail"}
+            ? someMessages.IMG_UPLOAD_SUCCESS
+            : someMessages.THUMBNAIL_DEFAULT}
         </UploadText>
-        {/* <UploadButton disabled={isUploading}> */}
         <UploadButton>
           <input
             type="file"
@@ -103,7 +105,7 @@ export function AdvanceInformation({
             style={{ display: "none" }}
           />
           <UploadIcon />
-          {isUploading ? "Uploading..." : "Upload"}
+          {isUploading ? someMessages.UPLOADING : someMessages.UPLOAD}
         </UploadButton>
       </UploadSection>
 
@@ -113,7 +115,7 @@ export function AdvanceInformation({
           id="description"
           value={data.description}
           onChange={(e) => onUpdate({ description: e.target.value })}
-          placeholder="Provide a detailed description of your course"
+          placeholder={someMessages.DESCRIPTION_PLACEHOLDER}
           rows={6}
         />
       </InputGroup>

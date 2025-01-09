@@ -7,10 +7,10 @@ import { AdvanceInformation } from "./components/advance-information";
 import { Curriculum } from "./components/curriculum";
 import { ProgressSteps } from "./components/progress-steps";
 import { ConfirmationModal } from "./components/ConfirmationModal";
-// import { Snackbar } from "./components/Snackbar";
 import { FormContainer, Header } from "./StyledComponents";
 import { Snackbar } from "../../../../components/Snackbar/Snackbar";
 import { useNavigate } from "react-router-dom";
+import { API_ENDPOINTS, someMessages } from "../../../../utils/constants";
 
 const STORAGE_KEY = "courseFormData";
 
@@ -105,7 +105,7 @@ export default function CourseForm() {
     setCurrentStep(1);
     localStorage.removeItem(STORAGE_KEY);
     setIsModalOpen(false);
-    navigate("/admin/course-management");
+    navigate(API_ENDPOINTS.COURSE_M);
   };
 
   const updateFormData = (
@@ -158,7 +158,7 @@ export default function CourseForm() {
           onPrevious={handlePrevious}
           onCancel={handleCancel}
           setError={handleError}
-          courseFormData={formData} // Add this line
+          courseFormData={formData}
         />
       )}
 
@@ -167,7 +167,7 @@ export default function CourseForm() {
         onClose={() => setIsModalOpen(false)}
         onConfirm={confirmCancel}
         title="Discard Course"
-        message="Are you sure you want to discard this course?"
+        message={someMessages.COURSE_UNLIST}
       />
 
       <Snackbar

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const FormContainer = styled.div`
-  max-width: 80rem; // Increased from 64rem
+  max-width: 80rem;
   margin: 0 auto;
   background-color: white;
   border-radius: 0.5rem;
@@ -22,7 +22,7 @@ export const Header = styled.div`
 export const ProgressStepsContainer = styled.div`
   display: flex;
   justify-content: space-between;
-  padding: 1rem 4rem; // Increased horizontal padding
+  padding: 1rem 4rem;
   background-color: #f3f4f6;
 `;
 

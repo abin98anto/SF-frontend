@@ -6,6 +6,7 @@ import { BasicInformation } from "../AddCourse/components/basic-information";
 import { AdvanceInformation } from "../AddCourse/components/advance-information";
 import { Curriculum } from "../AddCourse/components/curriculum";
 import { FormData, CurriculumSection } from "../AddCourse/form-types";
+import { API_ENDPOINTS, someMessages } from "../../../../utils/constants";
 
 export function EditCourse() {
   const location = useLocation();
@@ -36,7 +37,7 @@ export function EditCourse() {
     if (courseId) {
       fetchCourseData();
     } else {
-      setError("No course ID provided. Please go back and try again.");
+      setError(someMessages.NO_COURSE_ID);
     }
   }, [courseId]);
 
@@ -46,17 +47,15 @@ export function EditCourse() {
         `/admin/get-course?id=${courseId}`
       );
       const courseData = response.data.data;
-      // console.log("API Response:", JSON.stringify(courseData, null, 2));
 
       if (
         !courseData ||
         !courseData.curriculum ||
         !Array.isArray(courseData.curriculum)
       ) {
-        throw new Error("Invalid course data structure");
+        throw new Error(someMessages.INVALID_COURSE);
       }
 
-      // Process curriculum data
       const processedSections: CurriculumSection[] = courseData.curriculum.map(
         (section: any, index: number) => ({
           id: index + 1,
@@ -90,8 +89,8 @@ export function EditCourse() {
         },
       });
     } catch (error) {
-      console.error("Error fetching course data:", error);
-      setError("Failed to fetch course data. Please try again.");
+      console.error(someMessages.COURSE_FETCH_FAIL, error);
+      setError(someMessages.COURSE_FETCH_FAIL);
     }
   };
 
@@ -104,7 +103,6 @@ export function EditCourse() {
         ...prevData,
         [section]: { ...prevData[section], ...data },
       };
-      // Update local storage whenever form data changes
       localStorage.setItem("courseFormData", JSON.stringify(updatedData));
       return updatedData;
     });
@@ -119,27 +117,11 @@ export function EditCourse() {
   };
 
   const handleCancel = () => {
-    navigate("/admin/course-management");
+    navigate(API_ENDPOINTS.COURSE_M);
   };
-
-  // const handleSubmit = async () => {
-  //   try {
-  //     const response = await axiosInstance.put(
-  //       `/admin/update-course?id=${courseId}`,
-  //       formData
-  //     );
-  //     console.log("handle submit", response);
-  //     localStorage.removeItem("courseFormData");
-  //     navigate("/admin/course-management");
-  //   } catch (error) {
-  //     console.error("Error updating course:", error);
-  //     setError("Failed to update course. Please try again.");
-  //   }
-  // };
 
   const handleSubmit = async () => {
     try {
-      // Transform the curriculum sections to match the backend schema
       const transformedCurriculum = formData.curriculum.sections.map(
         (section) => ({
           name: section.name,
@@ -151,7 +133,6 @@ export function EditCourse() {
         })
       );
 
-      // Prepare the complete course data
       const courseData = {
         basicInfo: {
           title: formData.basicInfo.title,
@@ -169,16 +150,15 @@ export function EditCourse() {
         _id: courseId,
       };
 
-      const response = await axiosInstance.put(
+      await axiosInstance.put(
         `/admin/update-course?id=${courseId}`,
         courseData
       );
-      console.log("handle submit", response);
       localStorage.removeItem("courseFormData");
-      navigate("/admin/course-management");
+      navigate(API_ENDPOINTS.COURSE_M);
     } catch (error) {
-      console.error("Error updating course:", error);
-      setError("Failed to update course. Please try again.");
+      console.error(someMessages.COURSE_UPDATE_FAIL, error);
+      setError(someMessages.COURSE_UPDATE_FAIL);
     }
   };
 

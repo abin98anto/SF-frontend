@@ -23,6 +23,7 @@ import {
 import { UserDetails } from "../../../entities/user/UserDetails";
 import { UserRole } from "../../../entities/user/UserRole";
 import ApproveTutorsModal from "./ApproveTutorModal/ApproveTutorModal";
+import { someMessages } from "../../../utils/constants";
 
 const TutorManagement: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -52,8 +53,8 @@ const TutorManagement: React.FC = () => {
       setTutors(verifiedTutors);
       setLoading(false);
     } catch (err) {
-      console.log("Error fetching tutors", err);
-      setError("Error fetching tutors. Please try again later.");
+      console.log(someMessages.TUTORS_FETCH_FAIL, err);
+      setError(someMessages.TUTORS_FETCH_FAIL);
       setLoading(false);
     }
   };
@@ -76,7 +77,7 @@ const TutorManagement: React.FC = () => {
 
       setIsDialogOpen(false);
     } catch (error) {
-      console.error("Failed to toggle tutor state", error);
+      console.error(someMessages.TUTOR_TOOGLE_FAIL, error);
     }
   };
 

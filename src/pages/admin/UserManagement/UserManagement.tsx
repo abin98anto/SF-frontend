@@ -15,6 +15,7 @@ import {
   DialogContentText,
   DialogTitle,
 } from "@mui/material";
+
 import { useAppDispatch } from "../../../hooks/hooks";
 import {
   getUsers,
@@ -22,6 +23,7 @@ import {
 } from "../../../redux/services/UserManagementServices";
 import { UserDetails } from "../../../entities/user/UserDetails";
 import { UserRole } from "../../../entities/user/UserRole";
+import { someMessages } from "../../../utils/constants";
 
 const UserManagement: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -43,8 +45,8 @@ const UserManagement: React.FC = () => {
       setUsers(response.payload as UserDetails[]);
       setLoading(false);
     } catch (err) {
-      console.log("Error fetching users", err);
-      setError("Error fetching users. Please try again later.");
+      console.log(someMessages.USERS_FETCH_FAIL, err);
+      setError(someMessages.USERS_FETCH_FAIL);
       setLoading(false);
     }
   };
@@ -63,7 +65,7 @@ const UserManagement: React.FC = () => {
 
       setIsDialogOpen(false);
     } catch (error) {
-      console.error("Failed to toggle user state", error);
+      console.error(someMessages.USER_TOOGLE_FAIL, error);
     }
   };
 

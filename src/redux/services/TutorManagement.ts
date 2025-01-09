@@ -3,6 +3,7 @@ import { UserDetails } from "../../entities/user/UserDetails";
 import { RootState } from "../store";
 import axios from "axios";
 import axiosInstance from "../../utils/axiosConfig";
+import { someMessages } from "../../utils/constants";
 
 export const verifyTutor = createAsyncThunk<
   UserDetails,
@@ -21,9 +22,9 @@ export const verifyTutor = createAsyncThunk<
   } catch (error) {
     if (axios.isAxiosError(error)) {
       return rejectWithValue(
-        error.response?.data?.message || "Failed to update tutor"
+        error.response?.data?.message || someMessages.USER_UPDATE_FAIL
       );
     }
-    return rejectWithValue("An unexpected error occurred");
+    return rejectWithValue(someMessages.USER_UPDATE_FAIL);
   }
 });

@@ -16,10 +16,12 @@ import {
   DialogActions,
 } from "@mui/material";
 import { Edit, Delete, Add } from "@mui/icons-material";
+
 import SubscriptionModal from "./SubscriptionModal/SubscriptionModal";
 import "./SubsManagement.scss";
 import axiosInstance from "../../../utils/axiosConfig";
 import SubscriptionPlan from "../../../entities/subscription/subscription";
+import { API_ENDPOINTS, someMessages } from "../../../utils/constants";
 
 const SubsManagement: React.FC = () => {
   const [subscriptions, setSubscriptions] = useState<SubscriptionPlan[]>([]);
@@ -45,10 +47,10 @@ const SubsManagement: React.FC = () => {
 
   const fetchSubscriptions = async () => {
     try {
-      const response = await axiosInstance.get("/admin/subscriptions");
+      const response = await axiosInstance.get(API_ENDPOINTS.SUBS);
       setSubscriptions(response.data.data);
     } catch (error) {
-      console.error("Failed to fetch subscriptions:", error);
+      console.error(someMessages.SUBS_FETCH_FAIL, error);
     } finally {
       setIsLoading(false);
     }
@@ -79,7 +81,7 @@ const SubsManagement: React.FC = () => {
       await fetchSubscriptions();
       handleCloseDeleteModal();
     } catch (error) {
-      console.error("Failed to delete subscription:", error);
+      console.error(someMessages.SUBS_DEL_FAIL, error);
     }
   };
 

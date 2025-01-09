@@ -3,6 +3,7 @@ import { UserDetails } from "../../entities/user/UserDetails";
 import { RootState } from "../store";
 import axiosInstance from "../../utils/axiosConfig";
 import { UserRole } from "../../entities/user/UserRole";
+import { someMessages } from "../../utils/constants";
 
 export const getUsers = createAsyncThunk<
   UserDetails[],
@@ -16,8 +17,8 @@ export const getUsers = createAsyncThunk<
     const response = await axiosInstance.get(`/admin/list?role=${role}`);
     return response.data.data;
   } catch (error) {
-    console.log("Error getting the users", error);
-    return rejectWithValue("Failed to fetch users");
+    console.log(someMessages.USERS_FETCH_FAIL, error);
+    return rejectWithValue(someMessages.USERS_FETCH_FAIL);
   }
 });
 
@@ -33,8 +34,8 @@ export const toggleUserStatus = createAsyncThunk<
     await axiosInstance.patch(`/admin/toggle-status?id=${userId}`);
     return userId;
   } catch (error) {
-    console.error("Error toggling user active state", error);
-    return rejectWithValue("Failed to update user state");
+    console.error(someMessages.USER_TOOGLE_FAIL, error);
+    return rejectWithValue(someMessages.USER_TOOGLE_FAIL);
   }
 });
 
@@ -42,20 +43,14 @@ export const denyTutor = createAsyncThunk(
   "tutors/denyTutor",
   async (tutorId: string, { rejectWithValue }) => {
     try {
-      console.log("first", tutorId);
       const response = await axiosInstance.post(
         `/admin/deny-tutor?id=${tutorId}`
       );
-      console.log("response thunk", response);
+
       return response.data;
     } catch (error: any) {
-      if (error.isAxiosError && error.response?.status === 400) {
-        // Likely caused by invalid tutorId format (CastError)
-        return rejectWithValue("Invalid tutor ID format");
-      }
-      // Handle other errors
       return rejectWithValue(
-        error.response?.data?.message || "Failed to deny the tutor"
+        error.response?.data?.message || someMessages.DENY_TUTOR_FAIL
       );
     }
   }

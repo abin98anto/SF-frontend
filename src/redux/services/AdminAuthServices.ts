@@ -3,7 +3,7 @@ import { UserDetails } from "../../entities/user/UserDetails";
 import { LoginFormValues } from "../../entities/user/LoginFormValues";
 import axiosInstance from "../../utils/axiosConfig";
 import axios from "axios";
-import { someMessages } from "../../utils/constants";
+import { API_ENDPOINTS, someMessages } from "../../utils/constants";
 
 // Admin Login.
 export const loginAdmin = createAsyncThunk<
@@ -12,7 +12,10 @@ export const loginAdmin = createAsyncThunk<
   { rejectValue: string }
 >("admin/login", async (credentials, thunkAPI) => {
   try {
-    const response = await axiosInstance.post("/admin/login", credentials);
+    const response = await axiosInstance.post(
+      API_ENDPOINTS.ADMIN_LOGIN,
+      credentials
+    );
 
     return {
       message: response.data.message,
@@ -36,7 +39,7 @@ export const logoutAdmin = createAsyncThunk<
   { rejectValue: string }
 >("tutor/logout", async (_, thunkAPI) => {
   try {
-    const response = await axiosInstance.post("/admin/logout");
+    const response = await axiosInstance.post(API_ENDPOINTS.ADMIN_LOGOUT);
 
     return response.data;
   } catch (error) {

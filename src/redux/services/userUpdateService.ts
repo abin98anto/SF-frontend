@@ -3,6 +3,7 @@ import { UserDetails } from "../../entities/user/UserDetails";
 import { RootState } from "../store";
 import axios from "axios";
 import axiosInstance from "../../utils/axiosConfig";
+import { someMessages } from "../../utils/constants";
 
 export const updateUser = createAsyncThunk<
   UserDetails,
@@ -16,17 +17,17 @@ export const updateUser = createAsyncThunk<
     const state = getState();
     const id = state.tutor.userInfo?._id;
     if (!id) {
-      return rejectWithValue("No tutor found. Please login again.");
+      return rejectWithValue(someMessages.TUTOR_UPDATE_FAIL);
     }
     const response = await axiosInstance.patch(`/update?id=${id}`, updateData);
     return response.data.user;
   } catch (error) {
     if (axios.isAxiosError(error)) {
       return rejectWithValue(
-        error.response?.data?.message || "Failed to update tutor"
+        error.response?.data?.message || someMessages.TUTOR_UPDATE_FAIL
       );
     }
-    return rejectWithValue("An unexpected error occurred");
+    return rejectWithValue(someMessages.UNKNOWN_ERROR);
   }
 });
 
@@ -42,16 +43,16 @@ export const updateStudent = createAsyncThunk<
     const state = getState();
     const id = state.user.userInfo?._id;
     if (!id) {
-      return rejectWithValue("No tutor found. Please login again.");
+      return rejectWithValue(someMessages.USER_NOT_FOUND);
     }
     const response = await axiosInstance.patch(`/update?id=${id}`, updateData);
     return response.data.user;
   } catch (error) {
     if (axios.isAxiosError(error)) {
       return rejectWithValue(
-        error.response?.data?.message || "Failed to update tutor"
+        error.response?.data?.message || someMessages.USER_UPDATE_FAIL
       );
     }
-    return rejectWithValue("An unexpected error occurred");
+    return rejectWithValue(someMessages.UNKNOWN_ERROR);
   }
 });

@@ -7,8 +7,8 @@ import { RootState } from "../../../redux/store";
 import { SubscriptionType } from "../../../entities/user/UserDetails";
 import { updateStudent } from "../../../redux/services/userUpdateService";
 import Swal from "sweetalert2";
-// import Swal from "sweetalert2/dist/sweetalert2.js";
 import "@sweetalert2/theme-default/default.css";
+import { API_ENDPOINTS, someMessages } from "../../../utils/constants";
 
 const SubscriptionPage = () => {
   const dispatch = useAppDispatch();
@@ -25,9 +25,9 @@ const SubscriptionPage = () => {
   useEffect(() => {
     const fetchPlans = async () => {
       try {
-        const response = await axiosInstance.get("/admin/subscriptions");
+        const response = await axiosInstance.get(API_ENDPOINTS.SUBS);
         if (!response) {
-          throw new Error("Failed to fetch plans");
+          throw new Error(someMessages.SUBS_FETCH_FAIL);
         }
         const data = response.data.data;
         const freePlan: SubscriptionPlan = {
@@ -43,7 +43,9 @@ const SubscriptionPage = () => {
           ...data.filter((plan: SubscriptionPlan) => plan.isActive),
         ]);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to load plans");
+        setError(
+          err instanceof Error ? err.message : someMessages.SUBS_FETCH_FAIL
+        );
       } finally {
         setLoading(false);
       }
@@ -87,7 +89,7 @@ const SubscriptionPage = () => {
   const initializeRazorpay = (): Promise<boolean> => {
     return new Promise((resolve) => {
       const script = document.createElement("script");
-      script.src = "https://checkout.razorpay.com/v1/checkout.js";
+      script.src = API_ENDPOINTS.RAZORPAY_CHECKOUT;
       script.onload = () => resolve(true);
       script.onerror = () => resolve(false);
       document.body.appendChild(script);
@@ -109,7 +111,7 @@ const SubscriptionPage = () => {
 
       if (isAnnual) price = plan.price! * 12 * 0.7;
 
-      const response = await axiosInstance.post("/order/razorpay/create", {
+      const response = await axiosInstance.post(API_ENDPOINTS.RAZORPAY_ADD, {
         amount: price! * 100,
         currency: "INR",
       });
@@ -124,7 +126,7 @@ const SubscriptionPage = () => {
         order_id: response.data.id,
         handler: async function (response: RazorpayResponse) {
           try {
-            await axiosInstance.post("/order/create-order", {
+            await axiosInstance.post(API_ENDPOINTS.ORDER_ADD, {
               userId: userInfo?._id,
               item: plan.name,
               amount: price!,
@@ -132,7 +134,6 @@ const SubscriptionPage = () => {
               orderId: response.razorpay_order_id,
             });
 
-            // Dispatch updateUser thunk to update state and backend.
             dispatch(
               updateStudent({
                 subscription: {
@@ -145,8 +146,6 @@ const SubscriptionPage = () => {
               })
             );
 
-            // console.log("after dispathc ", userInfo);
-            // alert("Payment Successful!");
             Swal.fire({
               title: "Success!",
               text: `You have successfully subscribed to the '${plan.name}' plan`,
@@ -158,7 +157,7 @@ const SubscriptionPage = () => {
               toast: true,
             });
           } catch (err) {
-            alert("Error recording order. Please contact support.");
+            alert(someMessages.ORDER_ADD_FAIL);
           }
         },
         theme: {
@@ -169,12 +168,10 @@ const SubscriptionPage = () => {
       const paymentObject = new (window as any).Razorpay(options);
       paymentObject.open();
     } catch (error) {
-      console.log("error fetching submit payment", error);
-      alert("Something went wrong. Please try again later.");
+      console.log(someMessages.PAYMENT_ERROR, error);
+      alert(someMessages.PAYMENT_ERROR);
     }
   };
-
-  // console.log("the user in subs", userInfo);
 
   return (
     <div className="subscription-container">

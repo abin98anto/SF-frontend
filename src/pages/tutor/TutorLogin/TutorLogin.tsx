@@ -5,7 +5,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { ThunkDispatch } from "@reduxjs/toolkit";
 
 import "./TutorLogin.scss";
-import { imageLinks, someMessages } from "../../../utils/constants";
+import {
+  API_ENDPOINTS,
+  imageLinks,
+  someMessages,
+} from "../../../utils/constants";
 import { RootState } from "../../../redux/store";
 import { loginTutor } from "../../../redux/services/UserAuthServices";
 import { LoginFormValues } from "../../../entities/user/LoginFormValues";
@@ -43,13 +47,13 @@ const TutorLogin = () => {
     const newErrors: { email?: string; password?: string } = {};
 
     if (!data.email.trim()) {
-      newErrors.email = "Email is required.";
+      newErrors.email = someMessages.EMAIL_REQUIRED;
     } else if (!validateEmail(data.email)) {
-      newErrors.email = "Invalid email format.";
+      newErrors.email = someMessages.INVALID_EMAIL;
     }
 
     if (!data.password.trim()) {
-      newErrors.password = "Password is required.";
+      newErrors.password = someMessages.PASS_REQUIRED;
     }
 
     if (Object.keys(newErrors).length === 0) {
@@ -64,7 +68,7 @@ const TutorLogin = () => {
         if (result.meta.requestStatus === "fulfilled") {
           const payload = result.payload as LoginResponse;
           if (payload?.user?.role === "tutor") {
-            navigate("/tutor/dashboard");
+            navigate(API_ENDPOINTS.TUTOR_DASH);
           } else {
             setCustomError(someMessages.TUTOR_ONLY);
           }
@@ -106,10 +110,8 @@ const TutorLogin = () => {
           <div className="form-container">
             <p className="title">Tutor Login</p>
 
-            {/* Display custom error if exists */}
             {customError && <p className="error-message">{customError}</p>}
 
-            {/* Safely handle error object */}
             {error && <p className="error-message">{getErrorMessage(error)}</p>}
 
             <form className="form" onSubmit={handleSubmit(onSubmit)}>

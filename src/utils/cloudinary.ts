@@ -1,5 +1,5 @@
 import axios from "axios";
-import { cloudinaryLinks } from "./constants";
+import { cloudinaryLinks, someMessages } from "./constants";
 
 export const uploadToCloudinary = async (file: File): Promise<string> => {
   try {
@@ -16,10 +16,10 @@ export const uploadToCloudinary = async (file: File): Promise<string> => {
       },
     });
 
-    console.log("File uploaded successfully!");
+    console.log(someMessages.FILE_UPLOAD_SUCC);
     return response.data.secure_url;
   } catch (error) {
-    console.error("Cloudinary upload error:", error);
-    throw new Error("Failed to upload file");
+    console.error(someMessages.FILE_UPLOAD_FAIL, error);
+    throw new Error(someMessages.FILE_UPLOAD_FAIL);
   }
 };

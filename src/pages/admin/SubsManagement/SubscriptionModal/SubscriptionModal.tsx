@@ -1,7 +1,9 @@
 import React, { useState, useMemo, useEffect } from "react";
+
 import "./SubscriptionModal.scss";
 import axiosInstance from "../../../../utils/axiosConfig";
 import { Snackbar } from "../../../../components/Snackbar/Snackbar";
+import { API_ENDPOINTS, someMessages } from "../../../../utils/constants";
 
 interface SubscriptionModalProps {
   isOpen: boolean;
@@ -65,8 +67,8 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
             : ""
         );
       } catch (error) {
-        console.error("Failed to fetch subscription details:", error);
-        showError("Failed to load subscription details");
+        console.error(someMessages.SUBS_FETCH_FAIL, error);
+        showError(someMessages.SUBS_FETCH_FAIL);
       }
     }
   };
@@ -95,19 +97,19 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
 
   const validateForm = () => {
     if (!name.trim()) {
-      showError("Name is required");
+      showError(someMessages.NAME_REQ);
       return false;
     }
     if (!description.trim()) {
-      showError("Description is required");
+      showError(someMessages.DESCRIPTION_RQ);
       return false;
     }
     if (!features.trim()) {
-      showError("At least one feature is required");
+      showError(someMessages.ADD_FEATURE);
       return false;
     }
     if (!monthlyPrice || parseFloat(monthlyPrice) <= 0) {
-      showError("Monthly price must be greater than 0");
+      showError(someMessages.PRICE_ERR);
       return false;
     }
     if (
@@ -115,11 +117,11 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
       (parseFloat(discount) < 0 ||
         parseFloat(discount) >= parseFloat(monthlyPrice))
     ) {
-      showError("Discount must be above 0 and less than monthly price");
+      showError(someMessages.DISCOUNT_ERR);
       return false;
     }
     if (discount && parseFloat(discount) > 0 && !discountValidUntil) {
-      showError("Please specify discount validity period");
+      showError(someMessages.DISCOUNT_DATE_ERR);
       return false;
     }
     return true;
@@ -153,16 +155,16 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
         );
         setSnackbar({
           isVisible: true,
-          message: "Subscription updated successfully",
+          message: someMessages.SUBS_UPDATE_SUCC,
         });
       } else {
-        await axiosInstance.post("/admin/create-subscription", {
+        await axiosInstance.post(API_ENDPOINTS.SUBS_ADD, {
           ...subscriptionData,
           createdAt: new Date(),
         });
         setSnackbar({
           isVisible: true,
-          message: "Subscription created successfully",
+          message: someMessages.SUBS_UPDATE_SUCC,
         });
       }
 

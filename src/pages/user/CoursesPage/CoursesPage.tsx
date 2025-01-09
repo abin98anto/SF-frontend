@@ -9,6 +9,7 @@ import "./CoursesPage.scss";
 import { Course } from "../../../entities/courses/Course";
 import axiosInstance from "../../../utils/axiosConfig";
 import { Link } from "react-router-dom";
+import { API_ENDPOINTS, someMessages } from "../../../utils/constants";
 
 interface APIResponse {
   data: Course[];
@@ -38,23 +39,20 @@ const CoursesPage = () => {
   const [error, setError] = useState<string | null>(null);
   const coursesPerPage = 8;
 
-  // Fetch categories and courses
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        // Fetch categories first
+
         const categoriesResponse = await axiosInstance.get<CategoryResponse>(
-          "/admin/categories"
+          API_ENDPOINTS.GET_CATS
         );
         const fetchedCategories = categoriesResponse.data.data;
 
-        // Fetch courses
         const coursesResponse = await axiosInstance.get<APIResponse>(
-          "/courses"
+          API_ENDPOINTS.GET_COURSES
         );
 
-        // Filter active courses
         const activeCourses = coursesResponse.data.data.filter(
           (course) => course.isActive
         );
@@ -64,22 +62,20 @@ const CoursesPage = () => {
         setFilteredCourses(activeCourses);
         setLoading(false);
       } catch (err) {
-        setError("Failed to fetch data");
+        setError(someMessages.COURSE_FETCH_FAIL);
         setLoading(false);
-        console.error("Error fetching data:", err);
+        console.error(someMessages.COURSE_FETCH_FAIL, err);
       }
     };
 
     fetchData();
   }, []);
 
-  // Get category name by ID
   const getCategoryName = (categoryId: string): string => {
     const category = categories.find((cat) => cat._id === categoryId);
     return category ? category.name : categoryId;
   };
-
-  // Filter courses based on search and category
+  
   useEffect(() => {
     const filtered = allCourses.filter(
       (course) =>
