@@ -8,7 +8,7 @@ import {
   verifyOTP,
 } from "../../../redux/services/UserSignupServices";
 
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate } from "react-router-dom";
@@ -24,6 +24,8 @@ import {
 import { UserRole } from "../../../entities/user/UserRole";
 import { StudentDummy } from "../../../entities/dummys/StudentDummy";
 import GoogleButton from "../../../components/buttons/google-btn/GoogleButton";
+import { googleSignIn } from "../../../redux/services/UserAuthServices";
+import { jwtDecode } from "jwt-decode";
 
 const SignupPage: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -201,6 +203,45 @@ const SignupPage: React.FC = () => {
     borderRadius: 2,
     textAlign: "center",
   };
+  useEffect(() => {
+    const initializeGoogleSignIn = () => {
+      // @ts-ignore (if using TypeScript)
+      if (window.google) {
+        // @ts-ignore
+        google.accounts.id.initialize({
+          client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
+          callback: handleGoogleSignIn,
+        });
+
+        // @ts-ignore
+        google.accounts.id.renderButton(
+          document.getElementById("google-signin-button"),
+          { theme: "outline", size: "large" }
+        );
+      }
+    };
+
+    initializeGoogleSignIn();
+  }, []);
+
+  const handleGoogleSignIn = async (response: any) => {
+    try {
+      if (!response.credential) {
+        throw new Error("No credential received from Google");
+      }
+
+      console.log("Google Sign-in response:", response.credential);
+      const decoded: any = jwtDecode(response.credential);
+      console.log("Decoded token:", decoded);
+
+      const result = await dispatch(googleSignIn(response.credential)).unwrap();
+      navigate("/login");
+    } catch (error) {
+      console.error("Google Sign-in error:", error);
+      setErrorMessage(someMessages.GOOGLE_SIGNIN_FAILED);
+      setOpenErrorToast(true);
+    }
+  };
 
   return (
     <div className="signup-page">
@@ -264,7 +305,9 @@ const SignupPage: React.FC = () => {
             </span>
           </p>
 
-          <GoogleButton />
+          <div id="google-signin-button">
+            <GoogleButton />
+          </div>
           <div className="buttons-container">
             {/* Autofill Button */}
             <button

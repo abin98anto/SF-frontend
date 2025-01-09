@@ -91,3 +91,20 @@ export const logoutTutor = createAsyncThunk<
     return thunkAPI.rejectWithValue(someMessages.LOGIN_FAILED);
   }
 });
+
+export const googleSignIn = createAsyncThunk(
+  "user/googleSignIn",
+  async (token: string, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.post(`/auth/google`, { token });
+      const user = response.data.user;
+      console.log("google", user);
+
+      // Store the token in localStorage or secure storage
+      // localStorage.setItem("token", response.data.token);
+      return { user };
+    } catch (error) {
+      return rejectWithValue(someMessages.GOOGLE_SIGNIN_FAILED);
+    }
+  }
+);

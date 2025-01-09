@@ -37,6 +37,7 @@ import { EditCourse } from "./pages/admin/CourseManagement/EditCourse/EditCourse
 import EnrolledPage from "./pages/user/EnrolledPage/EnrolledPage";
 // import { PublicRoute } from "./components/ProtectedRoute/PublicRoute";
 // import { ProtectedRuote } from "./components/ProtectedRoute/ProtectedRoute";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 // const router = createBrowserRouter(
 //   createRoutesFromElements(
@@ -179,12 +180,14 @@ const router = createBrowserRouter(
 
 function App() {
   return (
-    <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
-        <ToastContainer position="top-right" autoClose={3000} />
-        <RouterProvider router={router} />
-      </PersistGate>
-    </Provider>
+    <GoogleOAuthProvider clientId={import.meta.env.GOOGLE_CLIENT_ID}>
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          <ToastContainer position="top-right" autoClose={3000} />
+          <RouterProvider router={router} />
+        </PersistGate>
+      </Provider>
+    </GoogleOAuthProvider>
   );
 }
 

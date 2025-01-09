@@ -60,4 +60,5 @@ export const someMessages = {
   TUTOR_ONLY: "Only tutors are allowed to log in.",
   USER_ONLY: "Tutors and Admins are not allowed.",
   TOGGLE_FAIL: "Failed to toggle user status",
+  GOOGLE_SIGNIN_FAILED: "Google Sign-In failed. Please try again.",
 };

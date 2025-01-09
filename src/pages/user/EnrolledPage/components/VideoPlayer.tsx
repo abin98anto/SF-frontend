@@ -15,7 +15,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, thumbnail }) => {
         <video
           controls
           className="video-player"
-          key={videoUrl} // Force reload when URL changes
+          key={videoUrl}
         >
           <source src={videoUrl} type="video/mp4" />
           Your browser does not support the video tag.

@@ -1,7 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { someMessages } from "../../../utils/constants";
 import { signUpUser, verifyOTP } from "../../services/UserSignupServices";
-import { loginUser, logoutUser } from "../../services/UserAuthServices";
+import {
+  googleSignIn,
+  loginUser,
+  logoutUser,
+} from "../../services/UserAuthServices";
 import { UserDetails } from "../../../entities/user/UserDetails";
 import { updateStudent } from "../../services/userUpdateService";
 
@@ -105,6 +109,22 @@ const userSlice = createSlice({
       .addCase(updateStudent.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Failed to update user details";
+      })
+
+      // Google Auth
+      .addCase(googleSignIn.pending, (state) => {
+        state.loading = true;
+        state.error = "";
+      })
+      .addCase(googleSignIn.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isAuthenticated = true;
+        state.error = "";
+        state.userInfo = action.payload.user;
+      })
+      .addCase(googleSignIn.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || someMessages.GOOGLE_SIGNIN_FAILED;
       });
   },
 });
