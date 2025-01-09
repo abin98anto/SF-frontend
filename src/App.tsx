@@ -36,6 +36,7 @@ import CourseDetailsPage from "./pages/user/CourseDetailsPage/CourseDetailsPage"
 import { EditCourse } from "./pages/admin/CourseManagement/EditCourse/EditCourse";
 import EnrolledPage from "./pages/user/EnrolledPage/EnrolledPage";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import NotFound from "./pages/404Page/404Page";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -78,6 +79,8 @@ const router = createBrowserRouter(
           <Route path="category-management" element={<CategoryManagement />} />
         </Route>
       </Route>
+
+      <Route path="*" element={<NotFound />} />
     </>
   )
 );
