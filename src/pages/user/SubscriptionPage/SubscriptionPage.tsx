@@ -77,7 +77,19 @@ const SubscriptionPage = () => {
     ) {
       return true;
     }
-    return userInfo.subscription.name === planName;
+
+    const subscriptionStartDate = new Date(userInfo.subscription.startDate);
+    const subscriptionEndDate = new Date(userInfo.subscription.endDate);
+    const durationInDays = Math.round(
+      (subscriptionEndDate.getTime() - subscriptionStartDate.getTime()) /
+        (1000 * 60 * 60 * 24)
+    );
+    const isCurrentSubscriptionAnnual = durationInDays > 100;
+
+    return (
+      userInfo.subscription.name === planName &&
+      isAnnual === isCurrentSubscriptionAnnual
+    );
   };
 
   interface RazorpayResponse {
@@ -97,7 +109,26 @@ const SubscriptionPage = () => {
   };
 
   const handlePayment = async (plan: SubscriptionPlan) => {
-    console.log("yearl ong", isAnnual);
+    if (
+      userInfo?.subscription &&
+      userInfo.subscription.name !== SubscriptionType.FREE
+    ) {
+      const subscriptionEndDate = new Date(userInfo.subscription.endDate);
+      const formattedDate = subscriptionEndDate.toLocaleDateString();
+
+      Swal.fire({
+        title: "Subscription Active",
+        text: `You already have an active ${userInfo.subscription.name} subscription. Please try again after ${formattedDate}.`,
+        icon: "warning",
+        toast: true,
+        position: "top-end",
+        timer: 5000,
+        timerProgressBar: true,
+        showConfirmButton: false,
+      });
+      return;
+    }
+
     const res = await initializeRazorpay();
 
     if (!res) {
@@ -108,7 +139,6 @@ const SubscriptionPage = () => {
     try {
       let price =
         (plan.discountPrice as number) > 0 ? plan.discountPrice : plan.price;
-
       if (isAnnual) price = plan.price! * 12 * 0.7;
 
       const response = await axiosInstance.post(API_ENDPOINTS.RAZORPAY_ADD, {
