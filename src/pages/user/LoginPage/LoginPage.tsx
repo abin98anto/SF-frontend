@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,11 +8,17 @@ import { Snackbar, Alert } from "@mui/material";
 import "./LoginPage.scss";
 import { imageLinks, someMessages } from "../../../utils/constants";
 import { RootState } from "../../../redux/store";
-import { loginUser } from "../../../redux/services/UserAuthServices";
+import {
+  googleSignIn,
+  loginUser,
+} from "../../../redux/services/UserAuthServices";
 import { LoginFormValues } from "../../../entities/user/LoginFormValues";
 import { StudentDummy } from "../../../entities/dummys/StudentDummy";
 import { validateEmail } from "../../../utils/form-checks/validateEmail";
 import ForgotPasswordModal from "./ForgotPasswordModal";
+import { jwtDecode } from "jwt-decode";
+import { UserRole } from "../../../entities/user/UserRole";
+import GoogleButton from "../../../components/buttons/google-btn/GoogleButton";
 
 const LoginPage = () => {
   const dispatch = useDispatch<ThunkDispatch<RootState, any, any>>();
@@ -25,6 +31,54 @@ const LoginPage = () => {
     severity: "error" as "error" | "success",
   });
 
+  useEffect(() => {
+    const initializeGoogleSignIn = () => {
+      // @ts-ignore (if using TypeScript)
+      if (window.google) {
+        // @ts-ignore
+        google.accounts.id.initialize({
+          client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
+          callback: handleGoogleSignIn,
+        });
+
+        // @ts-ignore
+        google.accounts.id.renderButton(
+          document.getElementById("google-signin-button"),
+          { theme: "outline", size: "large" }
+        );
+      }
+    };
+
+    initializeGoogleSignIn();
+  }, []);
+
+  const handleGoogleSignIn = async (response: any) => {
+    try {
+      if (!response.credential) {
+        showSnackError("No credential received from Google");
+        return;
+      }
+
+      const decoded: any = jwtDecode(response.credential);
+
+      const user = {
+        name: decoded.given_name,
+        email: decoded.email,
+        profilePicture: decoded.picture,
+        role: UserRole.USER,
+      };
+
+      const result = await dispatch(googleSignIn(user)).unwrap();
+
+      if (result && result.user) {
+        navigate("/");
+      }
+    } catch (error) {
+      console.error(someMessages.GOOGLE_SIGNIN_FAILED, error);
+      showSnackError(someMessages.GOOGLE_SIGNIN_FAILED);
+    }
+  };
+
   const handleCloseSnackbar = () => {
     setSnackbar((prev) => ({ ...prev, open: false }));
   };
@@ -34,14 +88,6 @@ const LoginPage = () => {
       open: true,
       message,
       severity: "error",
-    });
-  };
-
-  const showSnackSuccess = (message: string) => {
-    setSnackbar({
-      open: true,
-      message,
-      severity: "success",
     });
   };
 
@@ -143,6 +189,9 @@ const LoginPage = () => {
               {loading ? "Logging in..." : "Log in"}
             </button>
           </form>
+          <div id="google-signin-button">
+            <GoogleButton />
+          </div>
           <div className="buttons-container">
             <button
               type="button"

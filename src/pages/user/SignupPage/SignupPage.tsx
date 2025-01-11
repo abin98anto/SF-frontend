@@ -1,6 +1,10 @@
 import "./SignupPage.scss";
 import { signUpSchema } from "../../../entities/schemas/signUpSchema";
-import { imageLinks, someMessages } from "../../../utils/constants";
+import {
+  API_ENDPOINTS,
+  imageLinks,
+  someMessages,
+} from "../../../utils/constants";
 import { SignUpFormValues } from "../../../entities/user/SignUpFormValues";
 import { useAppDispatch } from "../../../hooks/hooks";
 import {
@@ -82,7 +86,7 @@ const SignupPage: React.FC = () => {
         setOpenErrorToast(true);
       }
     } catch (err) {
-      console.error("Sign-up error:", err);
+      console.error(someMessages.UNKOWN_ERROR, err);
       setErrorMessage(someMessages.UNKOWN_ERROR);
       setOpenErrorToast(true);
     }
@@ -104,7 +108,7 @@ const SignupPage: React.FC = () => {
         })
       );
       if (verifyOTP.fulfilled.match(result)) {
-        navigate("/login");
+        navigate(API_ENDPOINTS.USER_LOGIN);
       } else {
         if (result.payload === someMessages.WRONG_OTP) {
           setErrorMessage(someMessages.WRONG_OTP);
@@ -227,17 +231,25 @@ const SignupPage: React.FC = () => {
   const handleGoogleSignIn = async (response: any) => {
     try {
       if (!response.credential) {
-        throw new Error("No credential received from Google");
+        setErrorMessage(someMessages.GOOGLE_NO_CRED);
+        return;
       }
-
-      console.log("Google Sign-in response:", response.credential);
       const decoded: any = jwtDecode(response.credential);
-      console.log("Decoded token:", decoded);
 
-      const result = await dispatch(googleSignIn(response.credential)).unwrap();
-      navigate("/login");
+      const user = {
+        name: decoded.given_name,
+        email: decoded.email,
+        profilePicture: decoded.picture,
+        role: UserRole.USER,
+      };
+
+      const result = await dispatch(googleSignIn(user)).unwrap();
+
+      if (result && result.user) {
+        navigate(API_ENDPOINTS.USER_DASH);
+      }
     } catch (error) {
-      console.error("Google Sign-in error:", error);
+      console.error(someMessages.GOOGLE_SIGNIN_FAILED, error);
       setErrorMessage(someMessages.GOOGLE_SIGNIN_FAILED);
       setOpenErrorToast(true);
     }

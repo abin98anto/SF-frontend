@@ -22,7 +22,6 @@ const GoogleButton = () => {
           <path fill="#4CAF50" d={imageLinks.GOOGLE_SIGN3} />
           <path fill="#1976D2" d={imageLinks.GOOGLE_SIGN4} />
         </svg>
-        <span>Log in with Google</span>
       </div>
     </div>
   );

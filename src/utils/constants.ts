@@ -138,6 +138,7 @@ export const someMessages = {
   CONFIRM_PASS_REQ: "Please confirm your password",
   FORGOT_PASS_THUNK_FAIL: "Forgot password thunk failed.",
   SET_PAS_THUNK_FAIL: "Set password thunik failed.",
+  GOOGLE_NO_CRED: "No credential received from Google",
 };
 
 export const API_ENDPOINTS = {
@@ -163,4 +164,5 @@ export const API_ENDPOINTS = {
   SEND_OTP: "/send-otp",
   VERIFY_OTP: "/verify-otp",
   SET_PASS: "/set-password",
+  USER_DASH: "/",
 };
