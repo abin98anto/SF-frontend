@@ -8,10 +8,14 @@ import {
 } from "../../services/UserAuthServices";
 import { UserDetails } from "../../../entities/user/UserDetails";
 import { updateStudent } from "../../services/userUpdateService";
+import {
+  forgotPassword,
+  setPassword,
+} from "../../services/UserPasswordService";
 
 export interface UserState {
   loading: boolean;
-  error: string;
+  error: string | { message: string } | null;
   userInfo: UserDetails | null;
   isAuthenticated?: boolean;
 }
@@ -126,6 +130,34 @@ const userSlice = createSlice({
         state.loading = false;
         state.error =
           (action.payload as string) || someMessages.GOOGLE_SIGNIN_FAILED;
+      })
+
+      // Forgot Password
+      .addCase(forgotPassword.pending, (state) => {
+        state.loading = true;
+        state.error = "";
+      })
+      .addCase(forgotPassword.fulfilled, (state) => {
+        state.loading = false;
+        state.error = "";
+      })
+      .addCase(forgotPassword.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+
+      // Set New Password
+      .addCase(setPassword.pending, (state) => {
+        state.loading = true;
+        state.error = "";
+      })
+      .addCase(setPassword.fulfilled, (state) => {
+        state.loading = false;
+        state.error = "";
+      })
+      .addCase(setPassword.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
       });
   },
 });

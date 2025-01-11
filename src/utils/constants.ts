@@ -43,7 +43,7 @@ export const someMessages = {
   UNKOWN_ERROR: "An error occurred. Please try again.",
   RESEND_OTP_FAIL: "Failed to resend OTP. Please try again.",
   OTP_VERIFICATION_FAIL: "OTP verification failed",
-  OTP_SENT: `OTP send to the mail : `,
+  OTP_SENT: `OTP send to the mail`,
   LOGIN_FAILED: "Login failed",
   INVALID_CREDENTIALS: "Invalid email or password",
   TOKEN_REFRESH_FAILED: "Failed to refresh token",
@@ -124,10 +124,18 @@ export const someMessages = {
   ORDER_ADD_FAIL: "Error recording order. Please contact support.",
   PAYMENT_ERROR: "error fetching submit payment",
   USER_UPDATE_FAIL: "Failed to update user details",
-  INVALID_OTP: "Invalid OTP",
+  INVALID_OTP: "The OTP you entered is incorrect.",
   TUTOR_UPDATE_FAIL: "Failed to update tutor",
   FILE_UPLOAD_FAIL: "Failed to upload file",
   FILE_UPLOAD_SUCC: "File uploaded successfully!",
+  FORGOT_PASS_OTP_FAIL: "Sending OTP for forgot password failed!",
+  FORGOT_PASS_FAIL: "Fogot password failed!",
+  PASSWORD_MISMATCH: "Passwords must be same!",
+  SET_PASS_FAIL: "Setting new password failed!",
+  EMAIL_NOT_FOUND: "No accounts associated with the email!",
+  PASS_CHANGE_SUCC: "Password has successfully changed!",
+  OTP_REQ: "Please enter the OTP",
+  CONFIRM_PASS_REQ: "Please confirm your password",
 };
 
 export const API_ENDPOINTS = {
