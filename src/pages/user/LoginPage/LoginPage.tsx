@@ -80,7 +80,6 @@ const LoginPage = () => {
       if (loginUser.fulfilled.match(result)) {
         const user = result.payload.user;
         if (user.role === "user") {
-          showSnackSuccess("Login successful!");
           navigate("/");
         } else {
           showSnackError(someMessages.USER_ONLY);

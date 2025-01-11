@@ -136,6 +136,8 @@ export const someMessages = {
   PASS_CHANGE_SUCC: "Password has successfully changed!",
   OTP_REQ: "Please enter the OTP",
   CONFIRM_PASS_REQ: "Please confirm your password",
+  FORGOT_PASS_THUNK_FAIL: "Forgot password thunk failed.",
+  SET_PAS_THUNK_FAIL: "Set password thunik failed.",
 };
 
 export const API_ENDPOINTS = {
@@ -160,4 +162,5 @@ export const API_ENDPOINTS = {
   USER_LOGIN: "/login",
   SEND_OTP: "/send-otp",
   VERIFY_OTP: "/verify-otp",
+  SET_PASS: "/set-password",
 };
