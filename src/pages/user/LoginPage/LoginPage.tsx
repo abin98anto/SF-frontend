@@ -6,7 +6,11 @@ import { ThunkDispatch } from "@reduxjs/toolkit";
 import { Snackbar, Alert } from "@mui/material";
 
 import "./LoginPage.scss";
-import { imageLinks, someMessages } from "../../../utils/constants";
+import {
+  API_ENDPOINTS,
+  imageLinks,
+  someMessages,
+} from "../../../utils/constants";
 import { RootState } from "../../../redux/store";
 import {
   googleSignIn,
@@ -203,7 +207,13 @@ const LoginPage = () => {
             </button>
           </div>
           <p className="sign-up-label">
-            Don't have an account?<span className="sign-up-link">Sign up</span>
+            Don't have an account?
+            <span
+              className="sign-up-link"
+              onClick={() => navigate(API_ENDPOINTS.USER_SIGNUP)}
+            >
+              Sign up
+            </span>
           </p>
         </div>
       </div>

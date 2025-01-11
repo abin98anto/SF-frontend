@@ -165,4 +165,5 @@ export const API_ENDPOINTS = {
   VERIFY_OTP: "/verify-otp",
   SET_PASS: "/set-password",
   USER_DASH: "/",
+  USER_SIGNUP:"/signup"
 };

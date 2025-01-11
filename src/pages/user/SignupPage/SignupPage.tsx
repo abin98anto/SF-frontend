@@ -312,7 +312,10 @@ const SignupPage: React.FC = () => {
 
           <p className="sign-up-label">
             Already have an account?
-            <span className="sign-up-link" onClick={() => navigate("/login")}>
+            <span
+              className="sign-up-link"
+              onClick={() => navigate(API_ENDPOINTS.USER_LOGIN)}
+            >
               Login
             </span>
           </p>
