@@ -1,34 +1,54 @@
 .curriculum {
-  background: white;
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  background-color: #1c1d1f;
+  color: #fff;
+  height: 100%;
 }
 
 .curriculum-title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin-bottom: 1.5rem;
-  color: hsl(var(--foreground));
+  font-size: 24px;
+  padding: 20px;
+  margin: 0;
+  border-bottom: 1px solid #3e4143;
 }
 
 .sections {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
+  padding: 10px 0;
 }
 
 .section {
-  border: 1px solid hsl(var(--border));
-  border-radius: 8px;
-  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.section-header {
+  background-color: transparent;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  width: 100%;
+  text-align: left;
+
+  &:hover {
+    background-color: #3e4143;
+  }
 }
 
 .section-title {
-  background: hsl(var(--secondary));
-  padding: 1rem;
-  font-weight: 500;
-  color: hsl(var(--foreground));
+  display: flex;
+  flex-direction: column;
+
+  span:first-child {
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+
+  .section-info {
+    font-size: 14px;
+    color: #a1a7b3;
+  }
 }
 
 .lectures {
@@ -37,31 +57,45 @@
 }
 
 .lecture {
-  display: flex;
-  align-items: center;
-  justify-content: space-between; // Added to position check mark
-  padding: 1rem;
-  background: none;
+  background-color: transparent;
   border: none;
-  border-top: 1px solid hsl(var(--border));
+  color: #fff;
   cursor: pointer;
+  padding: 10px 20px 10px 40px;
   text-align: left;
   transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 
   &:hover {
-    background: hsl(var(--accent));
+    background-color: #3e4143;
   }
 
+  &.current-lesson {
+    background-color: #2d2f31;
+    font-weight: bold;
+  }
+}
+
+.lecture-checkbox {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #a1a7b3;
+  border-radius: 2px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+
   &.completed {
-    background: hsl(var(--accent) / 0.1);
+    background-color: #a1a7b3;
+    color: #1c1d1f;
   }
 }
 
 .lecture-name {
-  color: hsl(var(--foreground));
-  font-size: 0.9rem;
-}
-
-.check-icon {
-  color: hsl(var(--primary));
+  font-size: 14px;
+  flex-grow: 1;
 }
