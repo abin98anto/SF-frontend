@@ -75,7 +75,7 @@ const SignupPage: React.FC = () => {
 
       const formData = { ...data, role: UserRole.USER };
       const result = await dispatch(signUpUser(formData)).unwrap();
-
+      console.log("the form subb", result);
       if (result.message === someMessages.OTP_SENT) {
         handleOTPModalOpen();
       } else if (result.message === someMessages.EMAIL_EXISTS) {

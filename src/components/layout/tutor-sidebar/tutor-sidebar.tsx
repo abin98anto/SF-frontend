@@ -72,29 +72,29 @@ export default function TutorSidebar() {
   };
 
   return (
-    <div className={`sidebar ${isCollapsed ? "collapsed" : ""}`}>
-      <div className="sidebar-header">
-        <h1 className="logo">SkillForge</h1>
+    <div className={`tutor-sidebar ${isCollapsed ? "tutor-collapsed" : ""}`}>
+      <div className="tutor-sidebar-header">
+        <h1 className="tutor-logo">SkillForge</h1>
       </div>
 
-      <nav className="sidebar-nav">
+      <nav className="tutor-sidebar-nav">
         {menuItems.map((item) => {
           const isActive = location.pathname === item.path;
           return (
             <button
               key={item.path}
               onClick={() => handleNavClick(item.path)}
-              className={`nav-item ${isActive ? "active" : ""}`}
+              className={`tutor-nav-item ${isActive ? "tutor-active" : ""}`}
             >
-              <item.icon className="nav-icon" />
-              <span className="nav-text">{item.title}</span>
+              <item.icon className="tutor-nav-icon" />
+              <span className="tutor-nav-text">{item.title}</span>
             </button>
           );
         })}
       </nav>
 
-      <div className="sidebar-footer">
-        <button className="sign-out-button" onClick={openDialog}>
+      <div className="tutor-sidebar-footer">
+        <button className="tutor-sign-out-button" onClick={openDialog}>
           Logout
         </button>
       </div>
@@ -103,9 +103,9 @@ export default function TutorSidebar() {
       <Dialog
         open={isDialogOpen}
         onClose={closeDialog}
-        aria-labelledby="logout-confirmation-dialog"
+        aria-labelledby="tutor-logout-confirmation-dialog"
       >
-        <DialogTitle id="logout-confirmation-dialog">
+        <DialogTitle id="tutor-logout-confirmation-dialog">
           Confirm Logout
         </DialogTitle>
         <DialogContent>

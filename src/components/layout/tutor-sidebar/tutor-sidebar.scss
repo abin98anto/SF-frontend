@@ -1,4 +1,4 @@
-.sidebar {
+.tutor-sidebar {
   width: 250px;
   height: 100vh;
   background-color: #1a1d21;
@@ -10,14 +10,14 @@
   top: 0;
   transition: width 0.3s ease;
 
-  &.collapsed {
+  &.tutor-collapsed {
     width: 70px;
 
-    .nav-text {
+    .tutor-nav-text {
       display: none;
     }
 
-    .logo {
+    .tutor-logo {
       font-size: 0;
 
       &:first-letter {
@@ -27,10 +27,10 @@
   }
 }
 
-.sidebar-header {
+.tutor-sidebar-header {
   padding: 1.5rem;
 
-  .logo {
+  .tutor-logo {
     margin: 0;
     font-size: 1.5rem;
     font-weight: 600;
@@ -39,12 +39,12 @@
   }
 }
 
-.sidebar-nav {
+.tutor-sidebar-nav {
   flex: 1;
   padding: 0.5rem 0;
   overflow-y: auto;
 
-  .nav-item {
+  .tutor-nav-item {
     display: flex;
     align-items: center;
     width: 100%;
@@ -62,23 +62,23 @@
       color: #ffffff;
     }
 
-    &.active {
+    &.tutor-active {
       background-color: #ff5722;
       color: #ffffff;
 
-      .nav-icon {
+      .tutor-nav-icon {
         color: #ffffff;
       }
     }
 
-    .nav-icon {
+    .tutor-nav-icon {
       width: 20px;
       height: 20px;
       margin-right: 1rem;
       color: currentColor;
     }
 
-    .nav-text {
+    .tutor-nav-text {
       font-size: 0.9rem;
       font-weight: 500;
       color: currentColor;
@@ -86,11 +86,11 @@
   }
 }
 
-.sidebar-footer {
+.tutor-sidebar-footer {
   padding: 1rem 1.5rem;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 
-  .sign-out-button {
+  .tutor-sign-out-button {
     width: 100%;
     display: flex;
     align-items: center;
@@ -106,13 +106,13 @@
       background-color: rgba(255, 255, 255, 0.1);
     }
 
-    .nav-icon {
+    .tutor-nav-icon {
       width: 20px;
       height: 20px;
       margin-right: 1rem;
     }
 
-    .nav-text {
+    .tutor-nav-text {
       font-size: 0.9rem;
       font-weight: 500;
     }

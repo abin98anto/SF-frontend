@@ -160,10 +160,11 @@ export const API_ENDPOINTS = {
   USER_GOOGLE_LOGIN: `/auth/google`,
   USER_LOGOUT: "/logout",
   TUTOR_LOGIN: "/tutor/login",
+  TUTOR_LOGOUT: "/tutor/logout",
   USER_LOGIN: "/login",
   SEND_OTP: "/send-otp",
   VERIFY_OTP: "/verify-otp",
   SET_PASS: "/set-password",
   USER_DASH: "/",
-  USER_SIGNUP:"/signup"
+  USER_SIGNUP: "/signup",
 };

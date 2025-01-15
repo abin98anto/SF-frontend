@@ -19,7 +19,11 @@ export const updateUser = createAsyncThunk<
     if (!id) {
       return rejectWithValue(someMessages.TUTOR_UPDATE_FAIL);
     }
-    const response = await axiosInstance.patch(`/update?id=${id}`, updateData);
+    const response = await axiosInstance.patch(
+      `/tutor/update-profile?id=${id}`,
+      updateData
+    );
+    console.log("the response user/update", response);
     return response.data.user;
   } catch (error) {
     if (axios.isAxiosError(error)) {

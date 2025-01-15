@@ -88,7 +88,7 @@ export const logoutTutor = createAsyncThunk<
   { rejectValue: string }
 >("user/logout", async (role, thunkAPI) => {
   try {
-    const response = await axiosInstance.post(API_ENDPOINTS.USER_LOGOUT, {
+    const response = await axiosInstance.post(API_ENDPOINTS.TUTOR_LOGOUT, {
       role,
     });
     return response.data;
