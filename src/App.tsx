@@ -37,6 +37,8 @@ import { EditCourse } from "./pages/admin/CourseManagement/EditCourse/EditCourse
 import EnrolledPage from "./pages/user/EnrolledPage/EnrolledPage";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import NotFound from "./pages/404Page/404Page";
+import ProtectedRoute from "./components/ProtectedRoutes/ProtectedRoutes";
+// import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -48,14 +50,34 @@ const router = createBrowserRouter(
         <Route path="/courses" element={<CoursePage />} />
         <Route path="/course/:id" element={<CourseDetailsPage />} />
         <Route path="/about" element={<AboutPage />} />
-        <Route path="/subscriptions" element={<SubscriptionPage />} />
-        <Route path="/course-enrolled" element={<EnrolledPage />} />
+        <Route
+          path="/subscriptions"
+          element={
+            <ProtectedRoute role="user">
+              <SubscriptionPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/course-enrolled"
+          element={
+            <ProtectedRoute role="user">
+              <EnrolledPage />
+            </ProtectedRoute>
+          }
+        />
       </Route>
 
       <Route path="/tutor">
         <Route path="signup" element={<TutorSignup />} />
         <Route path="login" element={<TutorLogin />} />
-        <Route element={<TutorLayout />}>
+        <Route
+          element={
+            <ProtectedRoute role="tutor">
+              <TutorLayout />
+            </ProtectedRoute>
+          }
+        >
           <Route path="dashboard" element={<TutorDashboard />} />
           <Route path="my-students" element={<MyStudents />} />
           <Route path="messages" element={<TutorChat />} />
@@ -65,12 +87,32 @@ const router = createBrowserRouter(
 
       <Route path="/admin">
         <Route path="login" element={<AdminLogin />} />
-        <Route element={<AdminLayout />}>
+        <Route
+          element={
+            <ProtectedRoute role="admin">
+              <AdminLayout />
+            </ProtectedRoute>
+          }
+        >
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="course-management">
             <Route index element={<CourseManagement />} />
-            <Route path="add" element={<CourseForm />} />
-            <Route path="edit" element={<EditCourse />} />
+            <Route
+              path="add"
+              element={
+                <ProtectedRoute role="admin">
+                  <CourseForm />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="edit"
+              element={
+                <ProtectedRoute role="admin">
+                  <EditCourse />
+                </ProtectedRoute>
+              }
+            />
           </Route>
           <Route path="tutor-management" element={<TutorManagement />} />
           <Route path="user-management" element={<UserManagement />} />
