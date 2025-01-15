@@ -6,7 +6,7 @@ import {
   verifyOTP,
 } from "../../../redux/services/UserSignupServices";
 
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate } from "react-router-dom";
@@ -23,10 +23,19 @@ import { signUpSchema } from "../../../entities/schemas/signUpSchema";
 import { SignUpFormValues } from "../../../entities/user/SignUpFormValues";
 import { UserRole } from "../../../entities/user/UserRole";
 import { TutorDummy } from "../../../entities/dummys/TutorDummy";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
 
 const SignupPage: React.FC = () => {
+  const { isAuthenticated } = useSelector((state: RootState) => state.tutor);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/tutor/dashboard");
+    }
+  }, [isAuthenticated, navigate]);
 
   const {
     register,

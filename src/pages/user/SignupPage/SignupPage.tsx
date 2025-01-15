@@ -30,8 +30,11 @@ import { StudentDummy } from "../../../entities/dummys/StudentDummy";
 import GoogleButton from "../../../components/buttons/google-btn/GoogleButton";
 import { googleSignIn } from "../../../redux/services/UserAuthServices";
 import { jwtDecode } from "jwt-decode";
+import { RootState } from "../../../redux/store";
+import { useSelector } from "react-redux";
 
 const SignupPage: React.FC = () => {
+  const { isAuthenticated } = useSelector((state: RootState) => state.user);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -208,6 +211,9 @@ const SignupPage: React.FC = () => {
     textAlign: "center",
   };
   useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/");
+    }
     const initializeGoogleSignIn = () => {
       // @ts-ignore (if using TypeScript)
       if (window.google) {
@@ -226,7 +232,7 @@ const SignupPage: React.FC = () => {
     };
 
     initializeGoogleSignIn();
-  }, []);
+  }, [isAuthenticated, navigate]);
 
   const handleGoogleSignIn = async (response: any) => {
     try {

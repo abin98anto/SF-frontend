@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
@@ -27,11 +27,18 @@ interface LoginError {
 }
 
 const TutorLogin = () => {
+  const { isAuthenticated } = useSelector((state: RootState) => state.tutor);
   const dispatch = useDispatch<ThunkDispatch<RootState, any, any>>();
   const navigate = useNavigate();
   const [customError, setCustomError] = useState<string | null>(null);
 
   const { loading, error } = useSelector((state: RootState) => state.tutor);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/tutor/dashboard");
+    }
+  }, [isAuthenticated, navigate]);
 
   const {
     register,

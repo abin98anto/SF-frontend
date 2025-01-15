@@ -167,4 +167,5 @@ export const API_ENDPOINTS = {
   SET_PASS: "/set-password",
   USER_DASH: "/",
   USER_SIGNUP: "/signup",
+  ADMIN_DASH: "/admin/dashboard",
 };

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   BarChart2,
@@ -11,6 +11,9 @@ import {
 } from "lucide-react";
 import "./admin-sidebar.scss";
 import LogoutModal from "./LogoutMoal";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
+import { API_ENDPOINTS } from "../../../utils/constants";
 
 const menuItems = [
   { title: "Dashboard", icon: BarChart2, path: "/admin/dashboard" },
@@ -35,10 +38,19 @@ const menuItems = [
 ];
 
 export default function Sidebar() {
+  const { isAuthenticated } = useSelector(
+    (state: RootState) => state.adminLogin
+  );
   const [isCollapsed] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate(API_ENDPOINTS.ADMIN_DASH);
+    }
+  });
 
   const handleNavClick = (path: string) => {
     navigate(path);

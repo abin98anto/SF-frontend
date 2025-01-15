@@ -25,6 +25,7 @@ import { UserRole } from "../../../entities/user/UserRole";
 import GoogleButton from "../../../components/buttons/google-btn/GoogleButton";
 
 const LoginPage = () => {
+  const { isAuthenticated } = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch<ThunkDispatch<RootState, any, any>>();
   const navigate = useNavigate();
   const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
@@ -36,6 +37,10 @@ const LoginPage = () => {
   });
 
   useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/");
+    }
+
     const initializeGoogleSignIn = () => {
       // @ts-ignore (if using TypeScript)
       if (window.google) {
@@ -54,7 +59,7 @@ const LoginPage = () => {
     };
 
     initializeGoogleSignIn();
-  }, []);
+  }, [isAuthenticated, navigate]);
 
   const handleGoogleSignIn = async (response: any) => {
     try {

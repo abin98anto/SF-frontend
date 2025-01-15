@@ -8,13 +8,17 @@ import { useForm } from "react-hook-form";
 import { loginAdmin } from "../../../redux/services/AdminAuthServices";
 import { useNavigate } from "react-router-dom";
 import { AdminDummy } from "../../../entities/dummys/AdminDummy";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LoginFormValues } from "../../../entities/user/LoginFormValues";
 import { validateEmail } from "../../../utils/form-checks/validateEmail";
 
 const backgroundImage = imageLinks.BG_IMG;
 
 const AdminLogin = () => {
+  const { isAuthenticated } = useSelector(
+    (state: RootState) => state.adminLogin
+  );
+
   const dispatch = useDispatch<ThunkDispatch<RootState, any, any>>();
   const navigate = useNavigate();
 
@@ -28,6 +32,12 @@ const AdminLogin = () => {
     formState: { errors },
     getValues,
   } = useForm<LoginFormValues>();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/admin/dashboard");
+    }
+  });
 
   const onSubmit = async (data: LoginFormValues) => {
     const newErrors: { email?: string; password?: string } = {};
