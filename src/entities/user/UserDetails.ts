@@ -42,7 +42,7 @@ export class CoursesEnrolled {
   constructor(
     public courseId: string,
     public tutorId: string,
-    public lastCompletedChapter: number[],
+    public completedChapters: string[],
     public progressPercentage: number,
     public startDate: Date,
     public endDate: Date | null

@@ -2,6 +2,10 @@ import React, { useRef, useEffect } from "react";
 import "./VideoPlayer.scss";
 import { ChevronRight, FileText } from "lucide-react";
 import { Lesson } from "../../../../entities/courses/Course";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../redux/store";
+import { useLocation } from "react-router-dom";
+import axiosInstance from "../../../../utils/axiosConfig";
 
 interface VideoPlayerProps {
   videoUrl?: string;
@@ -24,11 +28,24 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
 
+  const user = useSelector((state: RootState) => state.user);
+  const location = useLocation().search.split("=")[1];
+  // console.log(location);
+
   useEffect(() => {
     const video = videoRef.current;
     if (video) {
-      const handleEnded = () => {
+      const handleEnded = async () => {
         if (currentLesson) {
+          const userId = user.userInfo?._id as string;
+          const courseId = location;
+          const lesson = currentLesson._id;
+
+          await axiosInstance.post("/lesson", {
+            userId,
+            courseId,
+            lesson,
+          });
           onLectureComplete(currentLesson._id);
         }
       };

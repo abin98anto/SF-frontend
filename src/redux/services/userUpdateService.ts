@@ -60,3 +60,29 @@ export const updateStudent = createAsyncThunk<
     return rejectWithValue(someMessages.UNKNOWN_ERROR);
   }
 });
+
+export const completeLesson = createAsyncThunk(
+  "courses/completeLesson",
+  async (
+    {
+      userId,
+      courseId,
+      lesson,
+    }: { userId: string; courseId: string; lesson: string },
+    { rejectWithValue }
+  ) => {
+    console.log("updating course progress...");
+    try {
+      const response = await axiosInstance.post("/lesson", {
+        userId,
+        courseId,
+        lesson,
+      });
+      return response.data; // assuming you return updated user data from the backend
+    } catch (error) {
+      console.log("error updating lesson in complete lesson", error);
+      // return rejectWithValue(error.response?.data || "Something went wrong");
+      return rejectWithValue("Something went wrong updating course progress");
+    }
+  }
+);

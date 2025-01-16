@@ -8,7 +8,9 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 
 const EnrolledPage = () => {
-  const { isAuthenticated } = useSelector((state: RootState) => state.user);
+  const { isAuthenticated } = useSelector(
+    (state: RootState) => state.user
+  );
   const [courseData, setCourseData] = useState<ICourse>();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -25,7 +27,6 @@ const EnrolledPage = () => {
           const response = await axiosInstance.get(
             `/admin/get-course?id=${courseId}`
           );
-
           setCourseData(response.data.data);
           setIsLoading(false);
         } catch (err) {
