@@ -24,10 +24,10 @@ import { SignUpFormValues } from "../../../entities/user/SignUpFormValues";
 import { UserRole } from "../../../entities/user/UserRole";
 import { TutorDummy } from "../../../entities/dummys/TutorDummy";
 import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
+import { AppRootState } from "../../../redux/store";
 
 const SignupPage: React.FC = () => {
-  const { isAuthenticated } = useSelector((state: RootState) => state.tutor);
+  const { isAuthenticated } = useSelector((state: AppRootState) => state.tutor);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 

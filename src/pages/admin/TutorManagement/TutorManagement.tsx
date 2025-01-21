@@ -24,6 +24,9 @@ import { UserDetails } from "../../../entities/user/UserDetails";
 import { UserRole } from "../../../entities/user/UserRole";
 import ApproveTutorsModal from "./ApproveTutorModal/ApproveTutorModal";
 import { someMessages } from "../../../utils/constants";
+import { AppRootState } from "../../../redux/store";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const TutorManagement: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -40,7 +43,14 @@ const TutorManagement: React.FC = () => {
   const handleOpenApproveModal = () => setIsApproveModalOpen(true);
   const handleCloseApproveModal = () => setIsApproveModalOpen(false);
 
+  const { isAuthenticated } = useSelector(
+    (state: AppRootState) => state.adminLogin
+  );
+  const navigate = useNavigate();
   useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/admin/login");
+    }
     fetchTutors();
   }, []);
 

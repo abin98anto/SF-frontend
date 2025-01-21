@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { ThunkDispatch } from "@reduxjs/toolkit";
-import { RootState } from "../../../redux/store";
+import { AppRootState } from "../../../redux/store";
 import {
   forgotPassword,
   setPassword,
@@ -20,7 +20,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
   show,
   onClose,
 }) => {
-  const dispatch = useDispatch<ThunkDispatch<RootState, any, any>>();
+  const dispatch = useDispatch<ThunkDispatch<AppRootState, any, any>>();
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [newPassword, setNewPassword] = useState("");

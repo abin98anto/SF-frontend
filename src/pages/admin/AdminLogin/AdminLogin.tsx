@@ -3,7 +3,7 @@ import { imageLinks, someMessages } from "../../../utils/constants";
 
 import { useDispatch, useSelector } from "react-redux";
 import { ThunkDispatch } from "@reduxjs/toolkit";
-import { RootState } from "../../../redux/store";
+import { AppRootState } from "../../../redux/store";
 import { useForm } from "react-hook-form";
 import { loginAdmin } from "../../../redux/services/AdminAuthServices";
 import { useNavigate } from "react-router-dom";
@@ -16,13 +16,13 @@ const backgroundImage = imageLinks.BG_IMG;
 
 const AdminLogin = () => {
   const { isAuthenticated } = useSelector(
-    (state: RootState) => state.adminLogin
+    (state: AppRootState) => state.adminLogin
   );
 
-  const dispatch = useDispatch<ThunkDispatch<RootState, any, any>>();
+  const dispatch = useDispatch<ThunkDispatch<AppRootState, any, any>>();
   const navigate = useNavigate();
 
-  const { loading } = useSelector((state: RootState) => state.adminLogin);
+  const { loading } = useSelector((state: AppRootState) => state.adminLogin);
   const [loginError, setLoginError] = useState<string | null>(null);
 
   const {
@@ -37,7 +37,7 @@ const AdminLogin = () => {
     if (isAuthenticated) {
       navigate("/admin/dashboard");
     }
-  });
+  },[isAuthenticated]);
 
   const onSubmit = async (data: LoginFormValues) => {
     const newErrors: { email?: string; password?: string } = {};

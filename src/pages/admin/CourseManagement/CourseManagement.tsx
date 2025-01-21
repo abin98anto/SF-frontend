@@ -2,10 +2,12 @@ import { useState, useEffect } from "react";
 import { Plus, Trash2, Pencil } from "lucide-react";
 import "./CourseManagement.scss";
 import { Course } from "../../../entities/courses/Course";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axiosInstance from "../../../utils/axiosConfig";
 import ConfirmationModal from "./UnlistCourse/ConfirmationModal";
 import { API_ENDPOINTS, someMessages } from "../../../utils/constants";
+import { useSelector } from "react-redux";
+import { AppRootState } from "../../../redux/store";
 
 interface APICourse {
   isActive: boolean;
@@ -37,9 +39,18 @@ export default function CoursesTable() {
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const itemsPerPage = 5;
 
+  const { isAuthenticated } = useSelector(
+    (state: AppRootState) => state.adminLogin
+  );
+  const navigate = useNavigate();
+
   useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/admin/login");
+    }
+
     fetchCourses();
-  }, []);
+  }, [isAuthenticated]);
 
   const fetchCourses = async () => {
     try {

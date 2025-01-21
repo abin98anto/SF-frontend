@@ -12,6 +12,7 @@ export const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   (config) => {
     // console.log("Outgoing request:", config);
+    config.withCredentials = true;
     return config;
   },
   (error) => Promise.reject(error)

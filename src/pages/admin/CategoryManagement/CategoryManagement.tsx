@@ -7,6 +7,9 @@ import axiosInstance from "../../../utils/axiosConfig";
 import EditCategoryModal from "./Modals/EditCategoryModal";
 import { ICategory } from "../../../entities/categories/ICategories";
 import { API_ENDPOINTS, someMessages } from "../../../utils/constants";
+import { useSelector } from "react-redux";
+import { AppRootState } from "../../../redux/store";
+import { useNavigate } from "react-router-dom";
 
 interface ICategoryResponse {
   data: ICategory[];
@@ -22,6 +25,17 @@ const CategoryManagement = () => {
   const [selectedCategory, setSelectedCategory] = useState<ICategory | null>(
     null
   );
+
+  const { isAuthenticated } = useSelector(
+    (state: AppRootState) => state.adminLogin
+  );
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/admin/login");
+    }
+  }, [isAuthenticated]);
 
   const handleEditClick = (category: ICategory) => {
     setSelectedCategory(category);

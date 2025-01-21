@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { UserDetails } from "../../entities/user/UserDetails";
-import { RootState } from "../store";
+import { AppRootState } from "../store";
 import axios from "axios";
 import axiosInstance from "../../utils/axiosConfig";
 import { someMessages } from "../../utils/constants";
@@ -9,7 +9,7 @@ export const updateUser = createAsyncThunk<
   UserDetails,
   Partial<UserDetails>,
   {
-    state: RootState;
+    state: AppRootState;
     rejectValue: string;
   }
 >("user/update", async (updateData, { getState, rejectWithValue }) => {
@@ -39,7 +39,7 @@ export const updateStudent = createAsyncThunk<
   UserDetails,
   Partial<UserDetails>,
   {
-    state: RootState;
+    state: AppRootState;
     rejectValue: string;
   }
 >("student/update", async (updateData, { getState, rejectWithValue }) => {

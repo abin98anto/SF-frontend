@@ -10,7 +10,7 @@ import {
   imageLinks,
   someMessages,
 } from "../../../utils/constants";
-import { RootState } from "../../../redux/store";
+import { AppRootState } from "../../../redux/store";
 import { loginTutor } from "../../../redux/services/UserAuthServices";
 import { LoginFormValues } from "../../../entities/user/LoginFormValues";
 import { validateEmail } from "../../../utils/form-checks/validateEmail";
@@ -27,12 +27,12 @@ interface LoginError {
 }
 
 const TutorLogin = () => {
-  const { isAuthenticated } = useSelector((state: RootState) => state.tutor);
-  const dispatch = useDispatch<ThunkDispatch<RootState, any, any>>();
+  const { isAuthenticated } = useSelector((state: AppRootState) => state.tutor);
+  const dispatch = useDispatch<ThunkDispatch<AppRootState, any, any>>();
   const navigate = useNavigate();
   const [customError, setCustomError] = useState<string | null>(null);
 
-  const { loading, error } = useSelector((state: RootState) => state.tutor);
+  const { loading, error } = useSelector((state: AppRootState) => state.tutor);
 
   useEffect(() => {
     if (isAuthenticated) {

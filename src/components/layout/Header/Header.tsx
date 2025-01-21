@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import { logoutUser } from "../../../redux/services/UserAuthServices";
 import "./Header.scss";
-import { RootState, AppDispatch } from "../../../redux/store";
+import { AppRootState, AppDispatch } from "../../../redux/store";
 import { UserRole } from "../../../entities/user/UserRole";
 
 const Header = () => {
@@ -24,7 +24,7 @@ const Header = () => {
 
   const dispatch = useDispatch<AppDispatch>();
   const { isAuthenticated, userInfo } = useSelector(
-    (state: RootState) => state.user
+    (state: AppRootState) => state.user
   );
 
   const toggleMenu = () => {
@@ -85,8 +85,8 @@ const Header = () => {
                   </Link>
                 </li>
                 <li>
-                  <Link to="/about" onClick={toggleMenu}>
-                    About
+                  <Link to="/my-learning" onClick={toggleMenu}>
+                    My Learning
                   </Link>
                 </li>
                 <li>
@@ -125,7 +125,7 @@ const Header = () => {
               <Link to="/courses">Courses</Link>
             </li>
             <li>
-              <Link to="/about">About</Link>
+              <Link to="/my-learning">My Learning</Link>
             </li>
             <li>
               <Link to="/subscriptions">Subscriptions</Link>

@@ -2,12 +2,12 @@ import { Outlet, useNavigate } from "react-router-dom";
 import TutorSidebar from "../tutor-sidebar/tutor-sidebar";
 import "./tutor-layout.scss";
 import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
+import { AppRootState } from "../../../redux/store";
 import { useEffect } from "react";
 import { API_ENDPOINTS } from "../../../utils/constants";
 
 export const TutorLayout = () => {
-  const { isAuthenticated } = useSelector((state: RootState) => state.tutor);
+  const { isAuthenticated } = useSelector((state: AppRootState) => state.tutor);
   const navigate = useNavigate();
 
   useEffect(() => {

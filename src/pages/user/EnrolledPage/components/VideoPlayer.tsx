@@ -3,7 +3,7 @@ import "./VideoPlayer.scss";
 import { ChevronRight, FileText } from "lucide-react";
 import { Lesson } from "../../../../entities/courses/Course";
 import { useSelector } from "react-redux";
-import { RootState } from "../../../../redux/store";
+import { AppRootState } from "../../../../redux/store";
 import { useLocation } from "react-router-dom";
 import axiosInstance from "../../../../utils/axiosConfig";
 
@@ -28,7 +28,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  const user = useSelector((state: RootState) => state.user);
+  const user = useSelector((state: AppRootState) => state.user);
   const location = useLocation().search.split("=")[1];
   // console.log(location);
 

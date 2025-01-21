@@ -20,7 +20,7 @@ import {
   Close as CloseIcon,
 } from "@mui/icons-material";
 import { updateUser } from "../../../redux/services/userUpdateService";
-import { RootState } from "../../../redux/store";
+import { AppRootState } from "../../../redux/store";
 import "./TutorProfile.scss";
 import { uploadToCloudinary } from "../../../utils/cloudinary";
 import { createPortal } from "react-dom";
@@ -102,7 +102,9 @@ const ProfileSection = () => {
   const [updateError, setUpdateError] = useState<string | null>(null);
   const [updateSuccess, setUpdateSuccess] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { loading, userInfo } = useSelector((state: RootState) => state.tutor);
+  const { loading, userInfo } = useSelector(
+    (state: AppRootState) => state.tutor
+  );
 
   const [profileImage, setProfileImage] = useState<string | null>(
     userInfo?.profilePicture || "/default-avatar.png"

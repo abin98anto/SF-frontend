@@ -1,4 +1,4 @@
-.modal-overlay {
+.admin-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -11,7 +11,7 @@
   z-index: 1000;
 }
 
-.modal-content {
+.admin-modal-content {
   background: white;
   color: black;
   padding: 20px;
@@ -24,27 +24,27 @@
   }
 }
 
-.modal-actions {
+.admin-modal-actions {
   display: flex;
   gap: 10px;
   justify-content: center;
   margin-top: 20px;
 }
 
-.confirm-button,
-.cancel-button {
+.admin-confirm-button,
+.admin-cancel-button {
   padding: 10px 20px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
 }
 
-.confirm-button {
+.admin-confirm-button {
   background-color: #d9534f;
   color: white;
 }
 
-.cancel-button {
+.admin-cancel-button {
   background-color: #f0f0f0;
   color: #333;
 }

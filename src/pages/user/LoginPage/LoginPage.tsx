@@ -11,7 +11,7 @@ import {
   imageLinks,
   someMessages,
 } from "../../../utils/constants";
-import { RootState } from "../../../redux/store";
+import { AppRootState } from "../../../redux/store";
 import {
   googleSignIn,
   loginUser,
@@ -25,11 +25,11 @@ import { UserRole } from "../../../entities/user/UserRole";
 import GoogleButton from "../../../components/buttons/google-btn/GoogleButton";
 
 const LoginPage = () => {
-  const { isAuthenticated } = useSelector((state: RootState) => state.user);
-  const dispatch = useDispatch<ThunkDispatch<RootState, any, any>>();
+  const { isAuthenticated } = useSelector((state: AppRootState) => state.user);
+  const dispatch = useDispatch<ThunkDispatch<AppRootState, any, any>>();
   const navigate = useNavigate();
   const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
-  const { loading } = useSelector((state: RootState) => state.user);
+  const { loading } = useSelector((state: AppRootState) => state.user);
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",

@@ -30,11 +30,11 @@ import { StudentDummy } from "../../../entities/dummys/StudentDummy";
 import GoogleButton from "../../../components/buttons/google-btn/GoogleButton";
 import { googleSignIn } from "../../../redux/services/UserAuthServices";
 import { jwtDecode } from "jwt-decode";
-import { RootState } from "../../../redux/store";
+import { AppRootState } from "../../../redux/store";
 import { useSelector } from "react-redux";
 
 const SignupPage: React.FC = () => {
-  const { isAuthenticated } = useSelector((state: RootState) => state.user);
+  const { isAuthenticated } = useSelector((state: AppRootState) => state.user);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 

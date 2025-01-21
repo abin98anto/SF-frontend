@@ -5,12 +5,10 @@ import { ICourse } from "../../../entities/courses/Course";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { someMessages } from "../../../utils/constants";
 import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
+import { AppRootState } from "../../../redux/store";
 
 const EnrolledPage = () => {
-  const { isAuthenticated } = useSelector(
-    (state: RootState) => state.user
-  );
+  const { isAuthenticated } = useSelector((state: AppRootState) => state.user);
   const [courseData, setCourseData] = useState<ICourse>();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -20,7 +18,7 @@ const EnrolledPage = () => {
 
   useEffect(() => {
     if (!isAuthenticated) {
-      navigate("/");
+      navigate("/login");
     } else {
       const fetchCourseData = async () => {
         try {

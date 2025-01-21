@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useEffect } from "react";
 import type { FormData } from "./form-types";
 import { BasicInformation } from "./components/basic-information";

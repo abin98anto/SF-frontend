@@ -4,13 +4,14 @@ import { Section, Lesson } from "../../../../entities/courses/Course";
 import { ChevronDown, ChevronUp, CheckIcon } from "lucide-react";
 import Modal from "./Modal";
 import { useSelector } from "react-redux";
-import { RootState } from "../../../../redux/store";
+import { AppRootState } from "../../../../redux/store";
 import { useLocation } from "react-router-dom";
 import axiosInstance from "../../../../utils/axiosConfig";
 
 interface CurriculumProps {
   sections: Section[] | undefined;
   onVideoSelect: (videoUrl: string, lesson: Lesson) => void;
+  completedLectures: string[];
   onLectureComplete: (lectureId: string) => void;
   onLectureUncomplete: (lectureId: string) => void;
   currentLessonId: string | undefined;
@@ -28,7 +29,7 @@ const Curriculum: React.FC<CurriculumProps> = ({
   const [currentLecture, setCurrentLecture] = useState<Lesson | null>(null);
   const [completedLectures, setCompletedLectures] = useState<string[]>([]);
 
-  const user = useSelector((state: RootState) => state.user);
+  const user = useSelector((state: AppRootState) => state.user);
   const location = useLocation().search.split("=")[1];
   const userId = user.userInfo?._id;
 

@@ -3,7 +3,7 @@ import "./SubscriptionPage.scss";
 import axiosInstance from "../../../utils/axiosConfig";
 import SubscriptionPlan from "../../../entities/subscription/subscription";
 import { useAppSelector, useAppDispatch } from "../../../hooks/hooks";
-import { RootState } from "../../../redux/store";
+import { AppRootState } from "../../../redux/store";
 import { SubscriptionType } from "../../../entities/user/UserDetails";
 import { updateStudent } from "../../../redux/services/userUpdateService";
 import Swal from "sweetalert2";
@@ -17,9 +17,9 @@ const SubscriptionPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const userInfo = useAppSelector((state: RootState) => state.user.userInfo);
+  const userInfo = useAppSelector((state: AppRootState) => state.user.userInfo);
   const isAuthenticated = useAppSelector(
-    (state: RootState) => state.user.isAuthenticated
+    (state: AppRootState) => state.user.isAuthenticated
   );
 
   useEffect(() => {

@@ -22,6 +22,9 @@ import "./SubsManagement.scss";
 import axiosInstance from "../../../utils/axiosConfig";
 import SubscriptionPlan from "../../../entities/subscription/subscription";
 import { API_ENDPOINTS, someMessages } from "../../../utils/constants";
+import { useSelector } from "react-redux";
+import { AppRootState } from "../../../redux/store";
+import { useNavigate } from "react-router-dom";
 
 const SubsManagement: React.FC = () => {
   const [subscriptions, setSubscriptions] = useState<SubscriptionPlan[]>([]);
@@ -85,9 +88,16 @@ const SubsManagement: React.FC = () => {
     }
   };
 
+  const { isAuthenticated } = useSelector(
+    (state: AppRootState) => state.adminLogin
+  );
+  const navigate = useNavigate();
   useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/admin/login");
+    }
     fetchSubscriptions();
-  }, []);
+  }, [isAuthenticated]);
 
   return (
     <div className="subs-management">

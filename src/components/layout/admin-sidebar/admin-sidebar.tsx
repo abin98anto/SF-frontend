@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   BarChart2,
@@ -11,9 +11,8 @@ import {
 } from "lucide-react";
 import "./admin-sidebar.scss";
 import LogoutModal from "./LogoutMoal";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
-import { API_ENDPOINTS } from "../../../utils/constants";
+import { useAppDispatch } from "../../../hooks/hooks";
+import { logoutAdmin } from "../../../redux/services/AdminAuthServices";
 
 const menuItems = [
   { title: "Dashboard", icon: BarChart2, path: "/admin/dashboard" },
@@ -38,53 +37,46 @@ const menuItems = [
 ];
 
 export default function Sidebar() {
-  const { isAuthenticated } = useSelector(
-    (state: RootState) => state.adminLogin
-  );
   const [isCollapsed] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-
-  useEffect(() => {
-    if (!isAuthenticated) {
-      navigate(API_ENDPOINTS.ADMIN_DASH);
-    }
-  });
+  const dispatch = useAppDispatch();
 
   const handleNavClick = (path: string) => {
     navigate(path);
   };
 
   const handleSignOut = async () => {
+    await dispatch(logoutAdmin());
     navigate("/admin/login");
   };
 
   return (
-    <div className={`sidebar ${isCollapsed ? "collapsed" : ""}`}>
-      <div className="sidebar-header">
-        <h1 className="logo">SkillForge</h1>
+    <div className={`admin-sidebar ${isCollapsed ? "admin-collapsed" : ""}`}>
+      <div className="admin-sidebar-header">
+        <h1 className="admin-logo">SkillForge</h1>
       </div>
 
-      <nav className="sidebar-nav">
+      <nav className="admin-sidebar-nav">
         {menuItems.map((item) => {
           const isActive = location.pathname === item.path;
           return (
             <button
               key={item.path}
               onClick={() => handleNavClick(item.path)}
-              className={`nav-item ${isActive ? "active" : ""}`}
+              className={`admin-nav-item ${isActive ? "admin-active" : ""}`}
             >
-              <item.icon className="nav-icon" />
-              <span className="nav-text">{item.title}</span>
+              <item.icon className="admin-nav-icon" />
+              <span className="admin-nav-text">{item.title}</span>
             </button>
           );
         })}
       </nav>
 
-      <div className="sidebar-footer">
+      <div className="admin-sidebar-footer">
         <button
-          className="sign-out-button"
+          className="admin-sign-out-button"
           onClick={() => setShowLogoutModal(true)}
         >
           Sign Out

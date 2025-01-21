@@ -24,6 +24,9 @@ import {
 import { UserDetails } from "../../../entities/user/UserDetails";
 import { UserRole } from "../../../entities/user/UserRole";
 import { someMessages } from "../../../utils/constants";
+import { AppRootState } from "../../../redux/store";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const UserManagement: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -35,7 +38,15 @@ const UserManagement: React.FC = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [dialogAction, setDialogAction] = useState("");
 
+  const { isAuthenticated } = useSelector(
+    (state: AppRootState) => state.adminLogin
+  );
+  const navigate = useNavigate();
+
   useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/admin/login");
+    }
     fetchUsers();
   }, []);
 

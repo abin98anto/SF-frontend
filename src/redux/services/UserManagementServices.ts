@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { UserDetails } from "../../entities/user/UserDetails";
-import { RootState } from "../store";
+import { AppRootState } from "../store";
 import axiosInstance from "../../utils/axiosConfig";
 import { UserRole } from "../../entities/user/UserRole";
 import { someMessages } from "../../utils/constants";
@@ -9,7 +9,7 @@ export const getUsers = createAsyncThunk<
   UserDetails[],
   UserRole,
   {
-    state: RootState;
+    state: AppRootState;
     rejectValue: string;
   }
 >("admin/users", async (role, { rejectWithValue }) => {
@@ -26,7 +26,7 @@ export const toggleUserStatus = createAsyncThunk<
   string,
   string,
   {
-    state: RootState;
+    state: AppRootState;
     rejectValue: string;
   }
 >("admin/toggleUserStatus", async (userId, { rejectWithValue }) => {
