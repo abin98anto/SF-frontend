@@ -1,8 +1,10 @@
-import React, { useState, useMemo, useEffect } from "react";
+import type React from "react";
+import { useState, useMemo, useEffect } from "react";
+import "@sweetalert2/theme-default/default.css";
 
 import "./SubscriptionModal.scss";
 import axiosInstance from "../../../../utils/axiosConfig";
-import { Snackbar } from "../../../../components/Snackbar/Snackbar";
+import Swal from "sweetalert2";
 import { API_ENDPOINTS, someMessages } from "../../../../utils/constants";
 
 interface SubscriptionModalProps {
@@ -26,10 +28,6 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
   const [monthlyPrice, setMonthlyPrice] = useState("");
   const [discount, setDiscount] = useState("");
   const [discountValidUntil, setDiscountValidUntil] = useState("");
-  const [snackbar, setSnackbar] = useState({
-    isVisible: false,
-    message: "",
-  });
 
   const minDate = useMemo(() => {
     const tomorrow = new Date();
@@ -44,7 +42,7 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
     setMonthlyPrice("");
     setDiscount("");
     setDiscountValidUntil("");
-    setSnackbar({ isVisible: false, message: "" });
+    // No need to reset SweetAlert state
   };
 
   const fetchSubscriptionDetails = async () => {
@@ -68,7 +66,7 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
         );
       } catch (error) {
         console.error(someMessages.SUBS_FETCH_FAIL, error);
-        showError(someMessages.SUBS_FETCH_FAIL);
+        showMessage(someMessages.SUBS_FETCH_FAIL);
       }
     }
   };
@@ -81,47 +79,54 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
     }
   }, [isOpen, editMode, subscriptionId]);
 
-  const showError = (message: string) => {
-    setSnackbar({
-      isVisible: true,
-      message,
+  const showMessage = (
+    message: string,
+    icon: "success" | "error" | "warning" = "error"
+  ) => {
+    Swal.fire({
+      title:
+        icon === "success"
+          ? "Success!"
+          : icon === "warning"
+          ? "Warning"
+          : "Error",
+      text: message,
+      icon,
+      toast: true,
+      position: "top-end",
+      timer: 3000,
+      timerProgressBar: true,
+      showConfirmButton: false,
     });
-  };
-
-  const hideSnackbar = () => {
-    setSnackbar((prev) => ({
-      ...prev,
-      isVisible: false,
-    }));
   };
 
   const validateForm = () => {
     if (!name.trim()) {
-      showError(someMessages.NAME_REQ);
+      showMessage(someMessages.NAME_REQ);
       return false;
     }
     if (!description.trim()) {
-      showError(someMessages.DESCRIPTION_RQ);
+      showMessage(someMessages.DESCRIPTION_RQ);
       return false;
     }
     if (!features.trim()) {
-      showError(someMessages.ADD_FEATURE);
+      showMessage(someMessages.ADD_FEATURE);
       return false;
     }
-    if (!monthlyPrice || parseFloat(monthlyPrice) <= 0) {
-      showError(someMessages.PRICE_ERR);
+    if (!monthlyPrice || Number.parseFloat(monthlyPrice) <= 0) {
+      showMessage(someMessages.PRICE_ERR);
       return false;
     }
     if (
       discount &&
-      (parseFloat(discount) < 0 ||
-        parseFloat(discount) >= parseFloat(monthlyPrice))
+      (Number.parseFloat(discount) < 0 ||
+        Number.parseFloat(discount) >= Number.parseFloat(monthlyPrice))
     ) {
-      showError(someMessages.DISCOUNT_ERR);
+      showMessage(someMessages.DISCOUNT_ERR);
       return false;
     }
-    if (discount && parseFloat(discount) > 0 && !discountValidUntil) {
-      showError(someMessages.DISCOUNT_DATE_ERR);
+    if (discount && Number.parseFloat(discount) > 0 && !discountValidUntil) {
+      showMessage(someMessages.DISCOUNT_DATE_ERR);
       return false;
     }
     return true;
@@ -139,10 +144,10 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
         name,
         description,
         features: features.split(",").map((feature) => feature.trim()),
-        price: parseFloat(monthlyPrice),
-        discountPrice: discount ? parseFloat(discount) : undefined,
+        price: Number.parseFloat(monthlyPrice),
+        discountPrice: discount ? Number.parseFloat(discount) : undefined,
         discountValidUntil:
-          discountValidUntil && parseFloat(discount) > 0
+          discountValidUntil && Number.parseFloat(discount) > 0
             ? new Date(discountValidUntil)
             : undefined,
         isActive: true,
@@ -153,19 +158,13 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
           `/admin/update-subscription?id=${subscriptionId}`,
           subscriptionData
         );
-        setSnackbar({
-          isVisible: true,
-          message: someMessages.SUBS_UPDATE_SUCC,
-        });
+        showMessage(someMessages.SUBS_UPDATE_SUCC, "success");
       } else {
         await axiosInstance.post(API_ENDPOINTS.SUBS_ADD, {
           ...subscriptionData,
           createdAt: new Date(),
         });
-        setSnackbar({
-          isVisible: true,
-          message: someMessages.SUBS_UPDATE_SUCC,
-        });
+        showMessage(someMessages.SUBS_UPDATE_SUCC, "success");
       }
 
       setTimeout(() => {
@@ -177,14 +176,14 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
         `Failed to ${editMode ? "update" : "create"} subscription:`,
         error
       );
-      showError(
+      showMessage(
         error.response?.data?.message ||
           `Failed to ${editMode ? "update" : "create"} subscription`
       );
     }
   };
 
-  const isDiscountValid = parseFloat(discount) > 0;
+  const isDiscountValid = Number.parseFloat(discount) > 0;
 
   if (!isOpen) return null;
 
@@ -237,7 +236,10 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
                 value={discount}
                 onChange={(e) => {
                   setDiscount(e.target.value);
-                  if (!e.target.value || parseFloat(e.target.value) <= 0) {
+                  if (
+                    !e.target.value ||
+                    Number.parseFloat(e.target.value) <= 0
+                  ) {
                     setDiscountValidUntil("");
                   }
                 }}
@@ -273,11 +275,6 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
           </form>
         </div>
       </div>
-      <Snackbar
-        message={snackbar.message}
-        isVisible={snackbar.isVisible}
-        onClose={hideSnackbar}
-      />
     </>
   );
 };

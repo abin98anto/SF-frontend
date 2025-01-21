@@ -51,7 +51,10 @@ const SubsManagement: React.FC = () => {
   const fetchSubscriptions = async () => {
     try {
       const response = await axiosInstance.get(API_ENDPOINTS.SUBS);
-      setSubscriptions(response.data.data);
+      const activeSubscriptions = response.data.data.filter(
+        (subscription: SubscriptionPlan) => subscription.isActive
+      );
+      setSubscriptions(activeSubscriptions);
     } catch (error) {
       console.error(someMessages.SUBS_FETCH_FAIL, error);
     } finally {
@@ -164,9 +167,11 @@ const SubsManagement: React.FC = () => {
         onClose={handleCloseDeleteModal}
         aria-labelledby="delete-dialog-title"
       >
-        <DialogTitle id="delete-dialog-title">Confirm Delete</DialogTitle>
+        <DialogTitle id="delete-dialog-title">Confirm Unlist</DialogTitle>
         <DialogContent>
-          Are you sure you want to delete this subscription?
+          Are you sure you want to unlist this subscription? 
+          <br />
+          This action cannot be undone.
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDeleteModal} color="primary">
