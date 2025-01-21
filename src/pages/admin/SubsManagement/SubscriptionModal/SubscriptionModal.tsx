@@ -190,11 +190,11 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
 
   return (
     <>
-      <div className="modal-overlay">
-        <div className="modal-content">
+      <div className="subs-modal-overlay">
+        <div className="subs-modal-content">
           <h2>{editMode ? "Edit" : "Add New"} Subscription</h2>
           <form onSubmit={handleSubmit} noValidate>
-            <div className="form-group">
+            <div className="subs-form-group">
               <label htmlFor="name">Name</label>
               <input
                 type="text"
@@ -203,7 +203,7 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
                 onChange={(e) => setName(e.target.value)}
               />
             </div>
-            <div className="form-group">
+            <div className="subs-form-group">
               <label htmlFor="description">Description</label>
               <textarea
                 id="description"
@@ -211,7 +211,7 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
                 onChange={(e) => setDescription(e.target.value)}
               />
             </div>
-            <div className="form-group">
+            <div className="subs-form-group">
               <label htmlFor="features">Features (comma-separated)</label>
               <input
                 type="text"
@@ -220,7 +220,7 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
                 onChange={(e) => setFeatures(e.target.value)}
               />
             </div>
-            <div className="form-group">
+            <div className="subs-form-group">
               <label htmlFor="monthlyPrice">Monthly Price</label>
               <input
                 type="number"
@@ -229,7 +229,7 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
                 onChange={(e) => setMonthlyPrice(e.target.value)}
               />
             </div>
-            <div className="form-group">
+            <div className="subs-form-group">
               <label htmlFor="discount">Discount Price</label>
               <input
                 type="number"
@@ -243,7 +243,7 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
                 }}
               />
             </div>
-            <div className="form-group">
+            <div className="subs-form-group">
               <label htmlFor="discountValidUntil">Discount Valid Until</label>
               <input
                 type="date"
@@ -258,11 +258,15 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
                 }}
               />
             </div>
-            <div className="button-group">
-              <button type="submit" className="submit-btn">
+            <div className="subs-button-group">
+              <button type="submit" className="subs-submit-btn">
                 {editMode ? "Update" : "Add"} Subscription
               </button>
-              <button type="button" onClick={onClose} className="cancel-btn">
+              <button
+                type="button"
+                onClick={onClose}
+                className="subs-cancel-btn"
+              >
                 Cancel
               </button>
             </div>

@@ -120,7 +120,7 @@ const UserManagement: React.FC = () => {
                 <TableCell>{index + 1}</TableCell>
                 <TableCell>{user.name}</TableCell>
                 <TableCell>{user.email}</TableCell>
-                <TableCell>{user.dateJoined}</TableCell>
+                <TableCell>{user.subscription?.name}</TableCell>
                 <TableCell>
                   <Button
                     variant="contained"

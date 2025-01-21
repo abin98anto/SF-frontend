@@ -1,4 +1,4 @@
-.modal-overlay {
+.subs-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -11,7 +11,7 @@
   z-index: 1000;
 }
 
-.modal-content {
+.subs-modal-content {
   background-color: #ffffff;
   padding: 30px;
   border-radius: 8px;
@@ -31,7 +31,7 @@
     flex-direction: column;
   }
 
-  .form-group {
+  .subs-form-group {
     margin-bottom: 15px;
 
     label {
@@ -62,7 +62,7 @@
     }
   }
 
-  .button-group {
+  .subs-button-group {
     display: flex;
     justify-content: flex-end;
     gap: 10px;
@@ -76,7 +76,7 @@
       cursor: pointer;
       transition: background-color 0.2s;
 
-      &.submit-btn {
+      &.subs-submit-btn {
         background-color: #007bff;
         color: #fff;
 
@@ -85,7 +85,7 @@
         }
       }
 
-      &.cancel-btn {
+      &.subs-cancel-btn {
         background-color: #f8f9fa;
         color: #333;
 
