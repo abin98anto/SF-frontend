@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import type React from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   Table,
   TableBody,
@@ -14,6 +15,12 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  TextField,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  type SelectChangeEvent,
 } from "@mui/material";
 
 import { useAppDispatch } from "../../../hooks/hooks";
@@ -21,22 +28,32 @@ import {
   getUsers,
   toggleUserStatus,
 } from "../../../redux/services/UserManagementServices";
-import { UserDetails } from "../../../entities/user/UserDetails";
+import type { UserDetails } from "../../../entities/user/UserDetails";
 import { UserRole } from "../../../entities/user/UserRole";
 import { someMessages } from "../../../utils/constants";
-import { AppRootState } from "../../../redux/store";
+import type { AppRootState } from "../../../redux/store";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import axiosInstance from "../../../utils/axiosConfig";
+
+interface Subscription {
+  isActive: any;
+  _id: string;
+  name: string;
+}
 
 const UserManagement: React.FC = () => {
   const dispatch = useAppDispatch();
 
   const [users, setUsers] = useState<UserDetails[]>([]);
+  const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [dialogAction, setDialogAction] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortBy, setSortBy] = useState("all");
 
   const { isAuthenticated } = useSelector(
     (state: AppRootState) => state.adminLogin
@@ -48,6 +65,7 @@ const UserManagement: React.FC = () => {
       navigate("/admin/login");
     }
     fetchUsers();
+    fetchSubscriptions();
   }, []);
 
   const fetchUsers = async () => {
@@ -59,6 +77,20 @@ const UserManagement: React.FC = () => {
       console.log(someMessages.USERS_FETCH_FAIL, err);
       setError(someMessages.USERS_FETCH_FAIL);
       setLoading(false);
+    }
+  };
+
+  const fetchSubscriptions = async () => {
+    try {
+      const response = await axiosInstance.get("/admin/subscriptions");
+      console.log("the response in fetch subs", response);
+      const result = response.data.data.filter(
+        (subs: Subscription) => subs.isActive !== false
+      );
+      setSubscriptions(result as Subscription[]);
+    } catch (err) {
+      console.log("Failed to fetch subscriptions", err);
+      setError("Failed to fetch subscriptions");
     }
   };
 
@@ -92,6 +124,33 @@ const UserManagement: React.FC = () => {
     setDialogAction("");
   };
 
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const handleSortChange = (event: SelectChangeEvent<string>) => {
+    setSortBy(event.target.value);
+  };
+
+  const filteredAndSortedUsers = useMemo(() => {
+    return users
+      .filter(
+        (user) =>
+          user.name!.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          user.email!.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+      .filter((user) => {
+        if (sortBy === "all") return true;
+        if (sortBy === "free") return !user.subscription;
+        return user.subscription?.name.toLowerCase() === sortBy.toLowerCase();
+      })
+      .sort((a, b) => {
+        const subscriptionA = a.subscription?.name || "Free";
+        const subscriptionB = b.subscription?.name || "Free";
+        return subscriptionA.localeCompare(subscriptionB);
+      });
+  }, [users, searchTerm, sortBy]);
+
   if (loading) {
     return <CircularProgress />;
   }
@@ -102,8 +161,42 @@ const UserManagement: React.FC = () => {
 
   return (
     <>
+      <h1>User Management</h1>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          marginBottom: "1rem",
+        }}
+      >
+        <TextField
+          label="Search users"
+          variant="outlined"
+          value={searchTerm}
+          onChange={handleSearchChange}
+        />
+        <FormControl variant="outlined" style={{ minWidth: 120 }}>
+          <InputLabel id="sort-select-label">Sort by</InputLabel>
+          <Select
+            labelId="sort-select-label"
+            value={sortBy}
+            onChange={handleSortChange}
+            label="Sort by"
+          >
+            <MenuItem value="all">All</MenuItem>
+            <MenuItem value="free">Free</MenuItem>
+            {subscriptions.map((subscription) => (
+              <MenuItem
+                key={subscription._id}
+                value={subscription.name.toLowerCase()}
+              >
+                {subscription.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </div>
       <TableContainer component={Paper}>
-        <h1>User Management</h1>
         <Table>
           <TableHead>
             <TableRow>
@@ -115,12 +208,14 @@ const UserManagement: React.FC = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {users.map((user, index) => (
+            {filteredAndSortedUsers.map((user, index) => (
               <TableRow key={user._id || `user-${index}`}>
                 <TableCell>{index + 1}</TableCell>
                 <TableCell>{user.name}</TableCell>
                 <TableCell>{user.email}</TableCell>
-                <TableCell>{user.subscription?.name}</TableCell>
+                <TableCell>
+                  {user.subscription ? user.subscription?.name : "Free"}
+                </TableCell>
                 <TableCell>
                   <Button
                     variant="contained"
