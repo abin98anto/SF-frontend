@@ -14,8 +14,9 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Switch,
 } from "@mui/material";
-import { Edit, Delete, Add } from "@mui/icons-material";
+import { Edit, Add } from "@mui/icons-material";
 
 import SubscriptionModal from "./SubscriptionModal/SubscriptionModal";
 import "./SubsManagement.scss";
@@ -30,11 +31,13 @@ const SubsManagement: React.FC = () => {
   const [subscriptions, setSubscriptions] = useState<SubscriptionPlan[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [toggleModalOpen, setToggleModalOpen] = useState(false);
   const [selectedSubscription, setSelectedSubscription] = useState<
     string | null
   >(null);
   const [editMode, setEditMode] = useState(false);
+  const [currentToggleStatus, setCurrentToggleStatus] =
+    useState<boolean>(false);
 
   const handleOpenModal = (mode: "add" | "edit", subscriptionId?: string) => {
     setEditMode(mode === "edit");
@@ -51,10 +54,7 @@ const SubsManagement: React.FC = () => {
   const fetchSubscriptions = async () => {
     try {
       const response = await axiosInstance.get(API_ENDPOINTS.SUBS);
-      const activeSubscriptions = response.data.data.filter(
-        (subscription: SubscriptionPlan) => subscription.isActive
-      );
-      setSubscriptions(activeSubscriptions);
+      setSubscriptions(response.data.data);
     } catch (error) {
       console.error(someMessages.SUBS_FETCH_FAIL, error);
     } finally {
@@ -67,27 +67,31 @@ const SubsManagement: React.FC = () => {
     handleCloseModal();
   };
 
-  const handleDeleteClick = (subscriptionId: string) => {
+  const handleToggleClick = (subscriptionId: string, isActive: boolean) => {
     setSelectedSubscription(subscriptionId);
-    setDeleteModalOpen(true);
+    setCurrentToggleStatus(isActive);
+    setToggleModalOpen(true);
   };
 
-  const handleCloseDeleteModal = () => {
-    setDeleteModalOpen(false);
+  const handleCloseToggleModal = () => {
+    setToggleModalOpen(false);
     setSelectedSubscription(null);
   };
 
-  const handleConfirmDelete = async () => {
+  const handleConfirmToggle = async () => {
     if (!selectedSubscription) return;
 
     try {
-      await axiosInstance.delete(
-        `/admin/delete-subscription?id=${selectedSubscription}`
+      await axiosInstance.put(
+        `/admin/delete-subscription?id=${selectedSubscription}`,
+        {
+          isActive: !currentToggleStatus,
+        }
       );
-      await fetchSubscriptions();
-      handleCloseDeleteModal();
+      await fetchSubscriptions(); // Refresh the list after toggling
+      handleCloseToggleModal();
     } catch (error) {
-      console.error(someMessages.SUBS_DEL_FAIL, error);
+      console.error("Failed to toggle subscription status:", error);
     }
   };
 
@@ -128,6 +132,7 @@ const SubsManagement: React.FC = () => {
                 <TableCell>Name</TableCell>
                 <TableCell>Monthly Price</TableCell>
                 <TableCell>Discount Price</TableCell>
+                <TableCell>Active</TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
@@ -137,7 +142,23 @@ const SubsManagement: React.FC = () => {
                   <TableCell>{index + 1}</TableCell>
                   <TableCell>{subscription.name}</TableCell>
                   <TableCell>${subscription.price}</TableCell>
-                  <TableCell>{subscription.discountPrice}</TableCell>
+                  <TableCell>
+                    {subscription.discountPrice
+                      ? `$${subscription.discountPrice}`
+                      : "-"}
+                  </TableCell>
+                  <TableCell>
+                    <Switch
+                      checked={subscription.isActive}
+                      onChange={() =>
+                        handleToggleClick(
+                          subscription._id!,
+                          subscription.isActive!
+                        )
+                      }
+                      color="primary"
+                    />
+                  </TableCell>
                   <TableCell>
                     <IconButton
                       color="primary"
@@ -145,13 +166,6 @@ const SubsManagement: React.FC = () => {
                       onClick={() => handleOpenModal("edit", subscription._id)}
                     >
                       <Edit />
-                    </IconButton>
-                    <IconButton
-                      color="secondary"
-                      aria-label="delete"
-                      onClick={() => handleDeleteClick(subscription._id!)}
-                    >
-                      <Delete />
                     </IconButton>
                   </TableCell>
                 </TableRow>
@@ -161,24 +175,30 @@ const SubsManagement: React.FC = () => {
         )}
       </TableContainer>
 
-      {/* Delete Confirmation Modal */}
+      {/* Toggle Confirmation Modal */}
       <Dialog
-        open={deleteModalOpen}
-        onClose={handleCloseDeleteModal}
-        aria-labelledby="delete-dialog-title"
+        open={toggleModalOpen}
+        onClose={handleCloseToggleModal}
+        aria-labelledby="toggle-dialog-title"
       >
-        <DialogTitle id="delete-dialog-title">Confirm Unlist</DialogTitle>
+        <DialogTitle id="toggle-dialog-title">
+          Confirm {currentToggleStatus ? "Unlist" : "List"} Subscription
+        </DialogTitle>
         <DialogContent>
-          Are you sure you want to unlist this subscription? 
+          Are you sure you want to {currentToggleStatus ? "unlist" : "list"}{" "}
+          this subscription?
           <br />
-          This action cannot be undone.
+          This action{" "}
+          {currentToggleStatus
+            ? "will make the subscription inactive."
+            : "will make the subscription active."}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDeleteModal} color="primary">
+          <Button onClick={handleCloseToggleModal} color="primary">
             Cancel
           </Button>
-          <Button onClick={handleConfirmDelete} color="secondary" autoFocus>
-            Delete
+          <Button onClick={handleConfirmToggle} color="secondary" autoFocus>
+            Confirm
           </Button>
         </DialogActions>
       </Dialog>

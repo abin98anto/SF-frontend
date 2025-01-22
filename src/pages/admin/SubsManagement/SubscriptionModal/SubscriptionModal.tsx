@@ -15,6 +15,17 @@ interface SubscriptionModalProps {
   subscriptionId?: string;
 }
 
+interface Subscription {
+  _id: string;
+  name: string;
+  description: string;
+  features: string[];
+  price: number;
+  discountPrice?: number;
+  discountValidUntil?: Date;
+  isActive: boolean;
+}
+
 const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
   isOpen,
   onClose,
@@ -24,10 +35,20 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
 }) => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [features, setFeatures] = useState("");
+  const [selectedFeatures, setSelectedFeatures] = useState<string[]>([]);
   const [monthlyPrice, setMonthlyPrice] = useState("");
   const [discount, setDiscount] = useState("");
   const [discountValidUntil, setDiscountValidUntil] = useState("");
+  const [allSubscriptions, setAllSubscriptions] = useState<Subscription[]>([]);
+
+  const featureOptions = [
+    "Browse Courses",
+    "View Syllabus",
+    "Take any course",
+    "Chat with tutor",
+    "1 on 1 session with tutor",
+    "Get certified",
+  ];
 
   const minDate = useMemo(() => {
     const tomorrow = new Date();
@@ -38,11 +59,10 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
   const resetFields = () => {
     setName("");
     setDescription("");
-    setFeatures("");
+    setSelectedFeatures([]);
     setMonthlyPrice("");
     setDiscount("");
     setDiscountValidUntil("");
-    // No need to reset SweetAlert state
   };
 
   const fetchSubscriptionDetails = async () => {
@@ -54,7 +74,7 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
         const subscription = response.data.data;
         setName(subscription.name);
         setDescription(subscription.description);
-        setFeatures(subscription.features.join(", "));
+        setSelectedFeatures(subscription.features);
         setMonthlyPrice(subscription.price.toString());
         setDiscount(subscription.discountPrice?.toString() || "");
         setDiscountValidUntil(
@@ -71,10 +91,23 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
     }
   };
 
+  const fetchAllSubscriptions = async () => {
+    try {
+      const response = await axiosInstance.get("/admin/subscriptions");
+      setAllSubscriptions(response.data.data);
+    } catch (error) {
+      console.error("Failed to fetch subscriptions:", error);
+      showMessage("Failed to fetch subscriptions");
+    }
+  };
+
   useEffect(() => {
-    if (isOpen && editMode && subscriptionId) {
-      fetchSubscriptionDetails();
-    } else if (!isOpen) {
+    if (isOpen) {
+      fetchAllSubscriptions();
+      if (editMode && subscriptionId) {
+        fetchSubscriptionDetails();
+      }
+    } else {
       resetFields();
     }
   }, [isOpen, editMode, subscriptionId]);
@@ -100,16 +133,28 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
     });
   };
 
+  const isNameUnique = (name: string) => {
+    return !allSubscriptions.some(
+      (sub) =>
+        sub.name.toLowerCase() === name.toLowerCase() &&
+        sub._id !== subscriptionId
+    );
+  };
+
   const validateForm = () => {
     if (!name.trim()) {
       showMessage(someMessages.NAME_REQ);
+      return false;
+    }
+    if (!isNameUnique(name)) {
+      showMessage("Subscription name must be unique.");
       return false;
     }
     if (!description.trim()) {
       showMessage(someMessages.DESCRIPTION_RQ);
       return false;
     }
-    if (!features.trim()) {
+    if (selectedFeatures.length === 0) {
       showMessage(someMessages.ADD_FEATURE);
       return false;
     }
@@ -132,6 +177,14 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
     return true;
   };
 
+  const handleFeatureChange = (feature: string) => {
+    setSelectedFeatures((prev) =>
+      prev.includes(feature)
+        ? prev.filter((f) => f !== feature)
+        : [...prev, feature]
+    );
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -140,14 +193,17 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
     }
 
     try {
+      // Set discountPrice to 0 if the discount input is empty
+      const discountPrice = discount ? Number.parseFloat(discount) : 0;
+
       const subscriptionData = {
         name,
         description,
-        features: features.split(",").map((feature) => feature.trim()),
+        features: selectedFeatures,
         price: Number.parseFloat(monthlyPrice),
-        discountPrice: discount ? Number.parseFloat(discount) : undefined,
+        discountPrice: discountPrice, // Use the calculated discountPrice
         discountValidUntil:
-          discountValidUntil && Number.parseFloat(discount) > 0
+          discountPrice > 0 && discountValidUntil
             ? new Date(discountValidUntil)
             : undefined,
         isActive: true,
@@ -211,13 +267,20 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
               />
             </div>
             <div className="subs-form-group">
-              <label htmlFor="features">Features (comma-separated)</label>
-              <input
-                type="text"
-                id="features"
-                value={features}
-                onChange={(e) => setFeatures(e.target.value)}
-              />
+              <label>Features</label>
+              <div className="subs-features-checkbox-group">
+                {featureOptions.map((feature) => (
+                  <label key={feature} className="subs-feature-checkbox">
+                    <input
+                      type="checkbox"
+                      value={feature}
+                      checked={selectedFeatures.includes(feature)}
+                      onChange={() => handleFeatureChange(feature)}
+                    />
+                    {feature}
+                  </label>
+                ))}
+              </div>
             </div>
             <div className="subs-form-group">
               <label htmlFor="monthlyPrice">Monthly Price</label>
