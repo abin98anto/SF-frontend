@@ -21,6 +21,7 @@ import {
   FormControl,
   InputLabel,
   type SelectChangeEvent,
+  Typography,
 } from "@mui/material";
 
 import { useAppDispatch } from "../../../hooks/hooks";
@@ -35,6 +36,7 @@ import type { AppRootState } from "../../../redux/store";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../../utils/axiosConfig";
+import "./UserManagement.scss"
 
 interface Subscription {
   isActive: any;
@@ -83,7 +85,6 @@ const UserManagement: React.FC = () => {
   const fetchSubscriptions = async () => {
     try {
       const response = await axiosInstance.get("/admin/subscriptions");
-      console.log("the response in fetch subs", response);
       const result = response.data.data.filter(
         (subs: Subscription) => subs.isActive !== false
       );
@@ -160,74 +161,108 @@ const UserManagement: React.FC = () => {
   }
 
   return (
-    <>
-      <h1>User Management</h1>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          marginBottom: "1rem",
+    <div className="user-management">
+      <div className="header-section">
+        <Typography variant="h4" className="title">
+          User Management
+        </Typography>
+        
+        <div className="controls">
+          <TextField
+            label="Search users"
+            variant="outlined"
+            size="small"
+            value={searchTerm}
+            onChange={handleSearchChange}
+            sx={{
+              width: 300,
+              backgroundColor: '#fff',
+              borderRadius: '4px',
+              '& .MuiOutlinedInput-root': {
+                borderRadius: '8px',
+              },
+            }}
+          />
+
+          <FormControl sx={{ width: 200 }} size="small">
+            <InputLabel>Filter by</InputLabel>
+            <Select
+              value={sortBy}
+              onChange={handleSortChange}
+              label="Filter by"
+              sx={{
+                backgroundColor: '#fff',
+                borderRadius: '8px',
+              }}
+            >
+              <MenuItem value="all">All Users</MenuItem>
+              <MenuItem value="free">Free Tier</MenuItem>
+              {subscriptions.map((subscription) => (
+                <MenuItem
+                  key={subscription._id}
+                  value={subscription.name.toLowerCase()}
+                >
+                  {subscription.name} Plan
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </div>
+      </div>
+
+      <TableContainer 
+        component={Paper}
+        sx={{
+          borderRadius: '12px',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+          border: '1px solid #e0e0e0',
         }}
       >
-        <TextField
-          label="Search users"
-          variant="outlined"
-          value={searchTerm}
-          onChange={handleSearchChange}
-        />
-        <FormControl variant="outlined" style={{ minWidth: 120 }}>
-          <InputLabel id="sort-select-label">Sort by</InputLabel>
-          <Select
-            labelId="sort-select-label"
-            value={sortBy}
-            onChange={handleSortChange}
-            label="Sort by"
-          >
-            <MenuItem value="all">All</MenuItem>
-            <MenuItem value="free">Free</MenuItem>
-            {subscriptions.map((subscription) => (
-              <MenuItem
-                key={subscription._id}
-                value={subscription.name.toLowerCase()}
-              >
-                {subscription.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </div>
-      <TableContainer component={Paper}>
         <Table>
-          <TableHead>
+          <TableHead sx={{ backgroundColor: '#f5f5f5' }}>
             <TableRow>
-              <TableCell>Sl No.</TableCell>
-              <TableCell>Name</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell>Subscription Type</TableCell>
-              <TableCell>Actions</TableCell>
+              <TableCell sx={{ fontWeight: 600 }}>Sl No.</TableCell>
+              <TableCell sx={{ fontWeight: 600 }}>Name</TableCell>
+              <TableCell sx={{ fontWeight: 600 }}>Email</TableCell>
+              <TableCell sx={{ fontWeight: 600 }}>Subscription</TableCell>
+              <TableCell sx={{ fontWeight: 600 }}>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {filteredAndSortedUsers.map((user, index) => (
-              <TableRow key={user._id || `user-${index}`}>
+              <TableRow 
+                key={user._id}
+                sx={{ '&:hover': { backgroundColor: '#fafafa' } }}
+              >
                 <TableCell>{index + 1}</TableCell>
-                <TableCell>{user.name}</TableCell>
+                <TableCell sx={{ fontWeight: 500 }}>{user.name}</TableCell>
                 <TableCell>{user.email}</TableCell>
                 <TableCell>
-                  {user.subscription ? user.subscription?.name : "Free"}
+                  <span className="subscription-badge">
+                    {user.subscription?.name || 'Free'}
+                  </span>
                 </TableCell>
                 <TableCell>
                   <Button
                     variant="contained"
-                    color={user.isActive ? "primary" : "secondary"}
+                    color={user.isActive ? 'error' : 'success'}
+                    size="small"
                     onClick={() =>
                       handleOpenDialog(
                         user._id as string,
-                        user.isActive ? "block" : "unblock"
+                        user.isActive ? 'block' : 'unblock'
                       )
                     }
+                    sx={{
+                      textTransform: 'none',
+                      borderRadius: '6px',
+                      boxShadow: 'none',
+                      '&:hover': {
+                        boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+                      }
+                    }}
                   >
-                    {user.isActive ? "Block" : "Unblock"}
+                    {user.isActive ? 'Block User' : 'Unblock User'}
                   </Button>
                 </TableCell>
               </TableRow>
@@ -259,7 +294,7 @@ const UserManagement: React.FC = () => {
           </Button>
         </DialogActions>
       </Dialog>
-    </>
+    </div>
   );
 };
 

@@ -1,36 +1,74 @@
-.student-management {
-  background-color: #333;
-  color: #fff;
-  padding: 20px;
+// UserManagement.scss
+.user-management {
+  padding: 32px;
+  background-color: #646464;
+  min-height: 100vh;
 
-  .ant-table {
-    background-color: #333;
-    color: #fff;
+  .header-section {
+    margin-bottom: 24px;
+    padding: 16px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 
-    .ant-table-thead > tr > th {
-      background-color: #444;
-      color: #fff;
-      border-bottom: 1px solid #555;
+    .title {
+      color: #2d3436;
+      font-weight: 700;
+      margin-bottom: 24px;
+      font-family: 'Inter', sans-serif;
+      letter-spacing: -0.5px;
+      font-size: 1.8rem;
     }
 
-    .ant-table-tbody > tr > td {
-      border-bottom: 1px solid #444;
-    }
-
-    .ant-btn-primary.ant-btn-dangerous {
-      background-color: #f56c6c;
-      border-color: #f56c6c;
+    .controls {
+      display: flex;
+      gap: 16px;
+      align-items: center;
     }
   }
-}
-.um-heading {
-  font-size: 2rem;
-  color: white;
-  font-family: "Courier New", Courier, monospace;
-  text-align: center;
-  position: sticky;
-  top: 0;
-  background-color: #333;
-  z-index: 10;
-  padding: 10px 0;
+
+  .subscription-badge {
+    background-color: #e3f2fd;
+    color: #1976d2;
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  .MuiTable-root {
+    border-collapse: separate;
+    border-spacing: 0 8px;
+
+    thead {
+      th {
+        font-weight: 600;
+        color: #2d3436;
+        padding: 16px 24px;
+        border-bottom: 2px solid #e0e0e0;
+      }
+    }
+
+    tbody {
+      td {
+        padding: 16px 24px;
+        color: #424242;
+        border-bottom: 1px solid #eeeeee;
+        background: white;
+      }
+
+      tr {
+        transition: background-color 0.2s ease;
+        
+        &:not(:last-child) {
+          margin-bottom: 8px;
+        }
+      }
+    }
+  }
+
+  .MuiButton-root {
+    font-weight: 500;
+    letter-spacing: 0.5px;
+  }
 }
