@@ -7,7 +7,7 @@ import {
 import UserLayout from "./components/layout/UserLayout/UserLayout";
 import LandingPage from "./pages/user/LandingPage/LandingPage";
 import CoursePage from "./pages/user/CoursesPage/CoursesPage";
-import AboutPage from "./pages/user/MyLearningPage/MyLearningPage";
+// import AboutPage from "./pages/user/MyLearningPage/MyLearningPage";
 import SubscriptionPage from "./pages/user/SubscriptionPage/SubscriptionPage";
 import SignupPage from "./pages/user/SignupPage/SignupPage";
 import LoginPage from "./pages/user/LoginPage/LoginPage";
@@ -37,6 +37,7 @@ import { EditCourse } from "./pages/admin/CourseManagement/EditCourse/EditCourse
 import EnrolledPage from "./pages/user/EnrolledPage/EnrolledPage";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import NotFound from "./pages/404Page/404Page";
+import MyLearningPage from "./pages/user/MyLearningPage/MyLearningPage";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -47,9 +48,9 @@ const router = createBrowserRouter(
         <Route path="/login" element={<LoginPage />} />
         <Route path="/courses" element={<CoursePage />} />
         <Route path="/course/:id" element={<CourseDetailsPage />} />
-        <Route path="/about" element={<AboutPage />} />
         <Route path="/subscriptions" element={<SubscriptionPage />} />
         <Route path="/course-enrolled" element={<EnrolledPage />} />
+        <Route path="/my-learning" element={<MyLearningPage />} />
       </Route>
 
       <Route path="/tutor">
