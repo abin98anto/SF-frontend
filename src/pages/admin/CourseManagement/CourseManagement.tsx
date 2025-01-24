@@ -37,7 +37,7 @@ export default function CoursesTable() {
   const [error, setError] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
-  const itemsPerPage = 5;
+  const itemsPerPage = 7;
 
   const { isAuthenticated } = useSelector(
     (state: AppRootState) => state.adminLogin
@@ -72,7 +72,7 @@ export default function CoursesTable() {
         })
       );
 
-      setCourses(transformedCourses);
+      setCourses(transformedCourses.reverse());
     } catch (err) {
       console.error(someMessages.COURSE_FETCH_FAIL, err);
       setError(

@@ -5,16 +5,28 @@ import { ProgressSteps } from "../AddCourse/components/progress-steps";
 import { BasicInformation } from "../AddCourse/components/basic-information";
 import { AdvanceInformation } from "../AddCourse/components/advance-information";
 import { Curriculum } from "../AddCourse/components/curriculum";
-import { FormData, CurriculumSection } from "../AddCourse/form-types";
+import type { FormData, CurriculumSection } from "../AddCourse/form-types";
 import { API_ENDPOINTS, someMessages } from "../../../../utils/constants";
+import {
+  FormContainer,
+  Header,
+  FormSection,
+  ButtonGroup,
+  Button,
+  SnackbarContainer,
+} from "../AddCourse/StyledComponents";
+import { ConfirmationModal } from "../AddCourse/components/ConfirmationModal";
 
 export function EditCourse() {
   const location = useLocation();
   const navigate = useNavigate();
   const courseId = location.state?.courseId;
 
+  const [showCancelModal, setShowCancelModal] = useState(false);
+
   const [currentStep, setCurrentStep] = useState(1);
   const [error, setError] = useState<string | null>(null);
+  const [isSnackbarVisible, setIsSnackbarVisible] = useState(false);
   const [formData, setFormData] = useState<FormData>({
     basicInfo: {
       title: "",
@@ -117,6 +129,11 @@ export function EditCourse() {
   };
 
   const handleCancel = () => {
+    setShowCancelModal(true);
+  };
+
+  const handleConfirmCancel = () => {
+    setShowCancelModal(false);
     navigate(API_ENDPOINTS.COURSE_M);
   };
 
@@ -155,7 +172,11 @@ export function EditCourse() {
         courseData
       );
       localStorage.removeItem("courseFormData");
-      navigate(API_ENDPOINTS.COURSE_M);
+      setIsSnackbarVisible(true);
+      setTimeout(() => {
+        setIsSnackbarVisible(false);
+        navigate(API_ENDPOINTS.COURSE_M);
+      }, 3000);
     } catch (error) {
       console.error(someMessages.COURSE_UPDATE_FAIL, error);
       setError(someMessages.COURSE_UPDATE_FAIL);
@@ -164,61 +185,86 @@ export function EditCourse() {
 
   if (!courseId) {
     return (
-      <div className="error">
-        No course ID provided. Please go back and try again.
-      </div>
+      <FormContainer>
+        <Header>
+          <h1>Error</h1>
+        </Header>
+        <FormSection>
+          <div className="error">
+            No course ID provided. Please go back and try again.
+          </div>
+        </FormSection>
+      </FormContainer>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">Edit Course</h1>
+    <FormContainer>
+      <Header>
+        <h1>Edit Course</h1>
+      </Header>
       <ProgressSteps currentStep={currentStep} />
-      {error && (
-        <div
-          className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
-          role="alert"
-        >
-          {error}
-        </div>
-      )}
-      {currentStep === 1 && (
-        <BasicInformation
-          data={formData.basicInfo}
-          onUpdate={(data) => handleUpdate("basicInfo", data)}
-          onNext={handleNext}
-          onCancel={handleCancel}
-          setError={setError}
-        />
-      )}
-      {currentStep === 2 && (
-        <AdvanceInformation
-          data={formData.advanceInfo}
-          onUpdate={(data) => handleUpdate("advanceInfo", data)}
-          onNext={handleNext}
-          onPrevious={handlePrevious}
-          onCancel={handleCancel}
-          setError={setError}
-        />
-      )}
-      {currentStep === 3 && (
-        <Curriculum
-          data={formData.curriculum}
-          onUpdate={(data) => handleUpdate("curriculum", data)}
-          onPrevious={handlePrevious}
-          onCancel={handleCancel}
-          setError={setError}
-          courseFormData={formData}
-        />
-      )}
-      {currentStep === 3 && (
-        <button
-          onClick={handleSubmit}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4"
-        >
-          Update Course
-        </button>
-      )}
-    </div>
+      <FormSection>
+        {error && (
+          <div
+            className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
+            role="alert"
+          >
+            {error}
+          </div>
+        )}
+        {currentStep === 1 && (
+          <BasicInformation
+            data={formData.basicInfo}
+            onUpdate={(data) => handleUpdate("basicInfo", data)}
+            onNext={handleNext}
+            onCancel={handleCancel}
+            setError={setError}
+          />
+        )}
+        {currentStep === 2 && (
+          <AdvanceInformation
+            data={formData.advanceInfo}
+            onUpdate={(data) => handleUpdate("advanceInfo", data)}
+            onNext={handleNext}
+            onPrevious={handlePrevious}
+            onCancel={handleCancel}
+            setError={setError}
+          />
+        )}
+        {currentStep === 3 && (
+          <Curriculum
+            data={formData.curriculum}
+            onUpdate={(data) => handleUpdate("curriculum", data)}
+            onPrevious={handlePrevious}
+            onCancel={handleCancel}
+            setError={setError}
+            courseFormData={formData}
+            isEditing={true}
+          />
+        )}
+        {currentStep === 3 && (
+          <ButtonGroup>
+            <Button $secondary onClick={() => setShowCancelModal(true)}>
+              Cancel
+            </Button>
+            <Button $primary onClick={handleSubmit}>
+              Update Course
+            </Button>
+          </ButtonGroup>
+        )}
+      </FormSection>
+      <SnackbarContainer $isVisible={isSnackbarVisible}>
+        Course updated successfully!
+      </SnackbarContainer>
+
+      <ConfirmationModal
+        isOpen={showCancelModal}
+        onClose={() => setShowCancelModal(false)}
+        onConfirm={handleConfirmCancel}
+        title="Discard Changes"
+        message="Are you sure you want to discard all changes to this course?"
+      />
+    </FormContainer>
   );
 }

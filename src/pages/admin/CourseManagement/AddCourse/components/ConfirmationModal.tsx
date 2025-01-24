@@ -30,12 +30,8 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
         <ModalTitle>{title}</ModalTitle>
         <p>{message}</p>
         <ModalButtonGroup>
-          <Button onClick={onClose}>
-            Cancel
-          </Button>
-          <Button onClick={onConfirm}>
-            Confirm
-          </Button>
+          <Button onClick={onClose}>Cancel</Button>
+          <Button onClick={onConfirm}>Confirm</Button>
         </ModalButtonGroup>
       </ModalContent>
     </ModalOverlay>

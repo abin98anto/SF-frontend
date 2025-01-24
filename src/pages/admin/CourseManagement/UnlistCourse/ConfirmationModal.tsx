@@ -19,17 +19,17 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-header">
+    <div className="cm-modal-overlay" onClick={onClose}>
+      <div className="cm-modal-content" onClick={(e) => e.stopPropagation()}>
+        <div className="cm-modal-header">
           <h2>{title}</h2>
         </div>
-        <div className="modal-body">{message}</div>
-        <div className="modal-footer">
-          <button className="cancel-btn" onClick={onClose}>
+        <div className="cm-modal-body">{message}</div>
+        <div className="cm-modal-footer">
+          <button className="cm-cancel-btn" onClick={onClose}>
             Cancel
           </button>
-          <button className="confirm-btn" onClick={onConfirm}>
+          <button className="cm-confirm-btn" onClick={onConfirm}>
             Yes, Continue
           </button>
         </div>

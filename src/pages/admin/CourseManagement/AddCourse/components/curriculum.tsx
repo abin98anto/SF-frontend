@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import type React from "react";
+import { useState, useEffect } from "react";
 import {
   EditIcon,
   TrashIcon,
@@ -35,6 +36,7 @@ import {
 import axiosInstance from "../../../../../utils/axiosConfig";
 import { useNavigate } from "react-router-dom";
 import { API_ENDPOINTS, someMessages } from "../../../../../utils/constants";
+import "../course-form.scss";
 
 interface CurriculumProps {
   data: Curriculum;
@@ -43,6 +45,7 @@ interface CurriculumProps {
   onCancel: () => void;
   setError: (error: string) => void;
   courseFormData: FormData;
+  isEditing?: boolean;
 }
 
 export function Curriculum({
@@ -52,6 +55,7 @@ export function Curriculum({
   onCancel,
   setError,
   courseFormData,
+  isEditing,
 }: CurriculumProps) {
   const navigate = useNavigate();
   const [sections, setSections] = useState<CurriculumSection[]>(
@@ -384,7 +388,7 @@ export function Curriculum({
 
       <StyledCurriculumSection>
         {sections.map((section: CurriculumSection) => (
-          <div key={section.id} className="section-item">
+          <div key={section.id} className="curriculum-section">
             <div className="section-header">
               <h3>
                 Section {String(section.id).padStart(2, "0")}: {section.name}
@@ -403,7 +407,7 @@ export function Curriculum({
                 </button>
               </div>
             </div>
-            {section.lectures.map((lecture) => (
+            {section.lectures.map((lecture, index) => (
               <div key={lecture.id} className="lecture-item">
                 <div
                   style={{
@@ -412,7 +416,9 @@ export function Curriculum({
                     gap: "0.5rem",
                   }}
                 >
-                  <span>{lecture.name}</span>
+                  <span>
+                    Lecture {String(index + 1).padStart(2, "0")}: {lecture.name}
+                  </span>
                 </div>
                 <div style={{ display: "flex", gap: "0.5rem" }}>
                   <button
@@ -682,17 +688,19 @@ export function Curriculum({
         </ModalOverlay>
       )}
 
-      <ButtonGroup>
-        <div>
-          <Button onClick={onCancel} style={{ marginRight: "1rem" }}>
-            Cancel
+      {!isEditing && (
+        <ButtonGroup>
+          <div>
+            <Button onClick={onCancel} style={{ marginRight: "1rem" }}>
+              Cancel
+            </Button>
+            <Button onClick={onPrevious}>Back</Button>
+          </div>
+          <Button onClick={handlePublish} disabled={publishing}>
+            {publishing ? someMessages.PUBLISHING : someMessages.COURSE_PUB}
           </Button>
-          <Button onClick={onPrevious}>Back</Button>
-        </div>
-        <Button onClick={handlePublish} disabled={publishing}>
-          {publishing ? someMessages.PUBLISHING : someMessages.COURSE_PUB}
-        </Button>
-      </ButtonGroup>
+        </ButtonGroup>
+      )}
     </FormSection>
   );
 }

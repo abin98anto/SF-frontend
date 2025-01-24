@@ -1,4 +1,4 @@
-.modal-overlay {
+.cm-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -11,7 +11,7 @@
   z-index: 1000;
 }
 
-.modal-content {
+.cm-modal-content {
   background: #333;
   padding: 2rem;
   border-radius: 8px;
@@ -20,7 +20,7 @@
   position: relative;
   color: white;
 
-  .modal-header {
+  .cm-modal-header {
     margin-bottom: 1.5rem;
 
     h2 {
@@ -30,13 +30,13 @@
     }
   }
 
-  .modal-body {
+  .cm-modal-body {
     margin-bottom: 1.5rem;
     font-size: 1rem;
     line-height: 1.5;
   }
 
-  .modal-footer {
+  .cm-modal-footer {
     display: flex;
     justify-content: flex-end;
     gap: 1rem;
@@ -48,7 +48,7 @@
       cursor: pointer;
       border: none;
 
-      &.confirm-btn {
+      &.cm-confirm-btn {
         background-color: #ff5722;
         color: white;
 
@@ -57,7 +57,7 @@
         }
       }
 
-      &.cancel-btn {
+      &.cm-cancel-btn {
         background-color: #4a4a4a;
         color: white;
 
