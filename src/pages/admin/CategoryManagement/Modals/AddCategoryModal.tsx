@@ -39,16 +39,16 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({
   };
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-content">
-        <div className="modal-header">
+    <div className="catm-modal-overlay">
+      <div className="catm-modal-content">
+        <div className="catm-modal-header">
           <h2>Add New Category</h2>
-          <button onClick={onClose} className="close-button">
+          <button onClick={onClose} className="catm-close-button">
             <X />
           </button>
         </div>
-        <form className="modal-form" onSubmit={handleSubmit}>
-          <div className="form-group">
+        <form className="catm-modal-form" onSubmit={handleSubmit}>
+          <div className="catm-form-group">
             <label htmlFor="categoryName">Category Name</label>
             <input
               type="text"
@@ -60,17 +60,21 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({
               placeholder="Enter category name"
             />
           </div>
-          {error && <div className="error-message">{error}</div>}
-          <div className="modal-footer">
+          {error && <div className="catm-error-message">{error}</div>}
+          <div className="catm-modal-footer">
             <button
               type="button"
               onClick={onClose}
-              className="cancel-button"
+              className="catm-cancel-button"
               disabled={isLoading}
             >
               Cancel
             </button>
-            <button type="submit" className="add-button" disabled={isLoading}>
+            <button
+              type="submit"
+              className="catm-add-button"
+              disabled={isLoading}
+            >
               {isLoading ? "Adding..." : "Add Category"}
             </button>
           </div>

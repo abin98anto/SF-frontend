@@ -53,11 +53,11 @@ const EditCategoryModal = ({
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-content">
+    <div className="catm-modal-overlay">
+      <div className="catm-modal-content">
         <h2>Edit Category</h2>
         <form onSubmit={handleSubmit}>
-          <div className="form-group">
+          <div className="catm-form-group">
             <label htmlFor="categoryName">Category Name</label>
             <input
               type="text"
@@ -68,8 +68,8 @@ const EditCategoryModal = ({
               required
             />
           </div>
-          <div className="form-group">
-            <label className="checkbox-label">
+          <div className="catm-form-group">
+            <label className="catm-checkbox-label">
               <input
                 type="checkbox"
                 checked={isActive}
@@ -78,19 +78,19 @@ const EditCategoryModal = ({
               Active Status
             </label>
           </div>
-          {error && <div className="error-message">{error}</div>}
-          <div className="modal-actions">
+          {error && <div className="catm-error-message">{error}</div>}
+          <div className="catm-modal-actions">
             <button
               type="button"
               onClick={onClose}
-              className="cancel-button"
+              className="catm-cancel-button"
               disabled={isSubmitting}
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="submit-button"
+              className="catm-submit-button"
               disabled={isSubmitting}
             >
               {isSubmitting ? "Updating..." : "Update Category"}
