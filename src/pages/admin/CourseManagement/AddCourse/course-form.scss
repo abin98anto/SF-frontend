@@ -184,10 +184,6 @@ $dark-bg: #464646;
     color: white;
     border: 1px solid rgba(255, 255, 255, 0.1);
 
-    &:hover {
-      background: lighten($dark-bg, 5%);
-    }
-
     button {
       color: white;
       padding: 0.25rem;
