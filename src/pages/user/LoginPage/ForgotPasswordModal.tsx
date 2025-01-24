@@ -218,6 +218,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
               onChange={(e) => setOtp(e.target.value)}
               className="fp-input"
               disabled={settingPassword}
+              maxLength={6}
             />
             <input
               type="password"

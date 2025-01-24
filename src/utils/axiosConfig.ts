@@ -11,7 +11,6 @@ export const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   (config) => {
-    // console.log("Outgoing request:", config);
     config.withCredentials = true;
     return config;
   },
@@ -27,13 +26,14 @@ axiosInstance.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
+      if (originalRequest.url.includes("/login")) {
+        return Promise.reject(error);
+      }
+
       try {
-        // console.log("Refreshing access token...");
         await axiosInstance.post("/refresh-token");
         return axiosInstance(originalRequest);
       } catch (refreshError) {
-        // console.error("Failed to refresh token, redirecting to login...");
-        // window.location.href = "/login";
         return Promise.reject(refreshError);
       }
     }

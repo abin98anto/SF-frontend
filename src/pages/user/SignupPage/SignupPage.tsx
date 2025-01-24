@@ -357,6 +357,7 @@ const SignupPage: React.FC = () => {
             fullWidth
             label="OTP"
             value={otpValue}
+            inputProps={{ maxLength: 6 }}
             onChange={(e) => setOtpValue(e.target.value)}
             sx={{ mt: 2 }}
           />
@@ -389,7 +390,7 @@ const SignupPage: React.FC = () => {
           </Button>
         </Box>
       </Modal>
-      ;{/* Error Snackbar */}
+      {/* Error Snackbar */}
       <Snackbar
         open={openErrorToast}
         autoHideDuration={6000}
