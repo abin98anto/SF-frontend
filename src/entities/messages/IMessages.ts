@@ -1,4 +1,4 @@
-export default interface Messages {
+export default interface IMessages {
   senderId: string;
   recieverId: string;
   content?: string;

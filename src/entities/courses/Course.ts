@@ -1,3 +1,5 @@
+import { UserDetails } from "../user/UserDetails";
+
 export interface Course {
   _id: any;
   isActive: unknown;
@@ -34,6 +36,7 @@ export interface Course {
       }>;
     }>;
   };
+  tutors: UserDetails[];
 }
 
 // export interface Lesson {
@@ -106,5 +109,6 @@ export interface ICourse {
     description: string;
   };
   curriculum: Section[];
+  tutors?: string[];
   isActive: Boolean;
 }
