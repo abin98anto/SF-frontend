@@ -74,7 +74,7 @@ export default function CoursesTable() {
 
     fetchCourses();
     fetchTutors();
-  }, []); // Added navigate to dependencies
+  }, []);
 
   const fetchTutors = async () => {
     try {
@@ -106,7 +106,7 @@ export default function CoursesTable() {
           language: course.basicInfo.language,
           createdAt: new Date(course.createdAt),
           updatedAt: new Date(course.updatedAt),
-          tutors: course.tutors.map((tutor) => tutor._id),
+          tutors: course.tutors,
         })
       );
 
@@ -245,7 +245,12 @@ export default function CoursesTable() {
                   <tr key={course.id}>
                     <td>{startIndex + index + 1}</td>
                     <td>{course.name}</td>
-                    <td>{course.description}</td>
+                    <td>
+                      {course.description.length > 50
+                        ? `${course.description.slice(0, 50)}...`
+                        : course.description}
+                    </td>
+
                     <td>
                       <span
                         className={`status-badge ${course.status.toLowerCase()}`}

@@ -1,8 +1,10 @@
-export default interface IMessages {
+export interface IMessage {
+  _id?: string;
+  chatId: string;
   senderId: string;
-  recieverId: string;
-  content?: string;
-  image?: string;
-  createdAt: Date;
+  receiverId: string;
+  content: string;
+  contentType: string;
   isRead: boolean;
+  timestamp: Date;
 }
