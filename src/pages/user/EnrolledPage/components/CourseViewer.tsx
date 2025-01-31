@@ -88,7 +88,7 @@ const CourseViewer: React.FC<CourseViewerProps> = ({ course }) => {
           />
         </div>
       </div>
-      <ChatBubble />
+      <ChatBubble courseId={course?._id as string} />
     </div>
   );
 };
