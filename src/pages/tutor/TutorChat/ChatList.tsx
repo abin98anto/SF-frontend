@@ -1,5 +1,4 @@
 import type React from "react";
-import { useEffect } from "react";
 import "./TutorChat.scss";
 import { UserDetails } from "../../../entities/user/UserDetails";
 import { Course } from "../../../entities/courses/Course";
@@ -19,8 +18,6 @@ interface ChatListProps {
 }
 
 const ChatList: React.FC<ChatListProps> = ({ chats, onChatSelect }) => {
-  useEffect(() => {
-  }, []);
   return (
     <div className="tutC-chat-list">
       {chats.map((chat: any) => (

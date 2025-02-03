@@ -44,10 +44,6 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
       <div className="tutC-message-list">
         {messages.length === 0 && <p>No messages yet</p>}
         {messages.map((message: IMessage) => {
-          console.log(
-            "meememmeme" + message.senderId + "  currd idd",
-            currentUserId
-          );
           const isSentByCurrentUser = message.senderId === currentUserId;
           return isSentByCurrentUser ? (
             <div key={message._id} className="tutC-message tutC-sent">

@@ -30,7 +30,7 @@ const TutorChat: React.FC = () => {
       const fetchResult = await axiosInstance.get(
         `/m/chats-list?userId=${userId}`
       );
-      console.log("fetcheddd", fetchResult.data);
+      // console.log("fetcheddd", fetchResult.data);
       setChats(fetchResult.data);
 
       setMessages(fetchResult.data.messages || []);
@@ -42,7 +42,7 @@ const TutorChat: React.FC = () => {
   useEffect(() => {
     if (userInfo) {
       fetchChatsList(userInfo._id as string);
-      console.log("the tutor ", userInfo.name);
+      // console.log("the tutor ", userInfo.name);
     }
   }, [userInfo]);
 
