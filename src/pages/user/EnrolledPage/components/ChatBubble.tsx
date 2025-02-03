@@ -1,13 +1,16 @@
-import type React from "react";
-import { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { X, MessageCircle } from "lucide-react";
+
 import "./ChatBubble.scss";
-import type { AppRootState } from "../../../../redux/store";
+import { AppRootState } from "../../../../redux/store";
 import { useAppSelector } from "../../../../hooks/hooks";
 import axiosInstance from "../../../../utils/axiosConfig";
+import { socket } from "../../../../utils/socketConfig";
 import { IMessage } from "../../../../entities/messages/IMessages";
 import { IChat } from "../../../../entities/messages/IChat";
-import { socket } from "../../../../utils/socketConfig";
+import { someMessages } from "../../../../utils/constants";
+import { useSnackbar } from "../../../../hooks/useSnackbar";
+import CustomSnackbar from "../../../../components/Snackbar/CustomSnackbar";
 
 interface ChatBubbleProps {
   courseId: string;
@@ -24,6 +27,7 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({ courseId }) => {
   const [tutorName, setTutorName] = useState<string | null>(null);
 
   const [unreadCount, setUnreadCount] = useState(0);
+  const { snackbar, showSnackbar, hideSnackbar } = useSnackbar();
 
   const fetchChat = async (courseId: string, userId: string) => {
     try {
@@ -35,7 +39,8 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({ courseId }) => {
       setTutorName(fetchResult.data.tutorId.name);
       setMessages(fetchResult.data.messages || []);
     } catch (error) {
-      console.error("Error fetching chat:", error);
+      console.error(someMessages.CHAT_FETCH_FAIL, error);
+      showSnackbar(someMessages.CHAT_FETCH_FAIL, "error");
     }
   };
 
@@ -58,7 +63,8 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({ courseId }) => {
         setMessages([...messages, newMsg]);
         setNewMessage("");
       } catch (error) {
-        console.error("Error sending message:", error);
+        console.error(someMessages.SND_MSG_FAIL, error);
+        showSnackbar(someMessages.SND_MSG_FAIL, "error");
       }
     }
   };
@@ -151,6 +157,12 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({ courseId }) => {
           </button>
         )}
       </div>
+      <CustomSnackbar
+        open={snackbar.open}
+        message={snackbar.message}
+        severity={snackbar.severity}
+        onClose={hideSnackbar}
+      />
     </>
   );
 };

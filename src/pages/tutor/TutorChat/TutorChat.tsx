@@ -1,9 +1,9 @@
-import type React from "react";
-import { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
+
+import "./TutorChat.scss";
 import ChatList from "./ChatList";
 import ChatWindow from "./ChatWindow";
 import MessageInput from "./MessageInput";
-import "./TutorChat.scss";
 import axiosInstance from "../../../utils/axiosConfig";
 import { useAppSelector } from "../../../hooks/hooks";
 import { AppRootState } from "../../../redux/store";
@@ -11,6 +11,9 @@ import { UserDetails } from "../../../entities/user/UserDetails";
 import { Course } from "../../../entities/courses/Course";
 import { IMessage } from "../../../entities/messages/IMessages";
 import { socket } from "../../../utils/socketConfig";
+import { someMessages } from "../../../utils/constants";
+import { useSnackbar } from "../../../hooks/useSnackbar";
+import CustomSnackbar from "../../../components/Snackbar/CustomSnackbar";
 
 interface Chat {
   _id: number;
@@ -24,25 +27,24 @@ const TutorChat: React.FC = () => {
   const { userInfo } = useAppSelector((state: AppRootState) => state.tutor);
   const [chats, setChats] = useState<Chat[]>([]);
   const [messages, setMessages] = useState<IMessage[]>([]);
+  const { snackbar, showSnackbar, hideSnackbar } = useSnackbar();
 
   const fetchChatsList = async (userId: string) => {
     try {
       const fetchResult = await axiosInstance.get(
         `/m/chats-list?userId=${userId}`
       );
-      // console.log("fetcheddd", fetchResult.data);
       setChats(fetchResult.data);
-
       setMessages(fetchResult.data.messages || []);
     } catch (error) {
-      console.error("Error fetching chats list:", error);
+      console.error(someMessages.CHATS_FETCH_FAIL, error);
+      showSnackbar(someMessages.CHATS_FETCH_FAIL, "error");
     }
   };
 
   useEffect(() => {
     if (userInfo) {
       fetchChatsList(userInfo._id as string);
-      // console.log("the tutor ", userInfo.name);
     }
   }, [userInfo]);
 
@@ -69,7 +71,8 @@ const TutorChat: React.FC = () => {
         await axiosInstance.post("/m/send-message", newMsg);
         setMessages([...messages, newMsg]);
       } catch (error) {
-        console.error("Error sending message:", error);
+        console.error(someMessages.SND_MSG_FAIL, error);
+        showSnackbar(someMessages.SND_MSG_FAIL, "error");
       }
     }
   };
@@ -107,6 +110,13 @@ const TutorChat: React.FC = () => {
         />
         <MessageInput onSendMessage={handleSendMessage} />
       </div>
+
+      <CustomSnackbar
+        open={snackbar.open}
+        message={snackbar.message}
+        severity={snackbar.severity}
+        onClose={hideSnackbar}
+      />
     </div>
   );
 };

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { X } from "lucide-react";
+
 import "./AddCategoryModal.scss";
 import axiosInstance from "../../../../utils/axiosConfig";
 import { API_ENDPOINTS, someMessages } from "../../../../utils/constants";

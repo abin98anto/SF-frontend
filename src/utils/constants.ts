@@ -139,6 +139,9 @@ export const someMessages = {
   FORGOT_PASS_THUNK_FAIL: "Forgot password thunk failed.",
   SET_PAS_THUNK_FAIL: "Set password thunik failed.",
   GOOGLE_NO_CRED: "No credential received from Google",
+  CHATS_FETCH_FAIL: "Error fetching chats list:",
+  SND_MSG_FAIL: "Error sending message:",
+  CHAT_FETCH_FAIL: "Error fetching chat:",
 };
 
 export const API_ENDPOINTS = {

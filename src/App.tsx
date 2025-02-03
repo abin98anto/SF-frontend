@@ -7,7 +7,6 @@ import {
 import UserLayout from "./components/layout/UserLayout/UserLayout";
 import LandingPage from "./pages/user/LandingPage/LandingPage";
 import CoursePage from "./pages/user/CoursesPage/CoursesPage";
-// import AboutPage from "./pages/user/MyLearningPage/MyLearningPage";
 import SubscriptionPage from "./pages/user/SubscriptionPage/SubscriptionPage";
 import SignupPage from "./pages/user/SignupPage/SignupPage";
 import LoginPage from "./pages/user/LoginPage/LoginPage";
