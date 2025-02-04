@@ -77,14 +77,19 @@ const TutorChat: React.FC = () => {
     }
   };
 
-  const handleReceiveMessage = useCallback((message: IMessage) => {
-    setMessages((prev) => [...prev, message]);
-    if (Notification.permission === "granted") {
-      new Notification("New Message", {
-        body: `${message.content}`,
-      });
-    }
-  }, []);
+  const handleReceiveMessage = useCallback(
+    (message: IMessage) => {
+      if (selectedChat && message.chatId === selectedChat._id) {
+        setMessages((prev) => [...prev, message]);
+        if (Notification.permission === "granted") {
+          new Notification("New Message", {
+            body: `${message.content}`,
+          });
+        }
+      }
+    },
+    [selectedChat]
+  );
 
   useEffect(() => {
     if (userInfo?._id) {

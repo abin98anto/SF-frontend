@@ -35,7 +35,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
       <div className="tutC-chat-header">
         <img
           className="tutC-chat-avatar"
-          src={selectedChat.studentId.profilePicture || "/placeholder.svg"}
+          src={selectedChat.studentId.profilePicture!}
           alt="Avatar"
         />
         <h2>{selectedChat.studentId.name}</h2>

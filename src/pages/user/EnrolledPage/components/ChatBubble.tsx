@@ -71,17 +71,19 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({ courseId }) => {
 
   const handleReceiveMessage = useCallback(
     (message: IMessage) => {
-      setMessages((prev) => [...prev, message]);
-      if (!isOpen) {
-        setUnreadCount((prev) => prev + 1);
-        if (Notification.permission === "granted") {
-          new Notification("New Message", {
-            body: `${tutorName}: ${message.content}`,
-          });
+      if (chatData && message.chatId === chatData._id) {
+        setMessages((prev) => [...prev, message]);
+        if (!isOpen) {
+          setUnreadCount((prev) => prev + 1);
+          if (Notification.permission === "granted") {
+            new Notification("New Message", {
+              body: `${tutorName}: ${message.content}`,
+            });
+          }
         }
       }
     },
-    [isOpen, tutorName]
+    [isOpen, tutorName, chatData]
   );
 
   useEffect(() => {
