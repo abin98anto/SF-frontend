@@ -22,6 +22,7 @@
     "@react-oauth/google": "^0.12.1",
     "@reduxjs/toolkit": "^2.4.0",
     "@sweetalert2/theme-default": "^5.0.26",
+    "@zegocloud/zego-uikit-prebuilt": "^2.14.1",
     "antd": "^5.22.5",
     "axios": "^1.7.9",
     "bootstrap": "^5.3.3",

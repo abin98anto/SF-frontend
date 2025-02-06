@@ -14,6 +14,7 @@ import { socket } from "../../../utils/socketConfig";
 import { someMessages } from "../../../utils/constants";
 import { useSnackbar } from "../../../hooks/useSnackbar";
 import CustomSnackbar from "../../../components/Snackbar/CustomSnackbar";
+import VideoCall from "./VideoCall";
 
 interface Chat {
   _id: number;
@@ -29,6 +30,81 @@ const TutorChat: React.FC = () => {
   const [messages, setMessages] = useState<IMessage[]>([]);
   const { snackbar, showSnackbar, hideSnackbar } = useSnackbar();
 
+  const [isInCall, setIsInCall] = useState(false);
+  const [isCallPending, setIsCallPending] = useState(false);
+
+  function generateRoomID(chatId: string, userId: string, studentId: string) {
+    const cleanChatId = chatId.toString().replace(/[^a-zA-Z0-9]/g, "");
+    const cleanUserId = userId.toString().replace(/[^a-zA-Z0-9]/g, "");
+    const cleanStudentId = studentId.toString().replace(/[^a-zA-Z0-9]/g, "");
+    return `room${cleanChatId.slice(0, 8)}${cleanUserId.slice(
+      0,
+      8
+    )}${cleanStudentId.slice(0, 8)}`;
+  }
+
+  const handleStartCall = () => {
+    if (!selectedChat || !userInfo?._id) return;
+
+    const roomID = generateRoomID(
+      selectedChat._id,
+      userInfo._id,
+      selectedChat.studentId._id
+    );
+
+    socket.emit("video-call-invitation", {
+      to: selectedChat.studentId._id,
+      from: userInfo._id,
+      roomID: roomID,
+      fromName: userInfo.name,
+    });
+
+    setIsCallPending(true);
+    showSnackbar("Calling student...", "success");
+
+    const callUrl = `/video-call?roomID=${roomID}&userId=${userInfo._id}`;
+    window.open(callUrl, "_blank");
+  };
+
+  useEffect(() => {
+    socket.on("video-call-invitation", (data) => {
+      const { roomID, from, fromName } = data;
+
+      const acceptCall = () => {
+        const callUrl = `/video-call?roomID=${roomID}&userId=${userInfo?._id}`;
+        window.open(callUrl, "_blank");
+        socket.emit("video-call-accepted", { to: from }); // Add acceptance confirmation
+      };
+
+      if (Notification.permission === "granted") {
+        const notification = new Notification("Incoming Video Call", {
+          body: `${fromName} is calling you`,
+        });
+
+        notification.onclick = () => {
+          notification.close();
+          acceptCall();
+        };
+      }
+
+      showSnackbar(`Incoming call from ${fromName}`, "success");
+    });
+
+    socket.on("video-call-rejected", () => {
+      setIsCallPending(false);
+      showSnackbar("Call was declined", "error");
+    });
+
+    if (Notification.permission === "default") {
+      Notification.requestPermission();
+    }
+
+    return () => {
+      socket.off("video-call-invitation");
+      socket.off("video-call-rejected");
+    };
+  }, [userInfo, showSnackbar]);
+
   const fetchChatsList = async (userId: string) => {
     try {
       const fetchResult = await axiosInstance.get(
@@ -41,6 +117,28 @@ const TutorChat: React.FC = () => {
       showSnackbar(someMessages.CHATS_FETCH_FAIL, "error");
     }
   };
+
+  // const handleStartCall = () => {
+  //   setIsInCall(true);
+  //   // Optionally notify the other user through socket
+  //   socket.emit("call-initiated", {
+  //     to: selectedChat.studentId._id,
+  //     roomId: `${selectedChat._id}-${userInfo?._id}-${selectedChat.studentId._id}`,
+  //   });
+  // };
+
+  // useEffect(() => {
+  //   socket.on("call-initiated", (data) => {
+  //     console.log("call initiated", data);
+  //     // You could show a notification or automatically join the call
+  //     showSnackbar("Incoming video call...", "success");
+  //     setIsInCall(true);
+  //   });
+
+  //   return () => {
+  //     socket.off("call-initiated");
+  //   };
+  // }, []);
 
   useEffect(() => {
     if (userInfo) {
@@ -79,13 +177,17 @@ const TutorChat: React.FC = () => {
 
   const handleReceiveMessage = useCallback(
     (message: IMessage) => {
-      if (selectedChat && message.chatId === selectedChat._id) {
+      if (
+        selectedChat &&
+        message.chatId === selectedChat._id &&
+        message.senderId != userInfo?._id
+      ) {
         setMessages((prev) => [...prev, message]);
-        if (Notification.permission === "granted") {
-          new Notification("New Message", {
-            body: `${message.content}`,
-          });
-        }
+        // if (Notification.permission === "granted") {
+        //   new Notification("New Message", {
+        //     body: `${message.content}`,
+        //   });
+        // }
       }
     },
     [selectedChat]
@@ -94,9 +196,9 @@ const TutorChat: React.FC = () => {
   useEffect(() => {
     if (userInfo?._id) {
       socket.on("receive_message", handleReceiveMessage);
-      if (Notification.permission === "default") {
-        Notification.requestPermission();
-      }
+      // if (Notification.permission === "default") {
+      //   Notification.requestPermission();
+      // }
     }
 
     return () => {
@@ -108,14 +210,28 @@ const TutorChat: React.FC = () => {
     <div className="tutC-tutor-chat">
       <ChatList chats={chats} onChatSelect={handleChatSelect} />
       <div className="tutC-chat-content">
-        <ChatWindow
-          messages={messages}
-          selectedChat={selectedChat}
-          currentUserId={userInfo?._id as string}
-        />
-        <MessageInput onSendMessage={handleSendMessage} />
+        {isInCall ? (
+          <VideoCall
+            selectedChat={selectedChat}
+            currentUserId={userInfo?._id as string}
+            onEndCall={() => setIsInCall(false)}
+          />
+        ) : (
+          <>
+            <ChatWindow
+              messages={messages}
+              selectedChat={selectedChat}
+              currentUserId={userInfo?._id as string}
+            />
+            <MessageInput
+              onSendMessage={handleSendMessage}
+              selectedChat={selectedChat}
+              currentUserId={userInfo?._id as string}
+              onStartCall={handleStartCall}
+            />
+          </>
+        )}
       </div>
-
       <CustomSnackbar
         open={snackbar.open}
         message={snackbar.message}

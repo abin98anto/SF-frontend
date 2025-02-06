@@ -238,3 +238,24 @@
     }
   }
 }
+
+.notification-badge {
+  position: relative;
+  cursor: pointer;
+
+  .MuiBadge-badge {
+    background-color: #ff6a3d;
+    color: white;
+  }
+}
+
+.mobile-notifications {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+
+  .MuiBadge-badge {
+    background-color: #ff6a3d;
+    color: white;
+  }
+}

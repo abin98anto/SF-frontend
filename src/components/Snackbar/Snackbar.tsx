@@ -6,8 +6,8 @@ const SnackbarContainer = styled.div<{ isVisible: boolean }>`
   top: 10px;
   left: 55%;
   transform: translateX(-50%);
-  background-color: #ff3333;
-  color: white;
+  background-color: rgb(198, 255, 203);
+  color: black;
   padding: 10px;
   border-radius: 4px;
   z-index: 1000;
