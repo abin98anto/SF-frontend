@@ -41,7 +41,7 @@ import NotFound from "./pages/404Page/404Page";
 import { TutorLayout } from "./components/layout/tutor-layout/tutor-layout";
 import { EditCourse } from "./pages/admin/CourseManagement/EditCourse/EditCourse";
 import VideoCallPage from "./pages/tutor/VideoCallPage/VideoCallPage";
-import { NotificationProvider } from "./contexts/NotificationContext";
+// import { NotificationProvider } from "./contexts/NotificationContext";
 // import { Snackbar } from "./components/Snackbar/Snackbar";
 // import { useAppSelector } from "./hooks/hooks";
 // import { IMessage } from "./entities/messages/IMessages";
@@ -134,18 +134,16 @@ const App = () => {
   // }, []);
 
   return (
-    <NotificationProvider>
-      <GoogleOAuthProvider clientId={import.meta.env.GOOGLE_CLIENT_ID}>
-        {/* <MessageContext.Provider value={{ messages, addMessage }}>
+    <GoogleOAuthProvider clientId={import.meta.env.GOOGLE_CLIENT_ID}>
+      {/* <MessageContext.Provider value={{ messages, addMessage }}>
         <Snackbar
           message={snackbarMessage}
           isVisible={isSnackbarVisible}
           onClose={() => setSnackbarVisible(false)}
         /> */}
-        <RouterProvider router={router} />
-        {/* </MessageContext.Provider> */}
-      </GoogleOAuthProvider>
-    </NotificationProvider>
+      <RouterProvider router={router} />
+      {/* </MessageContext.Provider> */}
+    </GoogleOAuthProvider>
   );
 };
 

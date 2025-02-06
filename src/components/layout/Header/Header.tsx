@@ -1,5 +1,4 @@
-import type React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -11,15 +10,11 @@ import {
   DialogActions,
   DialogTitle,
   Button,
-  Badge,
 } from "@mui/material";
-import NotificationsIcon from "@mui/icons-material/Notifications";
 import { logoutUser } from "../../../redux/services/UserAuthServices";
 import "./Header.scss";
-import type { AppRootState, AppDispatch } from "../../../redux/store";
+import { AppRootState, AppDispatch } from "../../../redux/store";
 import { UserRole } from "../../../entities/user/UserRole";
-import { useNotifications } from "../../../contexts/NotificationContext";
-// import { useNotifications } from "../contexts/NotificationContext";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -31,8 +26,6 @@ const Header = () => {
   const { isAuthenticated, userInfo } = useSelector(
     (state: AppRootState) => state.user
   );
-
-  const { notifications } = useNotifications();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -165,13 +158,6 @@ const Header = () => {
                 {userInfo?.name?.[0]}
               </Avatar>
             </IconButton>
-            <Badge
-              className="notification-badge"
-              badgeContent={notifications.length}
-              color="error"
-            >
-              <NotificationsIcon />
-            </Badge>
             <Menu
               anchorEl={anchorEl}
               open={Boolean(anchorEl)}
